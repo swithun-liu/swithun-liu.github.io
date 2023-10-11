@@ -1,0 +1,82 @@
+<h1 id="Contributing"><a href="#Contributing" class="headerlink" title="Contributing"></a>Contributing</h1><p><a href="https://discord.gg/M24EbU7ja9"><img src="https://badgen.net/badge/icon/discord?icon=discord&label&color=pink" alt="discord"></a><br><a href="https://github.com/highlightjs/highlight.js/issues"><img src="https://badgen.net/github/open-issues/highlightjs/highlight.js?label=issues" alt="open issues"></a><br><a href="https://github.com/highlightjs/highlight.js/issues?q=is:open+is:issue+label:%22help+welcome%22"><img src="https://badgen.net/github/label-issues/highlightjs/highlight.js/help%20welcome/open" alt="help welcome issues"></a><br><a href="https://github.com/highlightjs/highlight.js/issues?q=is:open+is:issue+label:%22beginner+friendly%22"><img src="https://badgen.net/github/label-issues/highlightjs/highlight.js/good%20first%20issue/open" alt="good first issue"></a></p>
+<p><strong>Contents</strong></p>
+<ul>
+<li><a href="#welcome">Welcome</a><ul>
+<li><a href="#our-philosophy">Our Philosophy</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li><a href="#requesting-features">Requesting Features</a><ul>
+<li><a href="#language-requests">Language Requests</a></li>
+</ul>
+</li>
+<li><a href="#reporting-issues">Reporting Issues</a></li>
+<li><a href="#fixing-issues-prs">Fixing Issues (PRs)</a><ul>
+<li><a href="#in-a-nutshell">In a nutshell</a></li>
+<li><a href="#build-and-test">Build and Test</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Welcome"><a href="#Welcome" class="headerlink" title="Welcome"></a>Welcome</h2><p>Hello and welcome to Highlight.js. We’re a code-highlighting engine, but you probably knew that already. If you are considering contributing to Highlight.js this document will be hopefully be a helpful resource.</p>
+<p>Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.</p>
+<p><strong>You do not have to be a programmer.</strong> There are many ways to contribute::</p>
+<ul>
+<li>Hang out on our <a href="https://discord.gg/M24EbU7ja9">Discord</a> and help answers questions as they come up</li>
+<li>Report <a href="https://github.com/highlightjs/highlight.js/issues/new/choose">new issues or bugs</a> or join the existing discussion on open issues</li>
+<li>Submit pull requests to resolve issues</li>
+<li>Write <a href="https://highlightjs.readthedocs.io/en/latest/plugin-api.html">plugins</a> that extend our core functionality</li>
+<li>Author <a href="https://github.com/highlightjs/highlight.js/blob/master/extra/3RD_PARTY_QUICK_START.md">language definitions</a> to improve our language support</li>
+<li>Design <a href="https://highlightjs.readthedocs.io/en/latest/style-guide.html">new themes</a> to make our highlighting extra beautiful</li>
+<li>Improve our documentation to better explain all the things to all the peoples</li>
+</ul>
+<h3 id="Our-Philosophy"><a href="#Our-Philosophy" class="headerlink" title="Our Philosophy"></a>Our Philosophy</h3><p>Highlight.js makes an effort to keep the core engine small, simple, and easy to use.  Our goal with core is to support the highlighting “happy path” and let plug-ins handle edge cases.</p>
+<ul>
+<li>Rather than add lots of tiny features and configuration knobs we <a href="https://github.com/highlightjs/highlight.js/issues/2225">embrace plug-ins and extensions</a>. For example, our <a href="https://highlightjs.readthedocs.io/en/latest/line-numbers.html">lack of line numbers is considered a feature</a>.</li>
+<li>We do quite bit more than highlight keywords. We often make an attempt to understand local context, yet we do not strive to be a full and correct parser for any language.</li>
+<li>Our <a href="https://github.com/highlightjs/highlight.js/issues/1213">language auto-detection is unfortunately not magic</a>. It’s best effort, not best in class. If you think you could help improve it that’d be a great contribution!</li>
+</ul>
+<h3 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h3><ul>
+<li>To help answer questions on issues or contribute on Discord you need only be friendly.</li>
+<li>To contribute to language definitions knowing <a href="https://www.regular-expressions.info/">Regular Expressions</a> is often necessary.</li>
+<li>To work on the core parsing engine you’ll need to know JavaScript.</li>
+<li>To work on documentation you need to be ready and willing to document things.</li>
+<li>Attention to detail or expert knowledge in one of the languages we highlight can be super helpful.</li>
+</ul>
+<h2 id="Requesting-Features"><a href="#Requesting-Features" class="headerlink" title="Requesting Features"></a>Requesting Features</h2><p>Feature requests are always welcome.  If the feature doesn’t belong in the core library then we’re always happy to suggest how you might go about developing a plug-in.</p>
+<p>If you’re thinking of contributing a feature first open an issue to discuss whether the feature belongs in core vs a plug-in.  Often this is a great way to get implementation tips or links to prior discussions on the topic often with additional context, etc.</p>
+<h3 id="Language-Requests"><a href="#Language-Requests" class="headerlink" title="Language Requests"></a>Language Requests</h3><p>If you wish we supported a language we don’t, first read <a href="https://highlightjs.readthedocs.io/en/latest/language-requests.html">On requesting new languages</a>.  TL;DR The core team generally doesn’t implement new languages - so there is no point opening requests.  Please consider trying to contribute the language yourself or enlisting the help of a friend.</p>
+<h2 id="Reporting-Issues"><a href="#Reporting-Issues" class="headerlink" title="Reporting Issues"></a>Reporting Issues</h2><p>If you find a bug or think of an improvement, feel free to <a href="https://github.com/highlightjs/highlight.js/issues/new/choose">open an issue</a>.</p>
+<ul>
+<li>If you’ve found a language highlighting issue, you can use <a href="https://jsfiddle.net/ajoshguy/2bmdswn6/">this JSFiddle</a> to create a test case.</li>
+</ul>
+<h2 id="Fixing-Issues-PRs"><a href="#Fixing-Issues-PRs" class="headerlink" title="Fixing Issues (PRs)"></a>Fixing Issues (PRs)</h2><p>If you feel comfortable with the <a href="#prerequisites">prerequisites</a>, you can grab any issue marked <a href="https://github.com/highlightjs/highlight.js/issues?q=is:issue+is:open+label:%22good+first+issue%22">“good first issue”</a>. Or feel free to jump in with thoughts or comments on any of the more complex issues.</p>
+<h3 id="In-a-nutshell"><a href="#In-a-nutshell" class="headerlink" title="In a nutshell"></a>In a nutshell</h3><p>If you’re new to contributing to open-source, have a look at <a href="https://guides.github.com/activities/forking">this GitHub Guide</a>. It explains the general process of GitHub collaboration.</p>
+<p>Highlight.js is developed in JavaScript, so you’ll need the usual suspects: <a href="https://nodejs.dev/download/">Node.js</a>, npm (or yarn), git, etc.  You’ll likely start by forking the repository on GitHub and then cloning it locally.</p>
+<ol>
+<li>Fork this project on GitHub.</li>
+<li>Clone it locally <code>git clone git@github.com:username/highlight.js.git</code>.</li>
+<li>Create a work branch (<code>git checkout -b my-branch</code>).</li>
+<li>Commit your changes (<code>git commit -m &#39;my changes&#39;</code>).</li>
+<li><a href="#build-and-test">Build and Test</a></li>
+<li>Push the branch (<code>git push origin my-branch</code>).</li>
+<li>Open a Pull Request from your fork back to this repository.</li>
+</ol>
+<h3 id="Keep-in-Mind"><a href="#Keep-in-Mind" class="headerlink" title="Keep in Mind "></a>Keep in Mind <!-- omit in toc --></h3><p>Please open a new issue before your PR (or join the discussion on the existing issue), so we can explore and discuss the topic at hand. Your time is important, and we need to be sure it’s well-spent.</p>
+<p><em>Before</em> you start coding, keep these tips in mind:</p>
+<ul>
+<li>You should usually add markup tests (ie. whenever you’ve made a significant grammar change or fixed a bug). Simply adding <code>keywords</code> can be an exception to this rule.</li>
+<li>Change only what needs to be changed; don’t re-lint or rewrite whole files when fixing small bugs</li>
+<li>Linting or major re-organization needs a dedicated commit</li>
+</ul>
+<p><em>After</em> you make your changes, we have some housekeeping tasks for you - like updating the <a href="https://github.com/highlightjs/highlight.js/blob/main/CHANGES.md">changelog</a>. The PR template will be your guide.</p>
+<h3 id="Build-and-Test"><a href="#Build-and-Test" class="headerlink" title="Build and Test"></a>Build and Test</h3><p>When contributing a PR (that doesn’t make any specific changes to browser features) it’s usually sufficient to build and test only the Node.js build.  Our CI process will guarantee that the browser build is still green.</p>
+<p>Testing the Node.js build:</p>
+<pre><code class="console">npm run build
+npm run test
+</code></pre>
+<p>The browser library is built and tested separately:</p>
+<pre><code class="console">npm run build-browser
+npm run test-browser
+</code></pre>
+<p>There’s a developer tool (<a href="https://github.com/highlightjs/highlight.js/blob/master/tools/developer.html">tools&#x2F;developer.html</a>) for visually testing and debugging language definitions. It requires a browser build to be present. (ie <code>npm run build-browser</code> first)</p>
+<p>For more details, see <a href="https://highlightjs.readthedocs.io/en/latest/building-testing.html">Building and Testing</a> in our docs.</p>

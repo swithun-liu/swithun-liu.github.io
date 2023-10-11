@@ -1,0 +1,30 @@
+<h2 id="Version-10-Breaking-Changes"><a href="#Version-10-Breaking-Changes" class="headerlink" title="Version 10 Breaking Changes"></a>Version 10 Breaking Changes</h2><p>Incompatibilities:</p>
+<ul>
+<li>chore(parser): compressed version 9.x language definitions no longer supported (rebuild them minified) <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li><code>nohightlight</code> and <code>no-highlight</code> are the only “ignore me” css classes now (<code>plain</code> and <code>text</code> no longer count)<br>(to get the old behavior you can customize <code>noHighlightRe</code>)</li>
+<li>a grammar with a top-level <code>self</code> reference will now always throw an error<br>(previously in safe mode this would be silently ignored)</li>
+<li>PHP templates are now detected as <code>php-template</code>, not <code>xml</code></li>
+</ul>
+<p>Renamed Language Files:</p>
+<ul>
+<li>chore(parser): <code>htmlbars.js</code> now depends on <code>handlebars.js</code> <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li>chore(parser): rename <code>nimrod.js</code> to <code>nim.js</code> <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li>chore(parser): rename <code>cs.js</code> to <code>csharp.js</code> <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li>chore(parser): rename <code>tex.js</code> to <code>latex.js</code> <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li>chore(parser): effectively rename <code>cpp.js</code> to <code>c-like.js</code> <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li>chore(parser): create new <code>c.js</code> (C), depends on <code>c-like</code> now <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li>chore(parser): create new <code>cpp.js</code> (C), depends on <code>c-like</code> now <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+<li>This will allow us to clean up C&#x2F;C++ in the future without another breaking change<br>by getting this require change out of the way early.<br>(<a href="https://github.com/highlightjs/highlight.js/issues/2146">https://github.com/highlightjs/highlight.js/issues/2146</a>)</li>
+</ul>
+<p>Legacy Browser Issues:</p>
+<ul>
+<li><strong>We’re now using ES2015 features in the codebase.  Internet Explorer 11 is no longer supported.</strong></li>
+<li>In general legacy browsers are no longer supported.</li>
+<li>chore(parser): remove <code>load</code> listener in favor of only the newer <code>DOMContentLoaded</code> <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+</ul>
+<p>Removed styles:</p>
+<ul>
+<li>chore(styles): darkula.css (use darcula.css instead) <a href="https://github.com/joshgoebel">Josh Goebel</a></li>
+</ul>
+<hr>
+<p>Also see:<br><a href="https://github.com/highlightjs/highlight.js/issues/2273">https://github.com/highlightjs/highlight.js/issues/2273</a></p>

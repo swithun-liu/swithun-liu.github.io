@@ -1,0 +1,946 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ViewModel配置变更后仍然存在原理 [ Hexo ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            test
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/test/test/">
+                            <i class="fa fa-file"></i>
+                            test
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            test_f
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/test/test_f/test/">
+                            <i class="fa fa-file"></i>
+                            test
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file active">
+                        <a href="/2023/10/10/Android/2023-10-10-viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            2023-10-10-viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="post">
+  <h1>ViewModel配置变更后仍然存在原理</h1>
+  <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="##Activity%E5%88%9B%E5%BB%BAViewModel">Activity创建ViewModel</a></li>
+<li><a href="##Activity%E9%87%8D%E5%BB%BAViewModel%E4%BF%9D%E6%8C%81%E5%AD%98%E5%9C%A8%E7%9A%84%E5%AE%9E%E7%8E%B0">Activity重建ViewModel保持存在的实现</a><ul>
+<li><a href="###relaunch%E4%B9%8B%E5%90%8E%E6%96%B0%E7%9A%84Activity%E8%8E%B7%E5%8F%96%E4%B9%8B%E5%89%8D%E7%9A%84viewModel">relaunch之后新的Activity获取之前的viewModel</a></li>
+<li><a href="###relaunch%E8%BF%87%E7%A8%8B%E4%B8%AD%E4%BF%9D%E5%AD%98%E6%97%A7Activity%E7%9A%84viewModel">relaunch过程中保存旧Activity的viewModel</a></li>
+</ul>
+</li>
+<li><a href="##reference">reference</a></li>
+</ul>
+<blockquote>
+<p>2022&#x2F;08&#x2F;21</p>
+</blockquote>
+<h2 id="Activity创建ViewModel"><a href="#Activity创建ViewModel" class="headerlink" title="Activity创建ViewModel"></a>Activity创建ViewModel</h2><ul>
+<li><p>创建ViewModel</p>
+<pre><code class="kotlin">// MyActivity#onCreate()
+
+val mainViewModel = 
+            [V1]   ViewModelProvider(this)
+              [V2]       .get(MainViewModel::class.java)
+</code></pre>
+</li>
+<li><p><code>[V1]</code></p>
+<p>ViewModelProvider构造函数</p>
+<pre><code class="kotlin">// androidx.lifecycle.ViewModelProvider#get(java.lang.Class&lt;T&gt;)
+    public constructor(
+        owner: ViewModelStoreOwner
+    ) : this(owner.viewModelStore, defaultFactory(owner), defaultCreationExtras(owner))
+</code></pre>
+<p>this指MyActivity，即MyActivity应该是<code>[I]ViewModelStoreOwner</code>类型</p>
+<p>MyActivity继承<code>[C]ComponentActivity]</code>，ComponentActivity实现了<code>[I]ViewModelStoreOwner</code>接口</p>
+<pre><code class="java">// CompnentActivity
+public class ComponentActivity extends androidx.core.app.ComponentActivity implements
+        // ...
+        ViewModelStoreOwner,
+        // ... &#123;
+</code></pre>
+<p><code>this(owner.viewModelStore, defaultFactory(owner), defaultCreationExtras(owner))</code> ，这里使用 <code>owner.viewModelStore</code>从ViewModelStoreOwner中取出<code>[OC]ViewModelStore]</code></p>
+<pre><code class="kotlin">// ViewModelStoreOwner
+interface ViewModelStoreOwner &#123;
+
+    /**
+     * The owned [ViewModelStore]
+     */
+    val viewModelStore: ViewModelStore
+&#125;
+</code></pre>
+<p>然后调用下面的构造函数</p>
+<pre><code class="kotlin">// ViewModelStoreOwner
+
+/**
+ * Creates a ViewModelProvider
+ *
+ * @param store `ViewModelStore` where ViewModels will be stored.
+ * @param factory factory a `Factory` which will be used to instantiate new `ViewModels`
+ * @param defaultCreationExtras extras to pass to a factory
+ */
+@JvmOverloads
+constructor(
+    private val store: ViewModelStore,
+    private val factory: Factory,
+    private val defaultCreationExtras: CreationExtras = CreationExtras.Empty,
+) &#123;
+</code></pre>
+</li>
+<li><p><code>[V2]</code></p>
+<p>调用了get方法⬇️</p>
+<pre><code class="kotlin">// androidx.lifecycle.ViewModelProvider#get(java.lang.Class&lt;T&gt;)
+    @MainThread
+    public open operator fun &lt;T : ViewModel&gt; get(modelClass: Class&lt;T&gt;): T &#123;
+        val canonicalName = modelClass.canonicalName
+            ?: throw IllegalArgumentException(&quot;Local and anonymous classes can not be ViewModels&quot;)
+   [W1]  return get(&quot;$DEFAULT_KEY:$canonicalName&quot;, modelClass)
+    &#125;
+</code></pre>
+</li>
+<li><p><code>[W1]</code></p>
+<pre><code class="kotlin">// androidx.lifecycle.ViewModelProvider#get(java.lang.String, java.lang.Class&lt;T&gt;)
+    @MainThread
+    public open operator fun &lt;T : ViewModel&gt; get(key: String, modelClass: Class&lt;T&gt;): T &#123;
+    [X1]val viewModel = store[key]
+    [X1]if (modelClass.isInstance(viewModel)) &#123;
+            ....
+    [X1]    return viewModel as T
+        ....
+    [X2]return try &#123;
+    [X2]     factory.create(modelClass, extras)
+    [X2] catch (e: AbstractMethodError) &#123;
+    [X2]    factory.create(modelClass)
+    [X2]&#125;.also &#123; store.put(key, it) &#125;
+    &#125;
+</code></pre>
+</li>
+<li><p><code>[X1]</code>⬅️<code>[W1]</code></p>
+<p>从store(<code>[OC]ViewModelStore</code>)中能找到viewmodel则直接返回</p>
+</li>
+<li><p><code>[X2]</code>⬅️<code>[W1]</code></p>
+<p>store中找不到则需要新创建一个viewmodel并放入store，这里说明只要使用同一个ViewModelStore获取ViewModel则不同地方获取到的都是同一个ViewModel</p>
+<p><code>[OC]ViewModelStore</code>看起来是个Map，事实上他的实现就是维护一个map，放出get和put方法</p>
+<pre><code class="kotlin">open class ViewModelStore &#123;
+
+    private val map = mutableMapOf&lt;String, ViewModel&gt;()
+    ...
+
+    fun put(key: String, viewModel: ViewModel) &#123;
+    &#125;
+
+    operator fun get(key: String): ViewModel? &#123;
+        return map[key]
+    &#125;
+    ...
+&#125;
+</code></pre>
+</li>
+</ul>
+<p>总结上面，Activity在onCreate时创建viewModel，Activity是一个ViewModelStoreOwner其中有一个ViewModelStore其中维护一个map，ViewModelProvier作为一个工具类在使用默认的&#x2F;我们提供的Factory（为了适配构造函数有参的ViewModel）创建ViewModel的同时会将其存入这个map。</p>
+<p>所以，在relaunch过程中，销毁旧的Activity时如果能保存它的mViewModelStore，然后将其赋值新的Activity的mViewModelStore就能实现配置变更viewModel不变更的效果。</p>
+<h2 id="Activity重建ViewModel保持存在的实现"><a href="#Activity重建ViewModel保持存在的实现" class="headerlink" title="Activity重建ViewModel保持存在的实现"></a>Activity重建ViewModel保持存在的实现</h2><h3 id="relaunch之后新的Activity获取之前的viewModel"><a href="#relaunch之后新的Activity获取之前的viewModel" class="headerlink" title="relaunch之后新的Activity获取之前的viewModel"></a>relaunch之后新的Activity获取之前的viewModel</h3><p>viewModel存在ViewModelStore中，说明ViewModelStore在Activity重建的过程中能保持存在，看下<code>[C]ComponentActivity</code>如何如何获取<code>[OC]ViewModelStore</code>的</p>
+<pre><code class="kotlin">    public ViewModelStore getViewModelStore() &#123;
+        if (getApplication() == null) &#123;
+            throw new IllegalStateException(&quot;Your activity is not yet attached to the &quot;
+                    + &quot;Application instance. You can&#39;t request ViewModel before onCreate call.&quot;);
+        &#125;
+   [T1] ensureViewModelStore();
+        return mViewModelStore;
+    &#125;
+
+
+</code></pre>
+<ul>
+<li><p><code>[T1]</code></p>
+<p>在getViewModelStore()方法中调用了ensureViewModelStore()确保mViewModelStore不为空</p>
+<pre><code class="kotlin">    @SuppressWarnings(&quot;WeakerAccess&quot;) /* synthetic access */
+    void ensureViewModelStore() &#123;
+        if (mViewModelStore == null) &#123;
+        [U1] NonConfigurationInstances nc =
+                    (NonConfigurationInstances) getLastNonConfigurationInstance();
+            if (nc != null) &#123;
+                // Restore the ViewModelStore from NonConfigurationInstances
+        [U2]    mViewModelStore = nc.viewModelStore;
+            &#125;
+            if (mViewModelStore == null) &#123;
+                mViewModelStore = new ViewModelStore();
+            &#125;
+        &#125;
+    &#125;
+</code></pre>
+</li>
+<li><p><code>[U1]</code>⬅️<code>[T1]</code></p>
+<pre><code class="kotlin">// Activity
+
+    @Nullable
+    public Object getLastNonConfigurationInstance() &#123;
+        return mLastNonConfigurationInstances != null
+                ? mLastNonConfigurationInstances.activity : null;
+    &#125;
+</code></pre>
+<p>Activirty.mLastNonConfigurationInstances类型为<code>[C]Activity.NonConfigurationInstances</code></p>
+<pre><code class="java">// android.app.Activity.NonConfigurationInstances
+    static final class NonConfigurationInstances &#123;
+        Object activity;
+        ....
+    &#125;
+</code></pre>
+<p>mLastNonConfigurationInstances.activity在<code>[U1]</code>处被强转为<code>[C]ComponentActivity.NonConfigurationInstances</code></p>
+<pre><code class="kotlin">// androidx.activity.ComponentActivity.NonConfigurationInstances
+    static final class NonConfigurationInstances &#123;
+        Object custom;
+        ViewModelStore viewModelStore;
+    &#125;
+</code></pre>
+</li>
+<li><p><code>[U2]</code>⬅️<code>[T1]</code></p>
+<p>如果<code>[U1]</code>获取的nc不为空，则将mViewModelStore赋值为nc.viewModelStore 即Activity.mLastNonConfigurationInstances.activity.viewModelStore</p>
+<p>所以想要保存给新Activity使用原来的viewModel，重点就是要在relaunch过程中保存旧的Activity.mLastNonConfigurationInstances然后再赋值给新Activity.mLastNonConfigurationInstances</p>
+</li>
+</ul>
+<h3 id="relaunch过程中保存旧Activity的viewModel"><a href="#relaunch过程中保存旧Activity的viewModel" class="headerlink" title="relaunch过程中保存旧Activity的viewModel"></a>relaunch过程中保存旧Activity的viewModel</h3><p>设备变更，系统调用AMS的updateConfiguration 方法</p>
+<p><a target="_blank" rel="noopener" href="https://cs.android.com/android/platform/superproject/+/master:frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java;l=462?q=ActivityManagerService&sq=&ss=android/platform/superproject" title="ActivityManagerService.java - Android Code Search">ActivityManagerService.java - Android Code Search</a></p>
+<pre><code class="java">// ActivityManagerService
+    @Override
+    public boolean updateConfiguration(Configuration values) &#123;
+        return mActivityTaskManager.updateConfiguration(values);
+    &#125;
+</code></pre>
+<pre><code class="java">// ActivityTaskManagerService
+    @Override
+    public boolean updateConfiguration(Configuration values) &#123;
+           ....
+                updateConfigurationLocked(values, null, false, false /* persistent */,
+           ....
+    &#125;
+</code></pre>
+<pre><code class="java">// ActivityTaskManagerService
+    boolean updateConfigurationLocked(Configuration values, ActivityRecord starting,
+            boolean initLocale, boolean persistent, int userId, boolean deferResume,
+            ActivityTaskManagerService.UpdateConfigurationResult result) &#123;
+            ....
+            「I1」  changes = updateGlobalConfigurationLocked(values, initLocale, persistent, userId);
+            ....
+            「I2」 kept = ensureConfigAndVisibilityAfterUpdate(starting, changes);
+            ....
+    &#125;
+</code></pre>
+<ul>
+<li><p><code>「I1」</code></p>
+<p>updateGlobalConfigurationLocked 更新当前配置信息</p>
+</li>
+<li><p><code>「I2」</code></p>
+<p>ensureConfigAndVisibilityAfterUpdate 确保给定的activity更新使用的配置</p>
+<p>这里starting传入的是null，需要ensureConfigAndVisibilityAfterUpdate中自己获取</p>
+<pre><code class="kotlin">// ActivityTaskManagerService
+    boolean ensureConfigAndVisibilityAfterUpdate(ActivityRecord starting, int changes) &#123;
+        boolean kept = true;
+     「J1」   final Task mainRootTask = mRootWindowContainer.getTopDisplayFocusedRootTask();
+        ....
+             「J2」 starting = mainRootTask.topRunningActivity();
+        ....
+             「J3」 kept = starting.ensureActivityConfiguration(changes,
+        ....
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「J1」</code>⬅️<code>「I2」</code></p>
+<p>获取根窗口容器中当前具有焦点的顶级任务（root task）</p>
+</li>
+<li><p><code>「J2」</code>⬅️<code>「I2」</code></p>
+<p>获取顶级任务（root task）中当前正在运行的顶级Activity（top running Activity）的ActivityRecord赋值给starting</p>
+</li>
+<li><p><code>「J3」</code>⬅️<code>「I2」</code></p>
+<p>ActivityRecord对应的Activity更新Configuration</p>
+<pre><code class="kotlin">// com.android.server.wm.ActivityRecord#ensureActivityConfiguration(int, boolean)
+    boolean ensureActivityConfiguration(int globalChanges, boolean preserveWindow) &#123;
+        return ensureActivityConfiguration(globalChanges, preserveWindow,
+                false /* ignoreVisibility */);
+    &#125;
+</code></pre>
+<pre><code class="java">// com.android.server.wm.ActivityRecord#ensureActivityConfiguration(int, boolean, boolean)
+    boolean ensureActivityConfiguration(int globalChanges, boolean preserveWindow,
+            boolean ignoreVisibility) &#123;
+            ....
+                relaunchActivityLocked(preserveWindow);
+            ....
+    &#125;
+</code></pre>
+<pre><code class="java"> // com.android.server.wm.ActivityRecord#relaunchActivityLocked
+    void relaunchActivityLocked(boolean preserveWindow) &#123;
+            ....
+       「K2」  final ClientTransactionItem callbackItem = ActivityRelaunchItem.obtain(pendingResults,
+            ....
+       「K1」  final ClientTransaction transaction = ClientTransaction.obtain(app.getThread(), token);
+       「K2」  transaction.addCallback(callbackItem);
+            ....
+       「K3」  mAtmService.getLifecycleManager().scheduleTransaction(transaction);
+            ....
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「K1」</code>⬅️<code>「J3」</code></p>
+<p>token来自<code>[C]ActivityRecord</code>继承的<code>[C]WindowToken</code>中的token</p>
+<pre><code class="kotlin">class WindowToken extends WindowContainer&lt;WindowState&gt; &#123;
+    private static final String TAG = TAG_WITH_CLASS_NAME ? &quot;WindowToken&quot; : TAG_WM;
+
+    /** The actual token */
+    final IBinder token;
+
+    /** The type of window this token is for, as per &#123;@link WindowManager.LayoutParams&#125; */
+    final int windowType;
+</code></pre>
+<pre><code class="kotlin"> // ClientTransaction
+    /** Obtain an instance initialized with provided params. */
+    public static ClientTransaction obtain(IApplicationThread client, IBinder activityToken) &#123;
+        ClientTransaction instance = ObjectPool.obtain(ClientTransaction.class);
+        if (instance == null) &#123;
+            instance = new ClientTransaction();
+        &#125;
+        instance.mClient = client;
+        instance.mActivityToken = activityToken;
+
+        return instance;
+    &#125;
+</code></pre>
+<p>将transaction.mActivityToken设置为ActivityRecord.token</p>
+</li>
+<li><p><code>「K2」</code>⬅️<code>「J3」</code></p>
+<p>给transaction放入callback：<code>[C]ActivityRelaunchItem</code></p>
+</li>
+<li><p><code>「K3」</code>⬅️<code>「J3」</code></p>
+<p>执行transaction</p>
+<pre><code class="java">// com.android.server.wm.ClientLifecycleManager#scheduleTransaction(ClientTransaction)
+    void scheduleTransaction(ClientTransaction transaction) throws RemoteException &#123;
+        ....
+        transaction.schedule();
+        ....
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// ClientTransaction
+    public void schedule() throws RemoteException &#123;
+   「L1」  mClient.scheduleTransaction(this);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「L1」</code>⬅️<code>「K3」</code></p>
+<p><code>[C]ClientTransaction</code>使用mClient执行自己</p>
+<ul>
+<li>mClient是什么?&#x20;<pre><code class="kotlin">// ClientTransaction
+    /** Target client. */
+    private IApplicationThread mClient;
+</code></pre>
+这里是使用AIDL(基于Binder)进行进程间通信，对应文件<code>IApplicationThread.aidl</code>⬇️<pre><code class="kotlin">oneway interface IApplicationThread &#123;
+    ....
+    void scheduleTransaction(in ClientTransaction transaction);
+</code></pre>
+这里mClient是客户端，对应的客户端为<code>[c]ApplicationThread</code><pre><code class="kotlin">    private class ApplicationThread extends IApplicationThread.Stub &#123;
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p><code>「M1」</code>⬅️<code>「L1」</code></p>
+<p>所以下面从 android.app.ActivityThread.ApplicationThread#scheduleTransaction方法继续</p>
+<pre><code class="kotlin">// android.app.ActivityThread.ApplicationThread#scheduleTransaction
+        @Override
+        public void scheduleTransaction(ClientTransaction transaction) throws RemoteException &#123;
+            ActivityThread.this.scheduleTransaction(transaction);
+        &#125;
+</code></pre>
+<p>这里scheduleTransaction是调用的ActivityThread的基类ClientTransactonHandler中的scheduleTransaction方法</p>
+<pre><code class="kotlin">// android.app.ClientTransactionHandler#scheduleTransaction
+    void scheduleTransaction(ClientTransaction transaction) &#123;
+ 「N1」  transaction.preExecute(this);
+ 「N2」  sendMessage(ActivityThread.H.EXECUTE_TRANSACTION, transaction);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「N1」</code>⬅️<code>「M1」</code></p>
+<p>为后面transaction的执行做些准备，这里this传入的是<code>[C]ActivityThread</code></p>
+<pre><code class="java">    public void preExecute(android.app.ClientTransactionHandler clientTransactionHandler) &#123;
+        if (mActivityCallbacks != null) &#123;
+            ....
+            for (int i = 0; i &lt; size; ++i) &#123;
+            「O1」  mActivityCallbacks.get(i).preExecute(clientTransactionHandler, mActivityToken);
+            ....
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「O1」</code>⬅️<code>「N1」</code></p>
+<p>执行每个callback的preExecute方法，callback只有一个之前在<code>「K2」</code>处放入的ActivityRelaunchItem</p>
+<pre><code class="java"> // android.app.servertransaction.ActivityRelaunchItem#preExecute
+    public void preExecute(ClientTransactionHandler client, IBinder token) &#123;
+    「P1」 mActivityClientRecord = client.prepareRelaunchActivity(token, mPendingResults,
+                mPendingNewIntents, mConfigChanges, mConfig, mPreserveWindow);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「P1」</code>⬅️ <code>「O1」</code></p>
+<p>从ActivityThread(即client)获取要relaunch的ActivityRecord存入ActivityRelaunchItem.mActivityClientRecord</p>
+<pre><code class="java">    @Override
+    public ActivityClientRecord prepareRelaunchActivity(IBinder token,
+            List&lt;ResultInfo&gt; pendingResults, List&lt;ReferrerIntent&gt; pendingNewIntents,
+            int configChanges, MergedConfiguration config, boolean preserveWindow) &#123;
+    「Q1」     ....
+
+    「Q2」     target = new ActivityClientRecord();
+    「Q2」     target.token = token;
+                ....
+    「Q3」     mRelaunchingActivities.add(target);
+                ....
+
+        return ....target....;
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「Q1」</code>⬅️<code>「P1」</code></p>
+<p>检查是否目标activity是否已经正在relaunch了，如果是则返回</p>
+</li>
+<li><p><code>「Q2」</code>⬅️<code>「P1」</code></p>
+<p>目标activity没有已经正在relaunch（这里认为是没有，这个判断只是为了防止relaunch正在relaunch的activity），则构造一个<code>[sC]ActivityClientRecord</code>记录要relaunch的Activity的token等信息</p>
+</li>
+<li><p><code>「Q3」</code>⬅️<code>「P1」</code>使用ActivityThread.mRelaunchingActivities记录所有要准备重启的ActivityClientRecord</p>
+<pre><code class="text">+-----------------------------------------------------+
+|                                                     |
+|                 ActivityThread                      |
+|                                                     |
+|       +-----------------------------------+         |
+|       |    mRelaunchingActivities         |         |
+|       |                                   |         |
+|       |   +------------------------+      |         |
+|       |   | ActivityClientRecord   |      |         |
+|       |   +------------------------+      |         |
+|       |                                   |         |
+|       |   +------------------------+      |         |
+|       |   | ActivityClientRecord   |      |         |
+|       |   +------------------------+      |         |
+|       |                                   |         |
+|       |           ....                    |         |
+|       |                                   |         |
+|       |                                   |         |
+|       +-----------------------------------+         |
+|                                                     |
++-----------------------------------------------------+
+</code></pre>
+</li>
+<li><p><code>「N2」</code>⬅️<code>「M1」</code></p>
+<p>这里使用Handler去真正执行transaction，obj传入的就是transaction</p>
+<pre><code class="java">// android.app.ClientTransactionHandler#sendMessage
+    abstract void sendMessage(int what, Object obj);
+</code></pre>
+<pre><code class="java">// android.app.ActivityThread#sendMessage(int, java.lang.Object)
+    void sendMessage(int what, Object obj) &#123;
+        sendMessage(what, obj, 0, 0, false);
+    &#125;
+</code></pre>
+<p>⬇️构造Message</p>
+<pre><code class="java">// android.app.ActivityThread#sendMessage(int, java.lang.Object, int, int, boolean)
+    private void sendMessage(int what, Object obj, int arg1, int arg2, boolean async) &#123;
+        ....
+        msg.what = what;
+        msg.obj = obj;
+        ....
+        mH.sendMessage(msg);
+    &#125;
+</code></pre>
+<p>⬇️handler：ActivityThread.H 收到消息并处理</p>
+<pre><code class="java">// android.app.ActivityThread.H#handleMessage
+        public void handleMessage(Message msg) &#123;
+            ...
+             switch (msg.what) &#123;
+                ...
+                case EXECUTE_TRANSACTION:
+              「R1」  final ClientTransaction transaction = (ClientTransaction) msg.obj;
+              「R2」  mTransactionExecutor.execute(transaction);
+                    ....
+
+</code></pre>
+</li>
+<li><p><code>「R1」</code>⬅️<code>「N2」</code>从message中取出transaction</p>
+</li>
+<li><p><code>「R2」</code>⬅️<code>「N2」</code>交给mTransactionExecutor执行</p>
+<p>mTransactionHandler 是谁？是<code>[C]ActivityThread</code>，从TransactionExecutor的构造函数⬇️中可以看出</p>
+<pre><code class="kotlin">// ActivityThread
+    private final TransactionExecutor mTransactionExecutor = new TransactionExecutor(this);
+</code></pre>
+<pre><code class="kotlin">    /** Initialize an instance with transaction handler, that will execute all requested actions. */
+    public TransactionExecutor(ClientTransactionHandler clientTransactionHandler) &#123;
+        mTransactionHandler = clientTransactionHandler;
+    &#125;
+</code></pre>
+<p>TransactionExecutor.mTransactionHandler是对持有该TransactionExecutor的ActivityThread的引用</p>
+<pre><code class="text">+-------------------------------------------------------------------------------------+
+|                                    ActivityThread &lt;-------+                         |
+|                                                           |                         |
+|                                                           |                         |
+|      +-----------------------------------------------------------------+            |
+|      |  mTransactionExecutor: TransactionExecutor         |            |            |
+|      |                                                    |            |            |
+|      |                                                    |            |            |
+|      |  +-------------------------------------------------+---------+  |            |
+|      |  |   mTransactionHandler: ClientTransactionHandler           |  |            |
+|      |  |                                                           |  |            |
+|      |  |                                                           |  |            |
+|      |  +-----------------------------------------------------------+  |            |
+|      |                                                                 |            |
+|      |                                                                 |            |
+|      +-----------------------------------------------------------------+            |
+|                                                                                     |
++-------------------------------------------------------------------------------------+
+</code></pre>
+<pre><code class="java">// android.app.servertransaction.TransactionExecutor#execute
+    public void execute(ClientTransaction transaction) &#123;
+        ....
+        executeCallbacks(transaction);
+        ....
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// android.app.servertransaction.TransactionExecutor#executeCallbacks
+    public void executeCallbacks(ClientTransaction transaction) &#123;
+        final List&lt;ClientTransactionItem&gt; callbacks = transaction.getCallbacks();
+        ....
+  「S1」 final IBinder token = transaction.getActivityToken();
+        ....
+        for (int i = 0; i &lt; size; ++i) &#123;
+            final ClientTransactionItem item = callbacks.get(i);
+            ....
+    「S2」  item.execute(mTransactionHandler, token, mPendingActions);
+            ....
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「S1」</code>⬅️<code>「R2」</code></p>
+<p>从transaction中获取activityToken<code>「K1」</code>⬅️<code>「J3」</code></p>
+</li>
+<li><p><code>「S2」</code>⬅️<code>「R2」</code></p>
+<p>callback（为ActivityRelaunchItem）执行，execute方法来自ActivityRelaunchItem 实现的接口BaseClientRequest的execute方法</p>
+<p>至于mTransactionHandler是谁，在<code>「R2」</code>已经解释</p>
+<p>execute方法来自ActivityRelaunchItem实现的接口BaseClientRequest中的execute方法⬇️</p>
+<pre><code class="kotlin">public interface BaseClientRequest extends ObjectPoolItem &#123;
+
+    ....
+    void execute(ClientTransactionHandler client, IBinder token,
+            PendingTransactionActions pendingActions);
+    ....
+
+&#125;
+</code></pre>
+<p>ActivityRelaunchItem和BaseClientRequest的关系⬇️</p>
+<pre><code class="kotlin">public abstract class ClientTransactionItem implements BaseClientRequest
+</code></pre>
+<pre><code class="kotlin">public abstract class ActivityTransactionItem extends ClientTransactionItem
+</code></pre>
+<pre><code class="kotlin">public class ActivityRelaunchItem extends ActivityTransactionItem
+</code></pre>
+<pre class="mermaid">    classDiagram
+      class ClientTransactionItem 
+      class ActivityTransactionItem 
+      class ActivityRelaunchItem 
+      class BaseClientRequest {
+         <<interface>>
+         + execute(ClientTransactionHandler client, IBinder token,PendingTransactionActions pendingActions)
+      }
+      ClientTransactionItem <|-- ActivityTransactionItem
+      ActivityTransactionItem <|-- ActivityRelaunchItem
+      BaseClientRequest <|-- ClientTransactionItem: implements</pre>
+
+<p>该execute方法由<code>[C]ActivityRelaunchItem</code>的基类ActivityTransactionItem实现</p>
+<pre><code class="kotlin">// ActivityTransactionItem
+    public final void execute(ClientTransactionHandler client, IBinder token,
+            PendingTransactionActions pendingActions) &#123;
+   「A1」  final ActivityClientRecord r = getActivityClientRecord(client, token);
+
+   「A2」  execute(client, r, pendingActions);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「A1」</code>根据token获取ActivityClientRecord</p>
+<pre><code class="kotlin">// ActivityTransactionItem
+    @NonNull ActivityClientRecord getActivityClientRecord(
+            @NonNull ClientTransactionHandler client, IBinder token) &#123;
+        final ActivityClientRecord r = client.getActivityClient(token);
+        ....
+        return r;
+    &#125;
+</code></pre>
+<p>client是 TransactionExecutor.mTransactionHandler，也就是持有TransactionExecutor的ActivityThread</p>
+<pre><code class="java">// ActivityThread 
+    @Override
+    public ActivityClientRecord getActivityClient(IBinder token) &#123;
+        return mActivities.get(token);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「A2」</code>继续执行 ⬇️</p>
+<pre><code class="java">// ActivityRelaunchItem
+    @Override
+    public void execute(ClientTransactionHandler client, ActivityClientRecord r,
+            PendingTransactionActions pendingActions) &#123;
+        ....
+  「B1」  client.handleRelaunchActivity(mActivityClientRecord, pendingActions);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「B1」</code>mActivityClientRecord从哪里来？之前🔗<code>「P1」</code>⬅️ <code>「O1」</code></p>
+<pre><code class="kotlin">// ActivityThread
+    @Override
+    public void handleRelaunchActivity(ActivityClientRecord tmp,
+            PendingTransactionActions pendingActions) &#123;
+        ...
+    「C1」 ActivityClientRecord r = mActivities.get(tmp.token);
+        ...
+    「C2」handleRelaunchActivityInner(r, configChanges, tmp.pendingResults, tmp.pendingIntents,
+                pendingActions, tmp.startsNotResumed, tmp.overrideConfig, &quot;handleRelaunchActivity&quot;);
+        ...
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「C1」</code>⬅️<code>「B1」</code></p>
+<p>这里从<code>mActivities</code>中根据token获取<code>[sC]ActivityClientRecord</code></p>
+<pre><code class="text">+----------------------------------------------------------------+
+|   ActivityThread                                               |
+|                                                                |
+|                                                                |
+|    +------------------------------------------------------+    |
+|    |  mActivities                                         |    |
+|    |             +--------------------------------------+ |    |
+|    |             |      +---------------+               | |    |
+|    |             |      |    Activity   |               | |    |
+|    |             |      +---------------+               | |    |
+|    |             |                                      | |    |
+|    |             |   +-------------------------------+  | |    |
+|    |             |   | lastNonConfigurationInstances |  | |    |
+|    |             |   +-------------------------------+  | |    |
+|    |             |                                      | |    |
+|    |             +--------------------------------------+ |    |
+|    |             +--------------------------------------+ |    |
+|    |             |                                      | |    |
+|    |             |                                      | |    |
+|    |             +--------------------------------------+ |    |
+|    |             +--------------------------------------+ |    |
+|    |             |                                      | |    |
+|    |             |                                      | |    |
+|    |             +--------------------------------------+ |    |
+|    |                                                      |    |
+|    |                           ...                        |    |
+|    |                                                      |    |
+|    +------------------------------------------------------+    |
++----------------------------------------------------------------+
+</code></pre>
+</li>
+<li><p><code>「C2」</code>⬅️<code>「B1」</code></p>
+<p>传递r给</p>
+<pre><code class="java">// ActivityThread
+    private void handleRelaunchActivityInner(ActivityClientRecord r, int configChanges,
+            List&lt;ResultInfo&gt; pendingResults, List&lt;ReferrerIntent&gt; pendingIntents,
+            PendingTransactionActions pendingActions, boolean startsNotResumed,
+            Configuration overrideConfig, String reason) &#123;
+        ...
+「D1」        handleDestroyActivity(r, false, configChanges, true, reason);
+        ...
+「D2」        handleLaunchActivity(r, pendingActions, customIntent);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「D1」</code>⬅️<code>「C2」</code></p>
+<p>⬇️Destroy原来的Activity，其中getNonConfigInstance传入了true</p>
+<pre><code class="java">// ActivityThread
+    @Override
+    public void handleDestroyActivity(ActivityClientRecord r, boolean finishing, int configChanges,
+            boolean getNonConfigInstance, String reason) &#123;
+        performDestroyActivity(r, finishing, configChanges, getNonConfigInstance, reason);
+        ...
+    &#125;
+</code></pre>
+<p>⬇️将原来的activity的nonConfigurationInstances存入ActivityRecord.lastNonConfigurationInstances</p>
+<pre><code class="java">// ActivityThread
+    /** Core implementation of activity destroy call. */
+    void performDestroyActivity(ActivityClientRecord r, boolean finishing,
+            int configChanges, boolean getNonConfigInstance, String reason) &#123;
+        ...
+    「E1」 if (getNonConfigInstance) &#123;
+            ....
+            「E2」  r.lastNonConfigurationInstances = r.activity.retainNonConfigurationInstances();
+            ....
+</code></pre>
+</li>
+<li><p><code>「E1」</code>这里如果是getNonConfigInstance为true（前面传的是true），</p>
+</li>
+<li><p><code>「E2」</code></p>
+<p>则️将retainNonConfigurationInstances的结果放入<code>[sC]ActivityClientRecord</code>.lastNonConfigurationInstances，其中就包含viewModelStore</p>
+<pre><code class="java"> // Activity
+    NonConfigurationInstances retainNonConfigurationInstances() &#123;
+「F1」 Object activity = onRetainNonConfigurationInstance();
+        ...
+        NonConfigurationInstances nci = new NonConfigurationInstances();
+        nci.activity = activity;
+        ....
+        return nci;
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「F1」</code>Activity默认实现中只返回了null，但是<code>[C]ComponentActivity</code>重写了这个方法⬇️</p>
+<pre><code class="java"> // ComponentActivity
+    public final Object onRetainNonConfigurationInstance() &#123;
+        // Maintain backward compatibility.
+「G1」  Object custom = onRetainCustomNonConfigurationInstance();
+
+        ViewModelStore viewModelStore = mViewModelStore;
+「G2」  if (viewModelStore == null) &#123;
+            ....
+        &#125;
+        ....
+
+「G3」   NonConfigurationInstances nci = new NonConfigurationInstances();
+        nci.custom = custom;
+        nci.viewModelStore = viewModelStore;
+        return nci;
+    &#125;
+
+</code></pre>
+</li>
+<li><p><code>「G1」</code>我们可以通过重写onRetainCustomNonConfigurationInstance()创建custom即自定义的在configuration改变后仍然想要保存的数据。</p>
+</li>
+<li><p><code>「G2」</code>这里当viewModelStore为空的时候会查看<code>[C]ComponentActivity.NonConfigurationInstances</code>中是否有viewModelStore，这里对应从来没有地方调用过getViewModelStore，也就不会初始化ComponentActivity.mVieModelStore，但是我们这里情况是之前有创建viewmodel，<code>this(owner.viewModelStore, defaultFactory(owner), defaultCreationExtras(owner))</code> ，这里使用 <code>owner.viewModelStore</code>从ViewModelStoreOwner中取出<code>[OC]ViewModelStore</code>调用过，所有不会走到viewModelStore &#x3D;&#x3D; null的分支</p>
+</li>
+<li><p><code>「G3」</code>这里创建了<code>[C]ComponentActivity.NonConfigurationInstances</code>存入 custom和viewModelStore并返回。</p>
+</li>
+<li><p><code>「D2」</code>⬅️<code>「C2」</code>执行LaunchActivity</p>
+<pre><code class="java">// android.app.ActivityThread#handleLaunchActivity
+    public Activity handleLaunchActivity(ActivityClientRecord r,
+            PendingTransactionActions pendingActions, Intent customIntent) &#123;
+        ....
+        final Activity a = performLaunchActivity(r, customIntent);
+        ....
+        return a;
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// android.app.ActivityThread#performLaunchActivity
+    private Activity performLaunchActivity(ActivityClientRecord r, Intent customIntent) &#123;
+        ....
+        Activity activity = null;
+        try &#123;
+            java.lang.ClassLoader cl = appContext.getClassLoader();
+      「H1」 activity = mInstrumentation.newActivity(
+                    cl, component.getClassName(), r.intent);
+            ....
+
+        try &#123;
+            ....
+            if (activity != null) &#123;
+                ....
+        「H2」   activity.attach(appContext, this, getInstrumentation(), r.token,
+                        r.ident, app, r.intent, r.activityInfo, title, r.parent,
+                        r.embeddedID, r.lastNonConfigurationInstances, config,
+                        r.referrer, r.voiceInteractor, window, r.activityConfigCallback,
+                        r.assistToken, r.shareableActivityToken);
+        ....
+        return activity;
+    &#125;
+</code></pre>
+</li>
+<li><p><code>「H1」</code></p>
+<p>实例化一个Activity</p>
+</li>
+<li><p><code>「H2」</code></p>
+<p>使用原来的ActivityRecord给Activity设置参数，其中第12个参数就是在<code>「E2」</code>处保存的lastNonConfigurationInstances，其中就有viewModel</p>
+<p>这里就回答了上面<code>[U2]</code>处的问题，串起来了</p>
+</li>
+</ul>
+<h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p>code</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6976025197333708837" title="Android 面试总结 - ViewModel 是怎么保存和恢复？ - 掘金 (juejin.cn)">Android 面试总结 - ViewModel 是怎么保存和恢复？ - 掘金 (juejin.cn)</a></li>
+<li><a target="_blank" rel="noopener" href="https://pomelojiang.github.io/android_framework_start_activity_1" title="Android Framework之Activity启动流程(一) | 柚子 | pomeloJiang">Android Framework之Activity启动流程(一) | 柚子 | pomeloJiang</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904179299778567" title="Zygote的启动流程 - 掘金 (juejin.cn)">Zygote的启动流程 - 掘金 (juejin.cn)</a></li>
+<li><a target="_blank" rel="noopener" href="https://benzblog.site/2017-06-19-all-about-rotations/" title="Android屏幕旋转源码探索及应用实践 | 奔哲明的博客 (benzblog.site)">Android屏幕旋转源码探索及应用实践 | 奔哲明的博客 (benzblog.site)</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903869814669319" title="Configuration 变更时Activity的生命周期探究 - 掘金 (juejin.cn)">Configuration 变更时Activity的生命周期探究 - 掘金 (juejin.cn)</a></li>
+</ul>
+
+</article>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by John Doe using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.0.0-alpha.4/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>
