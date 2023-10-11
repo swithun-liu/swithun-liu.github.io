@@ -1,0 +1,64 @@
+<h1 id="Language-Contribution-Guide"><a href="#Language-Contribution-Guide" class="headerlink" title="Language Contribution Guide"></a>Language Contribution Guide</h1><p>So you’d like to create and share your own language definition for Highlight.js.  That’s awesome.</p>
+<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><ul>
+<li><input disabled="" type="checkbox"> Have a look at some real-life examples first<ul>
+<li><a href="https://github.com/highlightjs/highlightjs-cypher">https://github.com/highlightjs/highlightjs-cypher</a></li>
+<li><a href="https://github.com/highlightjs/highlightjs-robots-txt">https://github.com/highlightjs/highlightjs-robots-txt</a></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> Clone the main <a href="https://github.com/highlightjs/highlightjs">highlight-js</a> repository from GitHub</li>
+<li><input disabled="" type="checkbox"> Read our <a href="https://highlightjs.readthedocs.io/en/latest/language-contribution.html">Language Contributor Checklist</a></li>
+<li><input disabled="" type="checkbox"> Review the <a href="https://highlightjs.readthedocs.io/en/latest/language-guide.html">Language Definition Guide</a></li>
+<li><input disabled="" type="checkbox"> Start with our <a href="https://github.com/highlightjs/highlightjs-language-template">repository template</a> to more easily follow the suggested layout. (this isn’t ready yet!)</li>
+</ul>
+<h2 id="Create-your-repository"><a href="#Create-your-repository" class="headerlink" title="Create your repository"></a>Create your repository</h2><p>Each language is developed in its own repo. This helps keep language definitions and maintenance independent of the core work.<br>Determine if you will host the repository yourself or you want it to be part of the <a href="https://github.com/highlightjs">highlightjs organization on GitHub</a>.</p>
+<blockquote>
+<p>To host your new language with the highlightjs organization, <a href="https://github.com/highlightjs/highlight.js/issues/new/choose">create an issue</a> using the language request template and provide a description of your language and your intent to host it. We will follow up in that issue.</p>
+</blockquote>
+<p>Setup your directory structure to follow exactly the example(s) above.  Note: The template repository does this for you, so if you started with the template you can skip this step.</p>
+<p>For example, if your grammar is named <code>your-language</code>, create your repository directory structure as follows (renaming <code>your-language</code> to match your language name of course. For example, if your language is <code>pascal</code>, then replace all occurrences of <code>your-language</code> with <code>pascal</code>):</p>
+<ul>
+<li>Put your language file in <code>src/languages/your-language.js</code>.</li>
+<li>Add detect tests in <code>test/detect/your-language</code>.</li>
+<li>Add markup tests in <code>test/markup/your-language</code>.</li>
+<li>Add a <code>package.json</code> file.</li>
+<li>Add a <code>dist</code> folder (see <a href="#packaging">Packaging</a>, below.)</li>
+<li>Include a LICENSE.</li>
+<li>Include a README.</li>
+</ul>
+<h2 id="Testing"><a href="#Testing" class="headerlink" title="Testing"></a>Testing</h2><p>Switching back to your clone of the <code>highlight-js</code> core repository now, <code>git clone</code> or symlink your language repo into the <code>extra</code> folder. There should now be an <code>extra/your-language</code> folder for your language.</p>
+<blockquote>
+<p>3rd party language directories placed in <code>extra</code> should not be committed to the highlight-js repository (by default they are ignored, just don’t override that behavior.)</p>
+</blockquote>
+<p>To test (detect and markup tests), just build Highlight.js and test it.  Your tests should be automatically run with the full suite:</p>
+<pre><code class="bash">node ./tools/build.js -t node
+npm run test
+</code></pre>
+<p>Running the tests this way runs the complete suite of tests for all languages. You can set the <code>ONLY_EXTRA</code> environment variable to focus the tests on just the language(s) you are currently working on in the <code>extra</code> folder.</p>
+<pre><code class="bash">ONLY_EXTRA=true
+npm run test-markup
+</code></pre>
+<p><em>This currently only works for markup tests</em>, but those are the most common tests that need to be run while developing a language grammar.</p>
+<p>If you can’t get the auto-detect tests passing then turn off auto-detection for your language in its definition with <code>disableAutodetect: true</code>.  <a href="https://github.com/highlightjs/highlight.js/issues/1213">Auto-detection is hard.</a></p>
+<h2 id="Packaging"><a href="#Packaging" class="headerlink" title="Packaging"></a>Packaging</h2><p>Users will expect your package to include a minified CDN distributable in your <code>dist</code> folder. This allows them to add your language to their website using only a single <code>&lt;script&gt;</code> tag and no additional JavaScript.</p>
+<p><em>The Highlight.js CDN build process will build this file for you automatically.</em> You can simply commit and push your repo, and done.</p>
+<pre><code class="bash">node ./tools/build.js -t cdn
+
+...
+Building extra/highlightjs-your-language/dist/your-language.min.js.
+...
+</code></pre>
+<p>After building, simply commit the <code>dist/your-language.min.js</code> that was generated for you inside your repository.</p>
+<pre><code>cd extra/highlightjs-your-language
+git add dist
+git commit -m&#39;(chore) add CDN distributable`
+git push
+</code></pre>
+<h2 id="Publishing"><a href="#Publishing" class="headerlink" title="Publishing"></a>Publishing</h2><p>We’re happy to host 3rd party module repos inside the <code>highlightjs</code> organization on GitHub.  Just <a href="https://github.com/highlightjs/highlight.js/issues/new/choose">file an issue</a> and request a repository.</p>
+<p>Please also consider publishing your package to NPM. This will make it much easier for many using Node.js or bundlers to use your package.</p>
+<p>When your language definition is ready, create a PR that adds it to our <a href="https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md"><code>SUPPORTED_LANGUAGES.md</code></a> file.</p>
+<h2 id="The-Future"><a href="#The-Future" class="headerlink" title="The Future"></a>The Future</h2><p>More work could be done on:</p>
+<ul>
+<li>Allowing you to ONLY run your own tests, not the whole suite.</li>
+<li>Allowing you to maintain a 3rd party module WITHOUT it being inside of a <code>highlight-js</code> checkout (this requires discussion though)</li>
+<li>Simply make some easier tools or scripts to simply the existing process.</li>
+</ul>

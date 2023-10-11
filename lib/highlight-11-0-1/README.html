@@ -1,0 +1,212 @@
+<h1 id="Highlight-js"><a href="#Highlight-js" class="headerlink" title="Highlight.js"></a>Highlight.js</h1><p><a href="https://www.npmjs.com/package/highlight.js"><img src="https://badgen.net/npm/v/highlight.js?label=latest" alt="latest version"></a><br><a href="https://github.com/highlightjs/highlight.js/blob/main/LICENSE"><img src="https://badgen.net/github/license/highlightjs/highlight.js?color=cyan" alt="license"></a><br><a href="https://packagephobia.now.sh/result?p=highlight.js"><img src="https://badgen.net/packagephobia/install/highlight.js?label=npm+install" alt="install size"></a><br><img src="https://img.shields.io/github/size/highlightjs/cdn-release/build/highlight.min.js?label=minified" alt="minified"><br><a href="https://www.npmjs.com/package/highlight.js"><img src="https://badgen.net/npm/dw/highlight.js?label=npm+downloads&color=purple" alt="NPM downloads weekly"></a><br><a href="https://www.jsdelivr.com/package/gh/highlightjs/cdn-release"><img src="https://badgen.net/jsdelivr/hits/gh/highlightjs/cdn-release?label=jsDelivr+CDN&color=purple" alt="jsDelivr CDN downloads"></a></p>
+<!-- [![build and CI status](https://badgen.net/github/checks/highlightjs/highlight.js?label=build)](https://github.com/highlightjs/highlight.js/actions?query=workflow%3A%22Node.js+CI%22) -->
+<p><img src="https://badgen.net/github/checks/highlightjs/highlight.js/main?label=build" alt="build and CI status"><br><a href="https://lgtm.com/projects/g/highlightjs/highlight.js/?mode=list"><img src="https://badgen.net/lgtm/grade/g/highlightjs/highlight.js/js?label=code+quality" alt="code quality"></a><br><a href="https://snyk.io/test/github/highlightjs/highlight.js?targetFile=package.json"><img src="https://badgen.net/snyk/highlightjs/highlight.js" alt="vulnerabilities"></a><br><img src="https://badgen.net/david/dev/highlightjs/highlight.js?label=dev+deps" alt="dev deps"></p>
+<p><a href="https://discord.gg/M24EbU7ja9"><img src="https://badgen.net/badge/icon/discord?icon=discord&label&color=pink" alt="discord"></a><br><a href="https://github.com/highlightjs/highlight.js/issues"><img src="https://badgen.net/github/open-issues/highlightjs/highlight.js?label=issues" alt="open issues"></a><br><a href="https://github.com/highlightjs/highlight.js/issues?q=is:open+is:issue+label:%22help+welcome%22"><img src="https://badgen.net/github/label-issues/highlightjs/highlight.js/help%20welcome/open" alt="help welcome issues"></a><br><a href="https://github.com/highlightjs/highlight.js/issues?q=is:open+is:issue+label:%22beginner+friendly%22"><img src="https://badgen.net/github/label-issues/highlightjs/highlight.js/good%20first%20issue/open" alt="good first issue"></a></p>
+<!-- [![Build CI](https://img.shields.io/github/workflow/status/highlightjs/highlight.js/Node.js%20CI)](https://github.com/highlightjs/highlight.js/actions?query=workflow%3A%22Node.js+CI%22) -->
+<!-- [![commits since release](https://img.shields.io/github/commits-since/highlightjs/highlight.js/latest?label=commits+since)](https://github.com/highlightjs/highlight.js/commits/main) -->
+<!-- [![](https://data.jsdelivr.com/v1/package/gh/highlightjs/cdn-release/badge?style=rounded)](https://www.jsdelivr.com/package/gh/highlightjs/cdn-release) -->
+<!-- [![Total Lines](https://img.shields.io/tokei/lines/github/highlightjs/highlight.js)]() -->
+<!-- [![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/highlight.js.svg)](https://bundlephobia.com/result?p=highlight.js) -->
+
+
+<p>Highlight.js is a syntax highlighter written in JavaScript. It works in<br>the browser as well as on the server. It can work with pretty much any<br>markup, doesn’t depend on any other frameworks, and has automatic language<br>detection.</p>
+<p><strong>Contents</strong></p>
+<ul>
+<li><a href="#basic-usage">Basic Usage</a><ul>
+<li><a href="#in-the-browser">In the Browser</a><ul>
+<li><a href="#plaintext-code-blocks">Plaintext Code Blocks</a></li>
+<li><a href="#ignoring-a-code-block">Ignoring a Code Block</a></li>
+</ul>
+</li>
+<li><a href="#nodejs-on-the-server">Node.js on the Server</a></li>
+</ul>
+</li>
+<li><a href="#supported-languages">Supported Languages</a></li>
+<li><a href="#custom-usage">Custom Usage</a><ul>
+<li><a href="#using-custom-html">Using custom HTML</a></li>
+<li><a href="#using-with-vuejs">Using with Vue.js</a></li>
+<li><a href="#using-web-workers">Using Web Workers</a></li>
+</ul>
+</li>
+<li><a href="#importing-the-library">Importing the Library</a><ul>
+<li><a href="#nodejs--require">Node.js &#x2F; <code>require</code></a></li>
+<li><a href="#es6-modules--import">ES6 Modules &#x2F; <code>import</code></a></li>
+</ul>
+</li>
+<li><a href="#getting-the-library">Getting the Library</a><ul>
+<li><a href="#fetch-via-cdn">Fetch via CDN</a><ul>
+<li><a href="#download-prebuilt-cdn-assets">Download prebuilt CDN assets</a></li>
+</ul>
+</li>
+<li><a href="#download-from-our-website">Download from our website</a></li>
+<li><a href="#install-via-npm-package">Install via NPM package</a></li>
+<li><a href="#build-from-source">Build from Source</a></li>
+</ul>
+</li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#links">Links</a></li>
+</ul>
+<hr>
+<h4 id="Upgrading-to-Version-11"><a href="#Upgrading-to-Version-11" class="headerlink" title="Upgrading to Version 11"></a>Upgrading to Version 11</h4><p>As always, major releases do contain breaking changes which may require action from users.  Please read <a href="https://github.com/highlightjs/highlight.js/blob/main/VERSION_11_UPGRADE.md">VERSION_11_UPGRADE.md</a> for a detailed summary of breaking changes and any actions you may need to take.</p>
+<p><strong>Upgrading to v10</strong>:  You really should probably be upgrading to version 11… but if you’re coming from version 9 then these documents may still prove helpful.</p>
+<ul>
+<li><a href="https://github.com/highlightjs/highlight.js/blob/main/VERSION_10_UPGRADE.md">VERSION_10_UPGRADE.md</a>  and  <a href="https://github.com/highlightjs/highlight.js/blob/main/VERSION_10_BREAKING_CHANGES.md">VERSION_10_BREAKING_CHANGES.md</a></li>
+</ul>
+<h4 id="Support-for-older-versions"><a href="#Support-for-older-versions" class="headerlink" title="Support for older versions "></a>Support for older versions <!-- omit in toc --></h4><p>Please see <a href="https://github.com/highlightjs/highlight.js/blob/main/SECURITY.md">SECURITY.md</a> for long-term support information.</p>
+<hr>
+<h2 id="Basic-Usage"><a href="#Basic-Usage" class="headerlink" title="Basic Usage"></a>Basic Usage</h2><h3 id="In-the-Browser"><a href="#In-the-Browser" class="headerlink" title="In the Browser"></a>In the Browser</h3><p>The bare minimum for using highlight.js on a web page is linking to the<br>library along with one of the styles and calling <a href="http://highlightjs.readthedocs.io/en/latest/api.html#highlightall"><code>highlightAll</code></a>:</p>
+<pre><code class="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;/path/to/styles/default.css&quot;&gt;
+&lt;script src=&quot;/path/to/highlight.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;hljs.highlightAll();&lt;/script&gt;
+</code></pre>
+<p>This will find and highlight code inside of <code>&lt;pre&gt;&lt;code&gt;</code> tags; it tries<br>to detect the language automatically. If automatic detection doesn’t<br>work for you, or you simply prefer to be explicit, you can specify the language manually in the using the <code>class</code> attribute:</p>
+<pre><code class="html">&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;...&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+<h4 id="Plaintext-Code-Blocks"><a href="#Plaintext-Code-Blocks" class="headerlink" title="Plaintext Code Blocks"></a>Plaintext Code Blocks</h4><p>To apply the Highlight.js styling to plaintext without actually highlighting it, use the <code>plaintext</code> language:</p>
+<pre><code class="html">&lt;pre&gt;&lt;code class=&quot;language-plaintext&quot;&gt;...&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+<h4 id="Ignoring-a-Code-Block"><a href="#Ignoring-a-Code-Block" class="headerlink" title="Ignoring a Code Block"></a>Ignoring a Code Block</h4><p>To skip highlighting of a code block completely, use the <code>nohighlight</code> class:</p>
+<pre><code class="html">&lt;pre&gt;&lt;code class=&quot;nohighlight&quot;&gt;...&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+<h3 id="Node-js-on-the-Server"><a href="#Node-js-on-the-Server" class="headerlink" title="Node.js on the Server"></a>Node.js on the Server</h3><p>The bare minimum to auto-detect the language and highlight some code.</p>
+<pre><code class="js">// load the library and ALL languages
+hljs = require(&#39;highlight.js&#39;);
+html = hljs.highlightAuto(&#39;&lt;h1&gt;Hello World!&lt;/h1&gt;&#39;).value
+</code></pre>
+<p>To load only a “common” subset of popular languages:</p>
+<pre><code class="js">hljs = require(&#39;highlight.js/lib/common&#39;);
+</code></pre>
+<p>To highlight code with a specific language, use <code>highlight</code>:</p>
+<pre><code class="js">html = hljs.highlight(&#39;&lt;h1&gt;Hello World!&lt;/h1&gt;&#39;, {language: &#39;xml&#39;}).value
+</code></pre>
+<p>See <a href="#importing-the-library">Importing the Library</a> for more examples of <code>require</code> vs <code>import</code> usage, etc.  For more information about the result object returned by <code>highlight</code> or <code>highlightAuto</code> refer to the <a href="https://highlightjs.readthedocs.io/en/latest/api.html">api docs</a>.</p>
+<h2 id="Supported-Languages"><a href="#Supported-Languages" class="headerlink" title="Supported Languages"></a>Supported Languages</h2><p>Highlight.js supports over 180 languages in the core library.  There are also 3rd party<br>language definitions available to support even more languages. You can find the full list of supported languages in <a href="https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md">SUPPORTED_LANGUAGES.md</a>.</p>
+<h2 id="Custom-Usage"><a href="#Custom-Usage" class="headerlink" title="Custom Usage"></a>Custom Usage</h2><p>If you need a bit more control over the initialization of<br>Highlight.js, you can use the <a href="http://highlightjs.readthedocs.io/en/latest/api.html#highlightelement"><code>highlightElement</code></a> and <a href="http://highlightjs.readthedocs.io/en/latest/api.html#configure"><code>configure</code></a><br>functions. This allows you to better control <em>what</em> to highlight and <em>when</em>.</p>
+<p>For example, here’s the rough equivalent of calling <a href="http://highlightjs.readthedocs.io/en/latest/api.html#highlightall"><code>highlightAll</code></a> but doing the work manually instead:</p>
+<pre><code class="js">document.addEventListener(&#39;DOMContentLoaded&#39;, (event) =&gt; {
+  document.querySelectorAll(&#39;pre code&#39;).forEach((el) =&gt; {
+    hljs.highlightElement(el);
+  });
+});
+</code></pre>
+<p>Please refer to the documentation for <a href="http://highlightjs.readthedocs.io/en/latest/api.html#configure"><code>configure</code></a> options.</p>
+<h3 id="Using-custom-HTML"><a href="#Using-custom-HTML" class="headerlink" title="Using custom HTML"></a>Using custom HTML</h3><p>We strongly recommend <code>&lt;pre&gt;&lt;code&gt;</code> wrapping for code blocks. It’s quite<br>semantic and “just works” out of the box with zero fiddling. It is possible to<br>use other HTML elements (or combos), but you may need to pay special attention to<br>preserving linebreaks.</p>
+<p>Let’s say your markup for code blocks uses divs:</p>
+<pre><code class="html">&lt;div class=&#39;code&#39;&gt;...&lt;/div&gt;
+</code></pre>
+<p>To highlight such blocks manually:</p>
+<pre><code class="js">// first, find all the div.code blocks
+document.querySelectorAll(&#39;div.code&#39;).forEach(el =&gt; {
+  // then highlight each
+  hljs.highlightElement(el);
+});
+</code></pre>
+<p>Without using a tag that preserves linebreaks (like <code>pre</code>) you’ll need some<br>additional CSS to help preserve them.  You could also <a href="https://github.com/highlightjs/highlight.js/issues/2559">pre and post-process line<br>breaks with a plug-in</a>, but <em>we recommend using CSS</em>.</p>
+<p>To preserve linebreaks inside a <code>div</code> using CSS:</p>
+<pre><code class="css">div.code {
+  white-space: pre;
+}
+</code></pre>
+<h3 id="Using-with-Vue-js"><a href="#Using-with-Vue-js" class="headerlink" title="Using with Vue.js"></a>Using with Vue.js</h3><p>See <a href="https://github.com/highlightjs/vue-plugin">highlightjs&#x2F;vue-plugin</a> for a simple Vue plugin that works great with Highlight.js.</p>
+<p>An example of <code>vue-plugin</code> in action:</p>
+<pre><code class="html">  &lt;div id=&quot;app&quot;&gt;
+    &lt;!-- bind to a data property named `code` --&gt;
+    &lt;highlightjs autodetect :code=&quot;code&quot; /&gt;
+    &lt;!-- or literal code works as well --&gt;
+    &lt;highlightjs language=&#39;javascript&#39; code=&quot;var x = 5;&quot; /&gt;
+  &lt;/div&gt;
+</code></pre>
+<h3 id="Using-Web-Workers"><a href="#Using-Web-Workers" class="headerlink" title="Using Web Workers"></a>Using Web Workers</h3><p>You can run highlighting inside a web worker to avoid freezing the browser<br>window while dealing with very big chunks of code.</p>
+<p>In your main script:</p>
+<pre><code class="js">addEventListener(&#39;load&#39;, () =&gt; {
+  const code = document.querySelector(&#39;#code&#39;);
+  const worker = new Worker(&#39;worker.js&#39;);
+  worker.onmessage = (event) =&gt; { code.innerHTML = event.data; }
+  worker.postMessage(code.textContent);
+});
+</code></pre>
+<p>In worker.js:</p>
+<pre><code class="js">onmessage = (event) =&gt; {
+  importScripts(&#39;&lt;path&gt;/highlight.min.js&#39;);
+  const result = self.hljs.highlightAuto(event.data);
+  postMessage(result.value);
+};
+</code></pre>
+<h2 id="Importing-the-Library"><a href="#Importing-the-Library" class="headerlink" title="Importing the Library"></a>Importing the Library</h2><p>First, you’ll likely be installing the library via <code>npm</code> or <code>yarn</code> – see <a href="#getting-the-library">Getting the Library</a>.</p>
+<h3 id="Node-js-require"><a href="#Node-js-require" class="headerlink" title="Node.js &#x2F; require"></a>Node.js &#x2F; <code>require</code></h3><p>Requiring the top-level library will load all languages:</p>
+<pre><code class="js">// require the highlight.js library, including all languages
+const hljs = require(&#39;./highlight.js&#39;);
+const highlightedCode = hljs.highlightAuto(&#39;&lt;span&gt;Hello World!&lt;/span&gt;&#39;).value
+</code></pre>
+<p>For a smaller footprint, load our common subset of languages (the same set used for our default web build).</p>
+<pre><code class="js">const hljs = require(&#39;highlight.js/lib/common&#39;);
+</code></pre>
+<p>For the smallest footprint, load only the languages you need:</p>
+<pre><code class="js">const hljs = require(&#39;highlight.js/lib/core&#39;);
+hljs.registerLanguage(&#39;xml&#39;, require(&#39;highlight.js/lib/languages/xml&#39;));
+
+const highlightedCode = hljs.highlight(&#39;&lt;span&gt;Hello World!&lt;/span&gt;&#39;, {language: &#39;xml&#39;}).value
+</code></pre>
+<h3 id="ES6-Modules-import"><a href="#ES6-Modules-import" class="headerlink" title="ES6 Modules &#x2F; import"></a>ES6 Modules &#x2F; <code>import</code></h3><p>The default import will register all languages:</p>
+<pre><code class="js">import hljs from &#39;highlight.js&#39;;
+</code></pre>
+<p> It is more efficient to import only the library and register the languages you need:</p>
+<pre><code class="js">import hljs from &#39;highlight.js/lib/core&#39;;
+import javascript from &#39;highlight.js/lib/languages/javascript&#39;;
+hljs.registerLanguage(&#39;javascript&#39;, javascript);
+</code></pre>
+<p>If your build tool processes CSS imports, you can also import the theme directly as a module:</p>
+<pre><code class="js">import hljs from &#39;highlight.js&#39;;
+import &#39;highlight.js/styles/github.css&#39;;
+</code></pre>
+<h2 id="Getting-the-Library"><a href="#Getting-the-Library" class="headerlink" title="Getting the Library"></a>Getting the Library</h2><p>You can get highlight.js as a hosted, or custom-build, browser script or<br>as a server module. Right out of the box the browser script supports<br>both AMD and CommonJS, so if you wish you can use RequireJS or<br>Browserify without having to build from source. The server module also<br>works perfectly fine with Browserify, but there is the option to use a<br>build specific to browsers rather than something meant for a server.</p>
+<p><strong>Do not link to GitHub directly.</strong> The library is not supposed to work straight<br>from the source, it requires building. If none of the pre-packaged options<br>work for you refer to the <a href="http://highlightjs.readthedocs.io/en/latest/building-testing.html">building documentation</a>.</p>
+<p><strong>On Almond.</strong> You need to use the optimizer to give the module a name. For<br>example:</p>
+<pre><code class="bash">r.js -o name=hljs paths.hljs=/path/to/highlight out=highlight.js
+</code></pre>
+<h3 id="Fetch-via-CDN"><a href="#Fetch-via-CDN" class="headerlink" title="Fetch via CDN"></a>Fetch via CDN</h3><p>A prebuilt version of Highlight.js bundled with many common languages is hosted by several popular CDNs.<br>When using Highlight.js via CDN you can use Subresource Integrity for additional security.  For details<br>see <a href="https://github.com/highlightjs/cdn-release/blob/main/DIGESTS.md">DIGESTS.md</a>.</p>
+<p><strong>cdnjs</strong> (<a href="https://cdnjs.com/libraries/highlight.js">link</a>)</p>
+<pre><code class="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/default.min.css&quot;&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/highlight.min.js&quot;&gt;&lt;/script&gt;
+&lt;!-- and it&#39;s easy to individually load additional languages --&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/languages/go.min.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p><strong>jsdelivr</strong> (<a href="https://www.jsdelivr.com/package/gh/highlightjs/cdn-release">link</a>)</p>
+<pre><code class="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.0.1/build/styles/default.min.css&quot;&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.0.1/build/highlight.min.js&quot;&gt;&lt;/script&gt;
+&lt;!-- and it&#39;s easy to individually load additional languages --&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.0.1/build/languages/go.min.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p><strong>unpkg</strong> (<a href="https://unpkg.com/browse/@highlightjs/cdn-assets/">link</a>)</p>
+<pre><code class="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/@highlightjs/cdn-assets@11.0.1/styles/default.min.css&quot;&gt;
+&lt;script src=&quot;https://unpkg.com/@highlightjs/cdn-assets@11.0.1/highlight.min.js&quot;&gt;&lt;/script&gt;
+&lt;!-- and it&#39;s easy to individually load additional languages --&gt;
+&lt;script src=&quot;https://unpkg.com/@highlightjs/cdn-assets@11.0.1/languages/go.min.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p><strong>Note:</strong> <em>The CDN-hosted <code>highlight.min.js</code> package doesn’t bundle every language.</em> It would be<br>very large. You can find our list of “common” languages that we bundle by default on our <a href="https://highlightjs.org/download/">download page</a>.</p>
+<h4 id="Download-prebuilt-CDN-assets"><a href="#Download-prebuilt-CDN-assets" class="headerlink" title="Download prebuilt CDN assets"></a>Download prebuilt CDN assets</h4><p>You can also download and self-host the same assets we serve up via our own CDNs.  We publish those builds to the <a href="https://github.com/highlightjs/cdn-release">cdn-release</a> GitHub repository.  You can easily pull individual files off the CDN endpoints with <code>curl</code>, etc; if say you only needed <code>highlight.min.js</code> and a single CSS file.</p>
+<p>There is also an npm package <a href="https://www.npmjs.com/package/@highlightjs/cdn-assets">@highlightjs&#x2F;cdn-assets</a> if pulling the assets in via <code>npm</code> or <code>yarn</code> would be easier for your build process.</p>
+<h3 id="Download-from-our-website"><a href="#Download-from-our-website" class="headerlink" title="Download from our website"></a>Download from our website</h3><p>The <a href="https://highlightjs.org/download/">download page</a> can quickly generate a custom single-file minified bundle including only the languages you desire.</p>
+<p><strong>Note:</strong> <a href="#build-from-source">Building from source</a> can produce slightly smaller builds than the website download.</p>
+<h3 id="Install-via-NPM-package"><a href="#Install-via-NPM-package" class="headerlink" title="Install via NPM package"></a>Install via NPM package</h3><p>Our NPM package including all supported languages can be installed with NPM or Yarn:</p>
+<pre><code class="bash">npm install highlight.js
+# or
+yarn add highlight.js
+</code></pre>
+<p>Alternatively, you can build the NPM package from source.</p>
+<h3 id="Build-from-Source"><a href="#Build-from-Source" class="headerlink" title="Build from Source"></a>Build from Source</h3><p>The <a href="https://github.com/highlightjs/">current source code</a> is always available on GitHub.</p>
+<pre><code class="bash">node tools/build.js -t node
+node tools/build.js -t browser :common
+node tools/build.js -t cdn :common
+</code></pre>
+<p>See our <a href="http://highlightjs.readthedocs.io/en/latest/building-testing.html">building documentation</a> for more information.</p>
+<h2 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h2><p>Highlight.js works on all modern browsers and currently supported Node.js versions.  You’ll need the following software to contribute to the core library:</p>
+<ul>
+<li>Node.js &gt;&#x3D; 12.x</li>
+<li>npm &gt;&#x3D; 6.x</li>
+</ul>
+<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p>Highlight.js is released under the BSD License. See our <a href="https://github.com/highlightjs/highlight.js/blob/main/LICENSE">LICENSE</a> file<br>for details.</p>
+<h2 id="Links"><a href="#Links" class="headerlink" title="Links"></a>Links</h2><p>The official website for the library is <a href="https://highlightjs.org/">https://highlightjs.org/</a>.</p>
+<p>Further in-depth documentation for the API and other topics is at<br><a href="http://highlightjs.readthedocs.io/">http://highlightjs.readthedocs.io/</a>.</p>
+<p>A list of the Core Team and contributors can be found in the <a href="https://github.com/highlightjs/highlight.js/blob/main/CONTRIBUTORS.md">CONTRIBUTORS.md</a> file.</p>

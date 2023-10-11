@@ -1,0 +1,35 @@
+<h1 id="Maintainer’s-Guide"><a href="#Maintainer’s-Guide" class="headerlink" title="Maintainer’s Guide"></a>Maintainer’s Guide</h1><h2 id="Commit-Policy"><a href="#Commit-Policy" class="headerlink" title="Commit Policy"></a>Commit Policy</h2><ul>
+<li><p>Pull requests from outside contributors require a review from a maintainer.</p>
+</li>
+<li><p>Maintainers should avoid working on a main branch directly and create branches for everything. A code review from another maintainer is recommended but not required, use your best judgment.</p>
+</li>
+</ul>
+<h2 id="Release-process"><a href="#Release-process" class="headerlink" title="Release process"></a>Release process</h2><p>Releases (minor) typically happen on a 6-week schedule.</p>
+<p>For major&#x2F;minor releases you’ll be releasing from <code>main</code>  For patch releases you’ll be releasing from a stable branch, such as <code>11-stable</code>.  This allows ongoing development of new features to continue in isolation (in main) without those changes leaking into patch releases (which should focus only on fixing breaking changes).</p>
+<p>The goal being that minor version series always get more stable over time and that patch releases do not add features.</p>
+<ul>
+<li><p>For patch releases: First switch to the associated stable branch (i.e., <code>11-stable</code>)</p>
+</li>
+<li><p>Update <code>CHANGES.md</code> with everything interesting since the last update.</p>
+</li>
+<li><p>Update version numbers using the three-part x.y.z notation everywhere:</p>
+<ul>
+<li>The header in <code>CHANGES.md</code> (this is where the site looks for the latest version number)</li>
+<li><code>version</code> attribute in <code>package.json</code></li>
+<li><code>version</code> attribute in <code>package-lock.json</code> (run <code>npm install</code>)</li>
+<li><code>release</code> variable in <code>docs/conf.py</code></li>
+<li>All mentions of version number in the <code>README.md</code></li>
+<li>Update <code>SECURITY.md</code> version table</li>
+</ul>
+</li>
+<li><p>Commit the version changes and tag the commit with the version number (<code>10.4.0</code>, no “v” prefix or anything like that)</p>
+</li>
+<li><p>For major&#x2F;minor releases: Create (or push push) the <code>[major]-stable</code> branch such as <code>11-stable</code></p>
+</li>
+</ul>
+<p>IE, the <code>11-stable</code> branch should always point to the latest stable release in the 11 series.</p>
+<ul>
+<li>Push the commit the tag (<code>git push &amp;&amp; git push 10.4.0</code>)</li>
+</ul>
+<p>Pushing the tag triggers the update process which can be monitored at <a href="http://highlightjs.org/api/release/">http://highlightjs.org/api/release/</a></p>
+<p>When something didn’t work <em>and</em> it’s fixable in code (version numbers mismatch, last minute patches, etc), simply make another release incrementing the third (revision) part of the version number.</p>

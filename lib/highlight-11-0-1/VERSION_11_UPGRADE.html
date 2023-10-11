@@ -1,0 +1,147 @@
+<ul>
+<li><a href="#overview-of-breaking-changes">Overview of Breaking Changes</a><ul>
+<li><a href="#built-in-set-of-common-languages">Built-in set of “Common” Languages</a></li>
+<li><a href="#language-files">Language Files</a></li>
+<li><a href="#language-aliases">Language Aliases</a></li>
+<li><a href="#styles-and-css">Styles and CSS</a><ul>
+<li><a href="#grammar-scopes">Grammar Scopes</a></li>
+</ul>
+</li>
+<li><a href="#behavioral-changes">Behavioral changes</a><ul>
+<li><a href="#api-changes">API changes</a><ul>
+<li><a href="#changes-to-result-data">Changes to Result Data</a></li>
+</ul>
+</li>
+<li><a href="#feature-removal">Feature Removal</a></li>
+</ul>
+</li>
+<li><a href="#small-things">Small Things</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Overview-of-Breaking-Changes"><a href="#Overview-of-Breaking-Changes" class="headerlink" title="Overview of Breaking Changes"></a>Overview of Breaking Changes</h2><p>Welcome to version 11.0.  This a major release and therefore contains breaking changes.  Below is a complete list of those such changes.</p>
+<h3 id="Built-in-set-of-“Common”-Languages"><a href="#Built-in-set-of-“Common”-Languages" class="headerlink" title="Built-in set of “Common” Languages"></a>Built-in set of “Common” Languages</h3><p>The default <code>highlight.min.js</code> build <strong>removes</strong> a few less popular grammars:</p>
+<ul>
+<li>apache</li>
+<li>http</li>
+<li>nginx</li>
+<li>properties</li>
+<li>coffeescript</li>
+</ul>
+<p>If you need any of these, you can always create a custom build.</p>
+<p>Ref: <a href="https://github.com/highlightjs/highlight.js/issues/2848">https://github.com/highlightjs/highlight.js/issues/2848</a></p>
+<h3 id="Language-Files"><a href="#Language-Files" class="headerlink" title="Language Files"></a>Language Files</h3><p>This would matter if you are requiring any of these files directly (via Node.js or CDN).</p>
+<ul>
+<li><code>htmlbars</code> has been removed. Use <code>handlebars</code> instead.</li>
+<li><code>c-like</code> has been removed. Use <code>c</code>, <code>cpp</code>, or <code>arduino</code>.</li>
+<li><code>sql_more</code> has been removed. Use <code>sql</code> instead or a more specific 3rd party grammar.</li>
+</ul>
+<h3 id="Language-Aliases"><a href="#Language-Aliases" class="headerlink" title="Language Aliases"></a>Language Aliases</h3><p>This would matter if you are using these aliases.</p>
+<ul>
+<li><code>php3</code>,<code>php4</code>,<code>php5</code>, <code>php6</code>, <code>php7</code>, and <code>php8</code> have been removed. Use <code>php</code> instead.</li>
+<li><code>zsh</code> has been removed. Use <code>sh</code> or <code>bash</code> instead.</li>
+<li><code>freepascal</code>, <code>lazarus</code>, <code>lpr</code>, and <code>lpm</code> removed. Use <code>delphi</code> instead.</li>
+</ul>
+<p>You can of course re-register any of these aliases easily if necessary. For example to restore the PHP aliases:</p>
+<pre><code class="js">hljs.registerAliases([&quot;php3&quot;,&quot;php4&quot;,&quot;php5&quot;,&quot;php6&quot;,&quot;php7&quot;,&quot;php8&quot;],{ languageName: &quot;php&quot; })
+</code></pre>
+<h3 id="Styles-and-CSS"><a href="#Styles-and-CSS" class="headerlink" title="Styles and CSS"></a>Styles and CSS</h3><ul>
+<li>The default padding on <code>.hljs</code> element has been increased and is now <code>1em</code> (it was <code>0.5em</code> previously). If your design depends on the smaller spacing you may need to update your CSS to override.</li>
+<li><code>schoolbook</code> no longer has a custom lined background, it is solid color now.  The old image and CSS can be found in the <a href="https://github.com/highlightjs/highlight.js/tree/10-stable/src/styles">10-stable branch</a> if you wish to manually copy it into your project.</li>
+<li><code>github</code> includes significant changes to more properly match modern GitHub syntax highlighting. If you desire the old theme you can manually copy it into your project from the <a href="https://github.com/highlightjs/highlight.js/tree/10-stable/src/styles">10-stable branch</a>.</li>
+<li><code>github-gist</code> has been removed in favor of <code>github</code> as GitHub and GitHub Gist have converged. If you desire the theme you can manually copy it into your project from the <a href="https://github.com/highlightjs/highlight.js/tree/10-stable/src/styles">10-stable branch</a>.</li>
+<li>The <code>.hljs</code> CSS selector is now further scoped.  It now targets <code>code.hljs</code> (inline code) and <code>pre code.hljs</code> (code blocks). If you are using a different element you may need to update your CSS to reapply some styling.</li>
+</ul>
+<h4 id="Grammar-Scopes"><a href="#Grammar-Scopes" class="headerlink" title="Grammar Scopes"></a>Grammar Scopes</h4><ul>
+<li><code>.meta-string</code> removed&#x2F;deprecated.  Use <code>.meta .string</code> (a nested scope) instead. See <a href="https://github.com/highlightjs/highlight.js/pull/3167">meta-keyword</a>.</li>
+<li><code>.meta-keyword</code> removed&#x2F;deprecated.  Use <code>.meta .keyword</code> (a nested scope) instead. See <a href="https://github.com/highlightjs/highlight.js/pull/3167">meta-keyword</a>.</li>
+</ul>
+<h3 id="Behavioral-changes"><a href="#Behavioral-changes" class="headerlink" title="Behavioral changes"></a>Behavioral changes</h3><ul>
+<li><code>after:highlightElement</code> plugin callback is now fired <em>after</em> the DOM has been updated, not before.</li>
+</ul>
+<h4 id="API-changes"><a href="#API-changes" class="headerlink" title="API changes"></a>API changes</h4><ul>
+<li>The option <code>ignoreIllegals</code> is now <code>true</code> by default (for <code>highlight()</code>). Previously it was <code>false</code>.</li>
+<li>The <code>highlight(language,code, ...args)</code> API no longer accepts <code>continuation</code> as a 4th argument.</li>
+<li>The <code>highlight(language,code, ...args)</code> API is deprecated (to be removed in 12.0).</li>
+</ul>
+<p>The new call signature is <code>highlight(code, {options})</code>. (<a href="https://highlightjs.readthedocs.io/en/latest/api.html#highlight">see docs</a>)</p>
+<p>Code using the old API:</p>
+<pre><code class="js">// highlight(language, code, ignoreIllegals, continuation)
+highlight(&quot;javascript&quot;, &quot;var a = 5;&quot;, true)
+</code></pre>
+<p>…would be upgraded to the newer API as follows:</p>
+<pre><code class="js">// highlight(code, {language, ignoreIllegals})
+highlight(&quot;var a = 5;&quot;, {language: &quot;javascript&quot;, ignoreIllegals: true})
+</code></pre>
+<p>The new API purposely does not support <code>continuation</code> as this is only intended for internal library usage.</p>
+<ul>
+<li><code>initHighlighting()</code> is deprecated (to be removed in 12.0).</li>
+<li><code>initHighlightingOnLoad()</code> is deprecated (to be removed in 12.0).</li>
+</ul>
+<p><strong>Use <code>highlightAll()</code> instead.</strong> (<a href="https://highlightjs.readthedocs.io/en/latest/api.html#highlight-all">see docs</a>) The old functions are now simply aliases of <code>highlightAll()</code>. The new function may be called before or after the DOM is loaded and should do the correct thing in all cases, replacing the need for the previous individual functions.</p>
+<p>Note: <code>highlightAll()</code> does not guard against calling itself repeatedly as the previous functions did. Your code should be careful to avoid doing this.</p>
+<ul>
+<li><code>highlightBlock()</code> is deprecated (to be removed in 12.0).</li>
+</ul>
+<p><strong>Use <code>highlightElement()</code> instead.</strong> (<a href="https://highlightjs.readthedocs.io/en/latest/api.html#highlight-element">see docs</a>) This is merely a naming change.</p>
+<p>Note: The object literal passed to the <code>before:highlightElement</code> callback now passes the element in the <code>el</code> key vs the <code>block</code> key.</p>
+<h5 id="Changes-to-Result-Data"><a href="#Changes-to-Result-Data" class="headerlink" title="Changes to Result Data"></a>Changes to Result Data</h5><ul>
+<li><code>highlightAuto()</code>‘s <code>second_best</code> key has been renamed to <code>secondBest</code></li>
+<li><code>highlightElement()</code>‘s result now no longer includes a <code>re</code> key. Use the <code>relevance</code> key now.</li>
+<li><code>highlight()</code> renames some result keys to more clearly mark them as private: <code>_top</code>, <code>_emitter</code>, and <code>_illegalBy</code>. You should not depend on these keys as they are subject to change at any time.</li>
+<li>The <code>relevance</code> key returned by <code>highlight()</code> is no longer guaranteed to be an even integer.</li>
+<li><code>highlightElement</code> now always tags blocks with a consistent <code>language-[name]</code> class</li>
+</ul>
+<p>This behavior was inconsistent before.  Sometimes <code>[name]</code> class would be added, sometimes the alias name would be added, something no class would be added.  now <code>language-[name]</code> is always added. This also affects sublanguage <code>span</code> tags which now also include the <code>language-</code> prefix.</p>
+<h4 id="Feature-Removal"><a href="#Feature-Removal" class="headerlink" title="Feature Removal"></a>Feature Removal</h4><ul>
+<li>HTML auto-passthru is now no longer included in core.  Use a plugin instead. For a possible plugin please see <a href="https://github.com/highlightjs/highlight.js/issues/2889">#2889</a>.</li>
+</ul>
+<p>An example:</p>
+<pre><code class="html">&lt;pre&gt;&lt;code class=&quot;lang-js&quot;&gt;
+var a = 4;
+&lt;span class=&quot;yellow&quot;&gt;var a = 4;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+<p>Unescaped HTML like this will now be ignored (stripped before highlighting) and a warning will be logged to the console.  All HTML to be highlighted should be properly escaped to avoid potential HTML&#x2F;JS injection attacks.</p>
+<ul>
+<li><code>fixMarkup</code> has been removed.</li>
+</ul>
+<p>This function was deprecated in v10.2.  It is not our goal to provide random string utilities. You may need to provide your own replacement <a href="https://github.com/highlightjs/highlight.js/issues/2634">Ref: #2534</a></p>
+<ul>
+<li><code>CSS_NUMBER_MODE</code> has been removed.</li>
+</ul>
+<p>This rule was too broad for bring inclusion in core and has been removed.</p>
+<ul>
+<li><code>lexemes</code> mode attribute has been removed.</li>
+</ul>
+<p>Use the new <code>keywords.$pattern</code> instead.</p>
+<p>Before:</p>
+<pre><code class="js">{
+  keywords: &quot;do.it start.now begin.later end.immediately&quot;
+  lexemes: /[a-z.]+/
+}
+</code></pre>
+<p>After:</p>
+<pre><code class="js">{
+  keywords: {
+    $pattern: /[a-z.]+/
+    keyword: &quot;do.it start.now begin.later end.immediately&quot;,
+  }
+}
+</code></pre>
+<p>This may required converting your <code>keywords</code> key into an object if it’s not already (as shown above).</p>
+<ul>
+<li><code>endSameAsBegin</code> mode attribute has been removed.</li>
+</ul>
+<p>Use the new <code>END_SAME_AS_BEGIN</code> mode rule&#x2F;function instead.</p>
+<ul>
+<li><code>useBR</code> configuration has been removed.</li>
+</ul>
+<p>This configuration option was deprecated in v10.1. Use a plugin or preferably simply CSS <code>white-space: pre</code>. <a href="https://github.com/highlightjs/highlight.js/issues/2559">Ref: #2559</a></p>
+<ul>
+<li><code>tabReplace</code> configuration has been removed.</li>
+</ul>
+<p>This configuration option was deprecated in v10.5. Use a plugin or pre-render content instead with desired spacing. <a href="https://github.com/highlightjs/highlight.js/issues/2874">Ref: #2874</a></p>
+<h3 id="Small-Things"><a href="#Small-Things" class="headerlink" title="Small Things"></a>Small Things</h3><ul>
+<li>The <code>regex</code> utility <code>join</code> has been renamed to <code>_eitherRewriteBackreferences</code> (this has always been intended for internal use only)</li>
+</ul>
