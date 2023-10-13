@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>test [ Hexo ]</title>
+  <title>Category: demo [ Hexo ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -60,54 +60,6 @@
                     <li class="directory">
                         <a href="#" class="directory">
                             <i class="fa fa-folder"></i>
-                            test
-                        </a>
-                        
-                <!--如果是文章-->
-                <ul>
-                    <li class="file active">
-                        <a href="/2023/10/10/test/test/">
-                            <i class="fa fa-file"></i>
-                            test
-                        </a>
-                    </li>
-                </ul>
-
-              
-
-                <!--如果是文件夹-->
-                <ul>
-                    <li class="directory">
-                        <a href="#" class="directory">
-                            <i class="fa fa-folder"></i>
-                            test_f
-                        </a>
-                        
-                <!--如果是文章-->
-                <ul>
-                    <li class="file">
-                        <a href="/2023/10/10/test/test_f/test/">
-                            <i class="fa fa-file"></i>
-                            test
-                        </a>
-                    </li>
-                </ul>
-
-              
-                    </li>
-                </ul>
-
-                 
-                    </li>
-                </ul>
-
-                 
-
-                <!--如果是文件夹-->
-                <ul>
-                    <li class="directory">
-                        <a href="#" class="directory">
-                            <i class="fa fa-folder"></i>
                             Android
                         </a>
                         
@@ -126,6 +78,54 @@
                 </ul>
 
                  
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level1
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/demo_folder_level1/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/demo_folder_level1/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
 </div>
 
 <div id="toc" style="display: none;"></div>
@@ -135,70 +135,31 @@
     <div id="content-outer">
       <div id="content-inner">
         
-<article id="post">
-  <h1>test</h1>
-  <p>A ${\xrightarrow{test}} B</p>
-<p>$$\xrightarrow{test2}$$</p>
-<p>A $\xrightarrow{test}$ B</p>
-<pre class="mermaid">classDiagram
-      class ClientTransactionItem {
-      }
-      class ActivityTransactionItem {
-      }
-      class ActivityRelaunchItem {
-      }
-      class BaseClientRequest {
-         <<interface>>
-         + execute(ClientTransactionHandler client, IBinder token,PendingTransactionActions pendingActions)
-      }
-      ClientTransactionItem <|-- ActivityTransactionItem
-      ActivityTransactionItem <|-- ActivityRelaunchItem
-      BaseClientRequest <|-- ClientTransactionItem: implements</pre>
-
-<pre class="mermaid">classDiagram
-      class ClientTransactionItem
-      class ActivityTransactionItem
-      class ActivityRelaunchItem
-      class BaseClientRequest {
-         <<interface>>
-         + execute(ClientTransactionHandler client, IBinder token,PendingTransactionActions pendingActions)
-      }
-      ClientTransactionItem <|-- ActivityTransactionItem
-      ActivityTransactionItem <|-- ActivityRelaunchItem
-      BaseClientRequest <|-- ClientTransactionItem: implements</pre>
-
-
-<pre><code class="java">
-val mainViewModel = 
-                [V1]   ViewModelProvider(this)
-                  [V2]       .get(MainViewModel::class.java)
-</code></pre>
-<pre><code class="java">class A &#123;
-  System
-&#125;
-</code></pre>
-
-</article>
-
-<script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-</script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-<div id="paginator">
+<div id="category">
+  <h1>demo</h1>
   
+    <div class="category-item">
+      <a href="/2023/10/10/demo_folder_level1/demo1/">
+        demo_title_1
+      </a>
+      <time datetime="2023-10-09T16:00:00.000Z">
+        2023-10-10
+      </time>
+    </div>
+  
+    <div class="category-item">
+      <a href="/2023/10/10/demo_folder_level1/demo_folder_level2/demo2/">
+        demo_title_2
+      </a>
+      <time datetime="2023-10-09T16:00:00.000Z">
+        2023-10-10
+      </time>
+    </div>
+  
+</div>
+ 
+<div id="paginator">
+  <span class="page-number current">1</span>
 </div>
 
       </div>
