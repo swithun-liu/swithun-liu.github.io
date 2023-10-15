@@ -1,28 +1,67 @@
+:root {
+  --main-bg-color: #000;
+  --main-fg-color: #68c900;
+  --main-text-color: #b9b9b9;
+  --link-color: #68c900;
+  --green-100: #beff82;
+  --green-300: #8fff26;
+  --green-500: #68c900;
+  --green-700: #009a44;
+  --green-900: #005625;
+  --blue-black-300: #5fd9f4;
+  --blue-black-500: #469bae;
+  --blue-black-700: #2f6875;
+  --blue-black-900: #00242c;
+  --black-1000: #000;
+  --black-900: #161616;
+  --black-950: #090909;
+  --black-800: #292929;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url("../font/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf");
+}
 body {
   margin: 0;
-  color: #b9b9b9;
+  color: #be0000;
   display: flex;
-  background-color: #2d343b;
+  background-color: var(--main-bg-color);
   justify-content: space-between;
   flex-direction: column;
+  font-family: 'JetBrains Mono';
+}
+code {
+  font-family: 'JetBrains Mono';
+  border-radius: 3px;
+  background: #1a1a1a;
+  padding: 3px;
+  font-size: 13px;
+}
+pre:has(code.hljs) {
+  padding: 15px;
+  border-radius: 9px;
+  box-shadow: inset 6px 6px 7px #171717, inset -6px -6px 7px #171717;
+}
+.hljs {
+  background: rgba(26,26,26,0);
 }
 #menu-outer {
   position: fixed;
   z-index: 10;
-  color: #008000;
-  background: rgba(45,52,59,0.533);
+  color: #f00;
+  background: #f00;
   top: 0;
   width: 100%;
   border-radius: 10px;
   display: flex;
   justify-content: flex-end;
   height: 37px;
-  background-color: rgba(45,52,59,0.333);
+  background-color: rgba(22,22,22,0.509);
   backdrop-filter: blur(5px);
   box-shadow: 9px 9px 18px #121518, -9px -9px 18px #48535e;
 }
 #main {
-  color: #b9b9b9;
+  color: var(--main-text-color);
   display: flex;
   justify-content: space-between;
   margin-top: 40px;
@@ -33,13 +72,13 @@ body {
 }
 aside {
   width: 20%;
-  background-color: #2d343b;
+  background-color: #3c3c3c;
   position: fixed;
   border-radius: 10px;
   overflow-y: scroll;
   top: 40px;
   height: 95%;
-  background: #2d343b;
+  background: var(--main-bg-color);
   box-shadow: 9px 9px 18px #121518, -9px -9px 18px #48535e;
 }
 aside ul {
@@ -63,8 +102,8 @@ aside ul li a:hover {
 }
 aside #tree .active a,
 aside #tree .active a:hover {
-  color: #41a8be;
-  border-bottom: 1px solid #41a8be;
+  color: var(--link-color);
+  border-bottom: 1px solid var(--link-color);
 }
 aside #search {
   display: flex;
@@ -73,7 +112,7 @@ aside #search {
 }
 /* #################### 文章索引 #################### */
 aside #toc a.read {
-  color: #41a8be;
+  color: var(--blue-black-300);
   border-bottom: 0;
   -webkit-transition: 0.5s;
   -moz-transition: 0.5s;
@@ -81,7 +120,7 @@ aside #toc a.read {
   -o-transition: 0.5s;
 }
 aside #toc a {
-  color: #999;
+  color: var(--green-500);
   border-bottom: 0;
   -webkit-transition: 0.2s;
   -moz-transition: 0.2s;
@@ -89,8 +128,7 @@ aside #toc a {
   -o-transition: 0.2s;
 }
 aside #toc a:hover {
-/*color: #87daff;*/
-  color: #e5c07b;
+  color: var(--blue-black-300);
   padding-left: 20px;
   -webkit-transition: 0.1s;
   -moz-transition: 0.1s;
@@ -105,7 +143,7 @@ aside #toc a:hover {
   outline: none;
   color: #ccc;
   border-radius: 10px;
-  background: #2d343b;
+  background: var(--main-bg-color);
   box-shadow: inset 6px 6px 11px #171b1e, inset -6px -6px 11px #434d58;
 }
 #content-outer {
@@ -114,7 +152,7 @@ aside #toc a:hover {
   margin-right: 20px;
   margin-top: 20px;
   border-radius: 20px;
-  background: linear-gradient(145deg, #292f35, #30383f);
+  background: linear-gradient(90deg, var(--black-950), var(--black-1000));
   box-shadow: 7px 7px 14px #16191c, -7px -7px 14px #444f5a;
 }
 #bottom-outer {
@@ -125,28 +163,28 @@ aside #toc a:hover {
   justify-content: flex-end;
 }
 a {
-  color: #00b5db;
+  color: var(--link-color);
 }
 img {
   margin: 5px;
   border-radius: 10px;
-  background: #2d343b;
+  background: var(--main-bg-color);
   box-shadow: 5px 5px 5px #20252a, -5px -5px 5px #3a434c;
   max-width: 90%;
 }
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 5px;
 }
 /* 这是针对缺省样式 (必须的) */
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background: #224a53;
-  box-shadow: inset 3px 3px 5px #12272c, inset -3px -3px 5px #469bae;
+  background: var(--green-900);
+  box-shadow: inset 3px 3px 5px var(--green-700), inset -3px -3px 5px var(--blue-black-900);
 }
 /* 滚动条的滑轨背景颜色 */
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: linear-gradient(145deg, #285762, #2f6875);
+  background: linear-gradient(145deg, var(--green-300), var(--blue-black-500));
   box-shadow: 3px 3px 5px #12272c;
 }
 /* 滑块颜色 */
@@ -155,7 +193,7 @@ img {
 }
 /* 滑轨两头的监听按钮颜色 */
 ::-webkit-scrollbar-corner {
-  background-color: #2d343b;
+  background-color: var(--main-bg-color);
 }
 /* 横向滚动条和纵向滚动条相交处尖角的颜色 */
 .recent-post-item {
@@ -187,7 +225,7 @@ img {
   font-size: 20px;
   margin: 10px;
   border-radius: 10px;
-  background: #2d343b;
+  background: var(--main-bg-color);
   box-shadow: 5px 5px 10px #1c2025, -5px -5px 10px #3e4851;
 }
 .recent-post-time {
@@ -206,7 +244,7 @@ img {
   padding-bottom: 3px;
   font-size: 15px;
   border-radius: 0 0 10px 10px;
-  background: #2d343b;
+  background: var(--main-bg-color);
   box-shadow: 5px 5px 10px #1c2025, -5px -5px 10px #3e4851;
 }
 /* #################### 自适应 #################### */
@@ -223,16 +261,8 @@ img {
 }
 /*竖屏*/
 @media all and (orientation: portrait) {
-  #aside-outer {
-    display: none;
-  }
   #content-outer {
-    width: 100%;
-    margin: 20;
     padding: 0;
-  }
-  canvas#live2dcanvas {
-    display: none;
   }
 }
 /* #################### 自适应 #################### */

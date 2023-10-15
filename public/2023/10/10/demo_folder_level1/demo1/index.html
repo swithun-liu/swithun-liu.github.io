@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>test2 [ Hexo ]</title>
+  <title>demo_title_1 [ Hexo ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -60,54 +60,6 @@
                     <li class="directory">
                         <a href="#" class="directory">
                             <i class="fa fa-folder"></i>
-                            test
-                        </a>
-                        
-                <!--如果是文章-->
-                <ul>
-                    <li class="file">
-                        <a href="/2023/10/10/test/test/">
-                            <i class="fa fa-file"></i>
-                            test
-                        </a>
-                    </li>
-                </ul>
-
-              
-
-                <!--如果是文件夹-->
-                <ul>
-                    <li class="directory">
-                        <a href="#" class="directory">
-                            <i class="fa fa-folder"></i>
-                            test_f
-                        </a>
-                        
-                <!--如果是文章-->
-                <ul>
-                    <li class="file active">
-                        <a href="/2023/10/10/test/test_f/test/">
-                            <i class="fa fa-file"></i>
-                            test
-                        </a>
-                    </li>
-                </ul>
-
-              
-                    </li>
-                </ul>
-
-                 
-                    </li>
-                </ul>
-
-                 
-
-                <!--如果是文件夹-->
-                <ul>
-                    <li class="directory">
-                        <a href="#" class="directory">
-                            <i class="fa fa-folder"></i>
                             Android
                         </a>
                         
@@ -126,6 +78,54 @@
                 </ul>
 
                  
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level1
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file active">
+                        <a href="/2023/10/10/demo_folder_level1/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/demo_folder_level1/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
 </div>
 
 <div id="toc" style="display: none;"></div>
@@ -136,26 +136,12 @@
       <div id="content-inner">
         
 <article id="post">
-  <h1>test2</h1>
-  <p>A ${\xrightarrow{test}} B</p>
-<p>$$\xrightarrow{test2}$$</p>
-<p>A $\xrightarrow{test}$ B</p>
-<pre class="mermaid">classDiagram
-      class ClientTransactionItem {
-      }
-      class ActivityTransactionItem {
-      }
-      class ActivityRelaunchItem {
-      }
-      class BaseClientRequest {
-         <<interface>>
-         + execute(ClientTransactionHandler client, IBinder token,PendingTransactionActions pendingActions)
-      }
-      ClientTransactionItem <|-- ActivityTransactionItem
-      ActivityTransactionItem <|-- ActivityRelaunchItem
-      BaseClientRequest <|-- ClientTransactionItem: implements</pre>
-
-<pre class="mermaid">classDiagram
+  <h1>demo_title_1</h1>
+  <h2 id="math"><a href="#math" class="headerlink" title="math"></a>math</h2><ul>
+<li>inline : A $\xrightarrow{test}$ B</li>
+<li>block:<br>$$\xrightarrow{test2}$$</li>
+</ul>
+<h2 id="mermaid"><a href="#mermaid" class="headerlink" title="mermaid"></a>mermaid</h2><pre class="mermaid">classDiagram
       class ClientTransactionItem
       class ActivityTransactionItem
       class ActivityRelaunchItem
@@ -166,6 +152,23 @@
       ClientTransactionItem <|-- ActivityTransactionItem
       ActivityTransactionItem <|-- ActivityRelaunchItem
       BaseClientRequest <|-- ClientTransactionItem: implements</pre>
+
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><p>this is <code>inline code</code></p>
+<p>java</p>
+<pre><code class="java">class A &#123;
+  System -&gt; &#123;
+
+  &#125;
+&#125;
+</code></pre>
+<p>kotlin</p>
+<pre><code class="kotlin">class B &#123;
+    fun test() &#123;
+
+    &#125;
+&#125;
+</code></pre>
+<h1 id="普通文本"><a href="#普通文本" class="headerlink" title="普通文本"></a>普通文本</h1><p>你好，hello, A -&gt; B</p>
 
 </article>
 
