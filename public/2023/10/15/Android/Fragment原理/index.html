@@ -1,0 +1,804 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title> [ Hexo ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/2023-10-10-viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            2023-10-10-viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file active">
+                        <a href="/2023/10/15/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level1
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/demo_folder_level1/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/demo_folder_level1/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="post">
+  <h1></h1>
+  <p>基于Android Api 33</p>
+<pre><code class="java">// androidx.fragment.app.FragmentActivity
+public class FragmentActivity extends ComponentActivity  ... &#123;
+
+    final FragmentController mFragments = FragmentController.createController(new HostCallbacks());
+</code></pre>
+<pre><code class="java">// androidx.fragment.app.FragmentController
+public class FragmentController &#123;
+    private final FragmentHostCallback&lt;?&gt; mHost;
+</code></pre>
+<pre class="mermaid">classDiagram
+
+class FragmentActivity {
+    - FragmentController mFragments
+}
+class FragmentController {
+    - FragmentHostCallback<?> mHost
+    - FragmentManager getSupportFragmentManager()
+}
+class FragmentManager {
+    <<abstract>>
+    - FragmentStore mFragmentStore
+}
+class FragmentManagerImpl
+class FragmentHostCallback {
+    <<abstract>>
+    - FragmentManager mFragmentManager
+}
+class FragmentStore
+
+FragmentActivity --> FragmentController: hold
+FragmentController --> FragmentHostCallback: hold
+FragmentHostCallback --> FragmentManager: hold
+FragmentManagerImpl --|> FragmentManager: implements
+FragmentManager --> FragmentStore: hold</pre>
+
+<ul>
+<li><p><code>FragmentController</code>&gt; </p>
+<ul>
+<li>Provides integration points with a FragmentManager for a fragment host.<br>“提供与 FragmentManager 集成的接口，用于托管片段（Fragment）。</li>
+<li>It is the responsibility of the host to take care of the Fragment’s lifecycle. The methods provided by FragmentController are for that purpose.<br>宿主（Host）需要负责处理片段（Fragment）的生命周期。FragmentController 提供的方法就是为了这个目的。”</li>
+</ul>
+</li>
+<li><p><code>androidx.fragment.app.FragmentManager</code></p>
+<ul>
+<li><p>Static library support version of the framework’s android.app.FragmentManager. Used to write apps that run on platforms prior to Android 3.0. When running on Android 3.0 or above, this implementation is still used; it does not try to switch to the framework’s implementation. See the framework FragmentManager documentation for a class overview.</p>
+</li>
+<li><p>Your activity must derive from FragmentActivity to use this. From such an activity, you can acquire the FragmentManager by calling FragmentActivity.getSupportFragmentManager.</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code class="java">// androidx.fragment.app.Fragment
+    static final int INITIALIZING = -1;          // Not yet attached.
+    static final int ATTACHED = 0;               // Attached to the host.
+    static final int CREATED = 1;                // Created.
+    static final int VIEW_CREATED = 2;           // View Created.
+    static final int AWAITING_EXIT_EFFECTS = 3;  // Downward state, awaiting exit effects
+    static final int ACTIVITY_CREATED = 4;       // Fully created, not started.
+    static final int STARTED = 5;                // Created and started, not resumed.
+    static final int AWAITING_ENTER_EFFECTS = 6; // Upward state, awaiting enter effects
+    static final int RESUMED = 7;                // Created started and resumed.
+</code></pre>
+<p><img src="/image.png" alt="Fragment Lifecycle"></p>
+<h2 id="Activity如何关联Fragment"><a href="#Activity如何关联Fragment" class="headerlink" title="Activity如何关联Fragment"></a>Activity如何关联Fragment</h2><p>先从代码分析，从<code>FragmentActivity</code>.<code>onCreate</code> 开始看</p>
+<ul>
+<li><p><code>A-1 MainActivity</code></p>
+<pre><code class="kotlin">    // MainActivity
+class MainActivity : FragmentActivity() &#123;
+    ...
+    override fun onCreate(savedInstanceState: Bundle?) &#123;
+   [A0A1] super.onCreate(savedInstanceState)
+   [A0A2] setContentView(R.layout.activity_main)
+</code></pre>
+</li>
+<li><p><code>[A0A1] FragmentActivity</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentActivity
+    protected void onCreate(@Nullable Bundle savedInstanceState) &#123;
+        ...
+    [A1] mFragments.dispatchCreate();
+    &#125;
+</code></pre>
+  <pre class="mermaid">    classDiagram
+
+  class FragmentActivity {
+      - FragmentController mFragments
+  }
+  class FragmentController
+
+  FragmentActivity --> FragmentController: hold</pre>
+<p>  可以看出  </p>
+<ol>
+<li><code>FragmentActivity</code>持有<code>FragmentController</code></li>
+<li>通知<code>FragmentController</code>分发<code>create</code>事件</li>
+</ol>
+</li>
+<li><p><code>[A1] mFragments.dispatchCreate()</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentController
+    public void dispatchCreate() &#123;
+   [A2] mHost.mFragmentManager.dispatchCreate();
+    &#125;
+</code></pre>
+  <pre class="mermaid">    classDiagram
+
+  class FragmentActivity {
+      - FragmentController mFragments
+  }
+  class FragmentController {
+      - FragmentHostCallback<?> mHost
+  }
+  class FragmentManager {
+      <<abstract>>
+  }
+  class FragmentManagerImpl
+  class FragmentHostCallback {
+      <<abstract>>
+      - FragmentManager mFragmentManager
+  }
+
+  FragmentActivity --> FragmentController: hold
+  FragmentController --> FragmentHostCallback: hold
+  FragmentHostCallback --> FragmentManager: hold
+  FragmentManagerImpl --|> FragmentManager: implements</pre>
+<p>  可以看出</p>
+<ol>
+<li><code>FragmentController</code>持有<code>FragmentHostCallback</code>持有<code>FragmentManger</code></li>
+<li>通知<code>FragmentManager</code>分发<code>create</code>事件</li>
+</ol>
+</li>
+<li><p><code>[A2] mHost.mFragmentManager.dispatchCreate()</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentManager
+    void dispatchCreate() &#123;
+        ...
+   [A3] dispatchStateChange(Fragment.CREATED);
+        ...
+    &#125;
+</code></pre>
+<pre><code class="java">public class Fragment implements ComponentCallbacks, OnCreateContextMenuListener, LifecycleOwner,
+        ViewModelStoreOwner, HasDefaultViewModelProviderFactory, SavedStateRegistryOwner,
+        ActivityResultCaller &#123;
+
+    static final int INITIALIZING = -1;          // Not yet attached.
+    static final int ATTACHED = 0;               // Attached to the host.
+    static final int CREATED = 1;                // Created.
+    static final int VIEW_CREATED = 2;           // View Created.
+    static final int AWAITING_EXIT_EFFECTS = 3;  // Downward state, awaiting exit effects
+    static final int ACTIVITY_CREATED = 4;       // Fully created, not started.
+    static final int STARTED = 5;                // Created and started, not resumed.
+    static final int AWAITING_ENTER_EFFECTS = 6; // Upward state, awaiting enter effects
+    static final int RESUMED = 7;                // Created started and resumed.
+</code></pre>
+<p>  可以看出</p>
+<ol>
+<li><code>FragmentManager</code>内部分发<code>Fragment.CREATED</code>事件——<em>Attached to the host</em></li>
+</ol>
+</li>
+<li><p><code>[A3] dispatchStateChange(Fragment.CREATED)</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentManager
+    private void dispatchStateChange(int nextState) &#123;
+        ...
+       [A4A1] mFragmentStore.dispatchStateChange(nextState);
+       [A4A2] moveToState(nextState, false);
+       ...
+&#125;
+</code></pre>
+<pre><code class="java">public abstract class FragmentManager implements FragmentResultOwner &#123;
+    ...
+    private final FragmentStore mFragmentStore = new FragmentStore();
+</code></pre>
+  <pre class="mermaid">    classDiagram
+
+  class FragmentActivity {
+      - FragmentController mFragments
+  }
+  class FragmentController {
+      - FragmentHostCallback<?> mHost
+  }
+  class FragmentManager {
+      <<abstract>>
+      FragmentStore mFragmentStore
+  }
+  class FragmentManagerImpl
+  class FragmentHostCallback {
+      <<abstract>>
+      - FragmentManager mFragmentManager
+  }
+  class FragmentStore
+
+  FragmentActivity --> FragmentController: hold
+  FragmentController --> FragmentHostCallback: hold
+  FragmentHostCallback --> FragmentManager: hold
+  FragmentManagerImpl --|> FragmentManager: implements
+  FragmentManager --> FragmentStore: hold</pre>
+<p>  可以看出</p>
+<ol>
+<li><code>FragmentManager</code>持有一个<code>FragmentStore</code></li>
+<li><code>FragmentStore</code>分发收到的状态<code>nextState</code>——<code>Fragment.CREATED</code></li>
+</ol>
+</li>
+<li><p><code>[A4A1] mFragmentStore.dispatchStateChange(nextState)</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentStore
+    void dispatchStateChange(int state) &#123;
+        for (FragmentStateManager fragmentStateManager : mActive.values()) &#123;
+            if (fragmentStateManager != null) &#123;
+           [A5] fragmentStateManager.setFragmentManagerState(state);
+            &#125;
+        &#125;
+    &#125;
+</code></pre>
+<pre><code class="java">// androidx.fragment.app.FragmentStore
+class FragmentStore &#123;
+    ...
+    private final HashMap&lt;String, FragmentStateManager&gt; mActive = new HashMap&lt;&gt;();
+</code></pre>
+  <pre class="mermaid">    classDiagram
+
+  class FragmentActivity {
+      - FragmentController mFragments
+  }
+  class FragmentController {
+      - FragmentHostCallback<?> mHost
+  }
+  class FragmentManager {
+      <<abstract>>
+      FragmentStore mFragmentStore
+  }
+  class FragmentManagerImpl
+  class FragmentHostCallback {
+      <<abstract>>
+      - FragmentManager mFragmentManager
+  }
+  class FragmentStore {
+      HashMap「String, FragmentStateManager」 mActive
+  }
+  class FragmentStateManager
+
+  FragmentActivity --> FragmentController: hold
+  FragmentController --> FragmentHostCallback: hold
+  FragmentHostCallback --> FragmentManager: hold
+  FragmentManagerImpl --|> FragmentManager: implements
+  FragmentManager --> FragmentStore: hold
+  FragmentStore "1" --> "n" FragmentStateManager: hold</pre>
+<p>  可以看出</p>
+<ol>
+<li><code>FragmentStore</code>持有n个<code>FragmentStateManager</code></li>
+<li><code>FragmentManager</code>将收到的状态分发给每一个<code>FragmentStateManager</code></li>
+</ol>
+</li>
+<li><p><code>[A5] fragmentStateManager.setFragmentManagerState(state)</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentStateManager
+    void setFragmentManagerState(int state) &#123;
+        mFragmentManagerState = state;
+    &#125;
+</code></pre>
+<pre><code class="java">// androidx.fragment.app.FragmentStateManager
+class FragmentStateManager &#123;
+    ...
+    private final Fragment mFragment;
+    private int mFragmentManagerState = Fragment.INITIALIZING;
+</code></pre>
+  <pre class="mermaid">    classDiagram
+
+  class FragmentActivity {
+      - FragmentController mFragments
+  }
+  class FragmentController {
+      - FragmentHostCallback<?> mHost
+  }
+  class FragmentManager {
+      <<abstract>>
+      FragmentStore mFragmentStore
+  }
+  class FragmentManagerImpl
+  class FragmentHostCallback {
+      <<abstract>>
+      - FragmentManager mFragmentManager
+  }
+  class FragmentStore {
+      HashMap「String, FragmentStateManager」 mActive
+  }
+  class FragmentStateManager {
+      Fragment mFragment
+      int mFragmentManagerState
+  }
+  class Fragment
+
+  FragmentActivity --> FragmentController: hold
+  FragmentController --> FragmentHostCallback: hold
+  FragmentHostCallback --> FragmentManager: hold
+  FragmentManagerImpl --|> FragmentManager: implements
+  FragmentManager --> FragmentStore: hold
+  FragmentStore "1" --> "n" FragmentStateManager: hold
+  FragmentStateManager --> Fragment: hold</pre>
+<p>  可以看出</p>
+<ol>
+<li><code>FragmentStateManager</code>持有<code>Fragment</code></li>
+<li><code>FragmentStateManaget</code>持有变量<code>mFragmentManagerState</code>——所属的FragmentManager的状态</li>
+</ol>
+</li>
+<li><p><code>[A4A2] moveToState(nextState, false);</code></p>
+<pre><code class="java">    void moveToState(int newState, boolean always) &#123;
+        if (mHost == null &amp;&amp; newState != Fragment.INITIALIZING) &#123;
+            throw new IllegalStateException(&quot;No activity&quot;);
+        &#125;
+
+        if (!always &amp;&amp; newState == mCurState) &#123;
+            return;
+        &#125;
+
+        mCurState = newState;
+
+        if (USE_STATE_MANAGER) &#123;
+            mFragmentStore.moveToExpectedState();
+        &#125; else &#123;
+            // Must add them in the proper order. mActive fragments may be out of order
+            for (Fragment f : mFragmentStore.getFragments()) &#123;
+                moveFragmentToExpectedState(f);
+            &#125;
+
+            // Now iterate through all active fragments. These will include those that are removed
+            // and detached.
+            for (FragmentStateManager fragmentStateManager :
+                    mFragmentStore.getActiveFragmentStateManagers()) &#123;
+                Fragment f = fragmentStateManager.getFragment();
+                if (!f.mIsNewlyAdded) &#123;
+                    moveFragmentToExpectedState(f);
+                &#125;
+                boolean beingRemoved = f.mRemoving &amp;&amp; !f.isInBackStack();
+                if (beingRemoved) &#123;
+                    mFragmentStore.makeInactive(fragmentStateManager);
+                &#125;
+            &#125;
+        &#125;
+
+        startPendingDeferredFragments();
+
+        if (mNeedMenuInvalidate &amp;&amp; mHost != null &amp;&amp; mCurState == Fragment.RESUMED) &#123;
+            mHost.onSupportInvalidateOptionsMenu();
+            mNeedMenuInvalidate = false;
+        &#125;
+    &#125;
+</code></pre>
+</li>
+<li><p><code>[A0A2] setContentView(R.layout.activity_main)</code><br>  <code>onCreate</code>流程继续<code>setContentView</code></p>
+<pre><code class="java">// androidx.activity.ComponentActivity
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) &#123;
+        ...
+    [A0A2A1] super.setContentView(layoutResID);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>[A0A2A1] super.setContentView(layoutResID);</code><br>  <code>ComponentActivity</code>调用父类<code>Activity</code>.<code>setContentView</code></p>
+<pre><code class="java">// android.app.Activity
+    public void setContentView(@LayoutRes int layoutResID) &#123;
+   [A0A2A2] getWindow().setContentView(layoutResID);
+   ...
+</code></pre>
+</li>
+<li><p><code>[A0A2A2] getWindow().setContentView(layoutResID);</code><br>  <code>Window</code>.<code>setContentView</code></p>
+<pre><code class="java">// android.view.Window
+    public abstract void setContentView(@LayoutRes int layoutResID);
+</code></pre>
+<p>  继续-跳过细节 根据传入的layout ResId 初始化 view</p>
+<pre><code class="java">// com.android.internal.policy.PhoneWindow
+    @Override
+    public void setContentView(int layoutResID) &#123;
+        ...
+        [...]    mLayoutInflater.inflate(layoutResID, mContentParent);
+        ...
+</code></pre>
+<p>  <code>mContentParent</code>为<code>PhoneWindow</code>的根View，下面会根据<code>layoutResID</code>构造<code>View</code>并add到<code>mContentParent</code><br>  继续-跳过细节 根据传入的layout ResId 初始化 view</p>
+<pre><code class="java">// android.view.LayoutInflater
+    public View inflate(@LayoutRes int resource, @Nullable ViewGroup root) &#123;
+        return inflate(resource, root, root != null);
+</code></pre>
+<p>  继续-跳过细节 根据传入的layout ResId 初始化 view</p>
+<pre><code class="java">// android.view.LayoutInflater
+    public View inflate(@LayoutRes int resource, @Nullable ViewGroup root, boolean attachToRoot) &#123;
+        [...] return inflate(parser, root, attachToRoot);
+        ...
+    &#125;
+</code></pre>
+<p>  attachToRoot为true<br>  继续-跳过细节 根据传入的layout ResId 初始化 view</p>
+<pre><code class="java">    // android.view.LayoutInflater
+    public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) &#123;
+        synchronized (mConstructorArgs) &#123;
+            ...
+                advanceToRootNode(parser); // 让parser移动到下一个要解析的&quot;结点&quot;
+                final String name = parser.getName(); // 获取结点名字
+                ...
+                    // 根据名字构造xml的根view
+                    final View temp = createViewFromTag(root, name, inflaterContext, attrs);
+                ...
+                    // 继续递归构造xml根view的子view，并addView到根view
+                    rInflateChildren(parser, temp, attrs, true);
+</code></pre>
+<p>  根据<code>xml parser</code>构造<code>View</code>，<code>temp</code>是<code>xml</code>的根标签代表的view，根据<code>activity_main.xml</code><br>  <code>xml-1</code> ⬇️</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout     ...&gt;
+    &lt;Button..&gt;
+
+    &lt;fragment android:name=&quot;com.example.test_android.Fragment1&quot;...&gt;
+
+    &lt;FrameLayout
+        android:id=&quot;@+id/content_fragment&quot;...&gt;
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</code></pre>
+<p>  <code>name</code>则为根标签<code>androidx.constraintlayout.widget.ConstraintLayout</code>，<br>  <code>temp</code>相应的则是<code>androidx.constraintlayout.widget.ConstraintLayout</code>，<br>  下面<code>rInflateChildren</code>则是继续递归的构造<code>ConstraintLayout</code>中的子view。(开头的<code>r</code>代表的是<em>Recursive</em>–<em>递归</em>)</p>
+<pre><code class="java">// android.view.LayoutInflater
+    final void rInflateChildren(XmlPullParser parser, View parent, AttributeSet attrs,
+            boolean finishInflate) throws XmlPullParserException, IOException &#123;
+        rInflate(parser, parent, parent.getContext(), attrs, finishInflate);
+</code></pre>
+<pre><code class="java">// android.view.LayoutInflater
+    void rInflate(XmlPullParser parser, View parent, Context context,
+            AttributeSet attrs, boolean finishInflate) throws XmlPullParserException, IOException &#123;
+        ...
+            while (((type = parser.next()) != XmlPullParser.END_TAG ||
+                ...
+                final View view = createViewFromTag(parent, name, context, attrs);
+        ...
+</code></pre>
+<p>  <code>rInflate</code>: 继续递归构造<code>temp</code>的子view<br>  <code>parser.next</code>: 不断的获取下一个要解析的标签，根据<code>xml-1</code>，会解析到 <code>&lt;fragment</code>标签——通过<code>createViewFromTag</code>构造Fragment</p>
+<pre><code class="java">// android.view.LayoutInflater
+    private View createViewFromTag(View parent, String name, Context context, AttributeSet attrs) &#123;
+        return createViewFromTag(parent, name, context, attrs, false);
+</code></pre>
+<pre><code class="java">// android.view.LayoutInflater
+    View createViewFromTag(View parent, String name, Context context, AttributeSet attrs,
+        ...
+            View view = tryCreateView(parent, name, context, attrs);
+        ...
+</code></pre>
+<p>  构造fragment view</p>
+<pre><code class="java">// android.view.LayoutInflater
+    public final View tryCreateView(@Nullable View parent, @NonNull String name,
+        ...
+            view = mPrivateFactory.onCreateView(parent, name, context, attrs);
+        ...
+</code></pre>
+<pre><code class="java">// android.view.LayoutInflater
+    private Factory2 mPrivateFactory;
+</code></pre>
+<p>  <code>mPrivateFactory</code>实际上是我们写的的<code>MainActivity</code>，所以继续会走到<code>MainActivity.onCreateView</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentActivity
+    public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context,
+            @NonNull AttributeSet attrs) &#123;
+        final View v = dispatchFragmentsOnCreateView(parent, name, context, attrs);
+        if (v == null) &#123;
+            return super.onCreateView(parent, name, context, attrs);
+        &#125;
+        return v;
+        ...
+</code></pre>
+<p>  <code>@param View parent</code>: xml的根布局<code>ConstraintLayout</code><br>  <code>@param String name</code>: <code>fragment</code>，也就是<code>xml-1</code>中的<code>fragment</code>标签</p>
+<p>  <code>dispatchFragmentsOnCreateView(</code>: 会先尝试通过该方法处理<code>fragment</code>标签对应的View，如果有返回结果则跳过<code>if (v == null)</code>中的逻辑，我们这里<code>name</code>为<code>framgment</code>，所以不应该返回null。</p>
+<pre><code class="java">// androidx.fragment.app.FragmentActivity
+    @Nullable
+    final View dispatchFragmentsOnCreateView(@Nullable View parent, @NonNull String name,
+            @NonNull Context context, @NonNull AttributeSet attrs) &#123;
+        return mFragments.onCreateView(parent, name, context, attrs);
+</code></pre>
+<pre><code class="java">// androidx.fragment.app.FragmentController
+    public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context,
+            @NonNull AttributeSet attrs) &#123;
+        return mHost.mFragmentManager.getLayoutInflaterFactory()
+                .onCreateView(parent, name, context, attrs);
+    &#125;
+</code></pre>
+<p>  return <code>FragmentActivity.dispatchFragmentsOnCreateView</code> $\rightarrow$ return <code>FragmentController.onCreateView</code> $\rightarrow$ return <code>FragmentLayoutInflaterFactory.onCreateView</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentLayoutInflaterFactory
+    public View onCreateView(@Nullable final View parent, @NonNull String name,
+        ...
+            fragment = mFragmentManager.getFragmentFactory().instantiate(
+            context.getClassLoader(), fname);
+            // fragment 的属性设置 begin
+            fragment.mFromLayout = true;
+            fragment.mFragmentId = id != 0 ? id : containerId;
+            fragment.mContainerId = containerId;
+            fragment.mTag = tag;
+            fragment.mInLayout = true;
+            fragment.mFragmentManager = mFragmentManager;
+            fragment.mHost = mFragmentManager.getHost();
+            fragment.onInflate(mFragmentManager.getHost().getContext(), attrs,
+                    fragment.mSavedFragmentState);
+            // fragment 的属性设置 end
+
+            // 添加到mFragmentManager中，同时返回 持有Fragment的FragmentStateManager
+            fragmentStateManager = mFragmentManager.addFragment(fragment);
+            // 此时Fragment这个壳已经初始化，但是Fragment.mView实际上还没有构造
+        ...
+        // 通过FragmentStateManager更新他持有的一对一的Fragment的State
+   [B1] fragmentStateManager.moveToExpectedState();
+        // 让Fragment构造view
+   [B2] fragmentStateManager.ensureInflatedView();
+</code></pre>
+</li>
+<li><p><code>[B1] fragmentStateManager.moveToExpectedState();</code></p>
+<pre><code class="java">// androidx.fragment.app.FragmentStateManager
+    void moveToExpectedState() &#123;
+        ...
+            int newState;
+     [B1A1] while ((newState = computeExpectedState()) != mFragment.mState) &#123;
+                if (newState &gt; mFragment.mState) &#123;
+                    // Moving upward
+                    int nextStep = mFragment.mState + 1;
+                    switch (nextStep) &#123;
+                        case Fragment.ATTACHED:
+                     [B1A2] attach();
+                        case Fragment.CREATED:
+                     [B1A3] create();
+                            break;
+                        case Fragment.VIEW_CREATED:
+                     [B1A4] ensureInflatedView();
+                     [B1A5] createView();
+                            break;
+</code></pre>
+</li>
+<li><p><code>[B1A1] while ((newState = computeExpectedState()) != mFragment.mState) &#123;</code></p>
+<ul>
+<li><code>computeExpectedState()</code>: 根据FragmentManager等等计算mFragment应该达到的状态，先不看这里的复杂计算，但是最终的结果是2，对应<code>Fragment.VIEW_CREATED</code>，即Fragment应该进行到构造好View的状态</li>
+<li><code>while</code>: <code>mFragment</code>不断切换到下一个状态，知道达到目标状态——<code>VIEW_CREATED</code></li>
+<li><code>mFragment.mState</code>: 当前<code>mFragment.mState</code>为<code>INITIALIZING</code>，则表示会依次执行<code>FragmentManager.attach()</code>、<code>FragmentManager.create()</code>、<code>FragmentManager.createView()</code></li>
+</ul>
+<pre><code class="java">    static final int INITIALIZING = -1;          // Not yet attached.
+    static final int ATTACHED = 0;               // Attached to the host.
+    static final int CREATED = 1;                // Created.
+    static final int VIEW_CREATED = 2;           // View Created.
+    static final int AWAITING_EXIT_EFFECTS = 3;  // Downward state, awaiting exit effects
+    static final int ACTIVITY_CREATED = 4;       // Fully created, not started.
+    static final int STARTED = 5;                // Created and started, not resumed.
+    static final int AWAITING_ENTER_EFFECTS = 6; // Upward state, awaiting enter effects
+    static final int RESUMED = 7;                // Created started and resumed.
+</code></pre>
+</li>
+<li><p><code>[B1A2] attach();</code></p>
+<pre><code class="java">    void attach() &#123;
+        ....
+ [B1A2A1] mFragment.performAttach();
+        mDispatcher.dispatchOnFragmentAttached(mFragment, false);
+    &#125;
+</code></pre>
+</li>
+<li><p><code>[B1A2A1] mFragment.performAttach()</code></p>
+<pre><code class="java">// androidx.fragment.app.Fragment
+    void performAttach() &#123;
+        ...
+        mState = ATTACHED;
+        onAttach(mHost.getContext());
+        ...
+        mChildFragmentManager.dispatchAttach();
+    &#125;
+</code></pre>
+<ul>
+<li><code>mState = ATTACHED</code>: 更新<code>Fragment</code>状态为<code>ATTACHED</code></li>
+</ul>
+<pre><code class="java">// androidx.fragment.app.Fragment
+    public void onAttach(@NonNull Context context) &#123;
+        mCalled = true;
+        final Activity hostActivity = mHost == null ? null : mHost.getActivity();
+        if (hostActivity != null) &#123;
+            mCalled = false;
+            onAttach(hostActivity);
+        &#125;
+    &#125;
+</code></pre>
+<pre><code class="java">// androidx.fragment.app.Fragment
+    public void onAttach(@NonNull Activity activity) &#123;
+        mCalled = true;
+    &#125;
+</code></pre>
+</li>
+</ul>
+<p>总结以上，<code>FragmentActivity</code> <code>onCreate</code> 时将 <code>Create</code> 事件 $\xrightarrow{通知}$ <code>FragmentController</code> $\xrightarrow{通知}$ <code>FragmentManager</code> $\xrightarrow{通知}$ 持有的每个 <code>FragmentStateManager</code><br>也就是说 <code>Fragment</code> 生命周期随着 <code>FragmentActivity</code> 的变化而变化。</p>
+<h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6970998913754988552">Android Jetpack 开发套件 #7 AndroidX Fragment 核心原理分析</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.51cto.com/article/672135.html">详细聊聊Fragment的实现原理</a></li>
+</ul>
+
+</article>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by John Doe using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.0.0-alpha.4/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>
