@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title> [ Hexo ]</title>
+  <title> [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -85,6 +85,17 @@
                 </ul>
 
               
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/Android/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -152,6 +163,40 @@
   
 <div id="recent-posts">
   <h1>Recent Posts</h1>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2023/10/22/Android/temp/"></a>
+      <time class="recent-post-time" datetime="2023-10-22T05:40:31.879Z">
+        2023-10-22
+      </time>
+
+      <div class="article-digest">
+        sequenceDiagram
+autonumber
+
+participant FragmentActivity
+participant FragmentManager
+participant Fragment
+
+activate FragmentActivity
+FragmentActivity->>FragmentActivity: onCreate begin
+FragmentActivity->>FragmentManager: dispatchCreate() 分发CREATE
+FragmentActivity->>FragmentActivity: setContentView b
+        ...
+      </div>
+
+    </div>
+
+  </div>
   
   <div class="recent-post-item">
 
@@ -311,7 +356,7 @@ mermaidclassDiagram
   <!-- 底部信息 -->
   <div id="bottom-outer">
     <div id="bottom-inner">
-      Site by John Doe using
+      Site by Swithun Liu using
       <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
       <br>
       <a href="/">Home</a>

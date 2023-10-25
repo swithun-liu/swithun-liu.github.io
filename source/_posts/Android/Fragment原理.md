@@ -72,6 +72,246 @@ FragmentManager --> FragmentStore: hold
 
 ## Activity的生命周期与Fragment生命周期的关联
 
+![Alt text](image-2.png)
+
+### 代码
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/f1"
+        android:text="Fragment 1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <fragment android:name="com.example.test_android.Fragment1"
+        android:id="@+id/prefill_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/f1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/content_fragment"
+        />
+
+    <FrameLayout
+        android:id="@+id/content_fragment"
+        android:background="#8EFDCB"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/prefill_fragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+```kotlin
+import android.content.Context
+import android.os.Bundle
+import android.util.AttributeSet
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+
+class MainActivity : FragmentActivity() {
+
+    var f1: Button? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("swithun-xxxx", "MainActivity onCreate")
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        f1 = findViewById(R.id.f1)
+
+        f1()
+        Log.d("swithun-xxxx", "MainActivity onCreate end")
+    }
+
+    override fun onStart() {
+        Log.d("swithun-xxxx", "MainActivity onStart begin")
+        super.onStart()
+        Log.d("swithun-xxxx", "MainActivity onStart end")
+    }
+
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        Log.d("swithun-xxxx", "MainActivity onCreateView 1")
+        return super.onCreateView(name, context, attrs)
+    }
+
+    override fun onCreateView(
+        parent: View?,
+        name: String,
+        context: Context,
+        attrs: AttributeSet
+    ): View? {
+        Log.d("swithun-xxxx", "MainActivity onCreateView 2")
+        return super.onCreateView(parent, name, context, attrs)
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        Log.d("swithun-xxxx", "MainActivity onAttachFragment")
+        super.onAttachFragment(fragment)
+    }
+
+    override fun onResume() {
+        Log.d("swithun-xxxx", "MainActivity onResume")
+        super.onResume()
+    }
+
+    override fun onStop() {
+        Log.d("swithun-xxxx", "MainActivity onResume")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.d("swithun-xxxx", "MainActivity onDestroy")
+        super.onDestroy()
+    }
+
+    private fun f1() {
+        f1?.setOnClickListener {
+            val transaction = supportFragmentManager.beginTransaction();
+            transaction.replace(R.id.content_fragment, Fragment2())
+            transaction.commit()
+        }
+    }
+}
+```
+
+```kotlin
+import android.content.Context
+import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+
+open class Fragment1: Fragment() {
+
+    open val name = "fragment 1"
+
+    override fun onAttach(context: Context) {
+        Log.d("swithun-xxxx", "$name onAttach")
+        super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("swithun-xxxx", "$name onCreate")
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // 居中添加一个TextView——“hello Fragment1"
+        Log.d("swithun-xxxx", "$name onCreateView")
+        val view = TextView(context)
+        val param = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        param.gravity = Gravity.CENTER
+        view.layoutParams = param
+        view.text = "hello $name"
+        view.textSize = 15F
+        view.gravity = Gravity.CENTER
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("swithun-xxxx", "$name onViewCreated")
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        Log.d("swithun-xxxx", "$name onActivityCreated")
+        super.onActivityCreated(savedInstanceState)
+    }
+
+    override fun onStart() {
+        Log.d("swithun-xxxx", "$name onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("swithun-xxxx", "$name onResume")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d("swithun-xxxx", "$name onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("swithun-xxxx", "$name onStop")
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
+        Log.d("swithun-xxxx", "$name onDestroyView")
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        Log.d("swithun-xxxx", "$name onDestroy")
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d("swithun-xxxx", "$name onDetach")
+        super.onDetach()
+    }
+}
+```
+
+```kotlin
+class Fragment2: Fragment1() {
+    override val name: String = "Fragment 2"
+}
+```
+
+### 通过xml文件添加Fragment —— Fragment1
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    ...
+
+    <fragment android:name="com.example.test_android.Fragment1"
+        android:id="@+id/prefill_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/f1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/content_fragment"
+        />
+    ...
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+
 先从代码分析，从`FragmentActivity`.`onCreate` 开始看
 
 - `[T-1] MainActivity.onCreate`
@@ -92,6 +332,18 @@ FragmentManager --> FragmentStore: hold
         [:0:1] mFragments.dispatchCreate();
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    ```
+
     ```mermaid
     classDiagram
 
@@ -102,6 +354,7 @@ FragmentManager --> FragmentStore: hold
 
     FragmentActivity --> FragmentController: hold
     ```
+
     可以看出  
     1. `FragmentActivity`持有`FragmentController`
     2. 通知`FragmentController`分发`create`事件
@@ -113,6 +366,19 @@ FragmentManager --> FragmentStore: hold
        [:0:1:0] mHost.mFragmentManager.dispatchCreate();
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentController->>FragmentManager: dispatchCreate
+    ```
+
     ```mermaid
     classDiagram
 
@@ -162,7 +428,20 @@ FragmentManager --> FragmentStore: hold
         static final int STARTED = 5;                // Created and started, not resumed.
         static final int AWAITING_ENTER_EFFECTS = 6; // Upward state, awaiting enter effects
         static final int RESUMED = 7;                // Created started and resumed.
+    ```
 
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant FragmentManager
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentController->>FragmentManager: dispatchCreate
+    FragmentManager->>FragmentManager: dispatchStateChange
     ```
     可以看出
     1. `FragmentManager`内部分发`Fragment.CREATED`事件——*Attached to the host*
@@ -181,6 +460,23 @@ FragmentManager --> FragmentStore: hold
         ...
         private final FragmentStore mFragmentStore = new FragmentStore();
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant FragmentManager
+    participant FragmentStore
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentController->>FragmentManager: dispatchCreate
+    FragmentManager->>FragmentManager: dispatchStateChange
+    FragmentManager->>FragmentStore: dispatchStateChange
+    ```
+
     ```mermaid
     classDiagram
 
@@ -228,6 +524,25 @@ FragmentManager --> FragmentStore: hold
         ...
         private final HashMap<String, FragmentStateManager> mActive = new HashMap<>();
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant FragmentManager
+    participant FragmentStore
+    participant FragmentStateManager
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentController->>FragmentManager: dispatchCreate
+    FragmentManager->>FragmentManager: dispatchStateChange
+    FragmentManager->>FragmentStore: dispatchStateChange
+    FragmentStore->>FragmentStateManager: setFragmentManagerState
+    ```
+
     ```mermaid
     classDiagram
 
@@ -318,11 +633,12 @@ FragmentManager --> FragmentStore: hold
 
     至此，`FragmentActivity`将`CREATE`状态通知到`FragmentManager`进而通知到管理的每个`FragmentStateManager`——但是此时Fragment尚未更新。
 
-    **[总结]**: （只关心重要的`FragmentActivity`,`FragmentManager`,`Fragment`）
+    **[总结]**: （只关心重要的`FragmentActivity`,`FragmentManager`,`Fragment`）  
+
     ```mermaid
     sequenceDiagram
     autonumber
-    
+
     participant FragmentActivity
     participant FragmentManager
     participant Fragment
@@ -339,6 +655,24 @@ FragmentManager --> FragmentStore: hold
                 mFragmentStore.moveToExpectedState();
             ...
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant FragmentManager
+    participant FragmentStore
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentController->>FragmentManager: dispatchCreate
+    FragmentManager->>FragmentManager: dispatchStateChange
+    FragmentManager->>FragmentStore: dispatchStateChange
+    FragmentManager->>FragmentManager: moveToState
+    ```
+
     `[:0:1:0:0:0:0]`只是将用来管理`Fragment`的`FragmentStateManager`的状态更新了，这里才是真正更新`Fragment`的状态——但是此时`FragmentManager`管理的`Fragment`数量实际上为0，所以这里先不继续看，后续流程下面`[:1:0:0:1]`会继续讲到。
 - `[:1] setContentView(R.layout.activity_main)`
     执行`[:0] super.onCreate(savedInstanceState)`之后，setContentView
@@ -350,6 +684,33 @@ FragmentManager --> FragmentStore: hold
         [:1:0] super.setContentView(layoutResID);
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    ```
+
+    ```mermaid
+    classDiagram
+
+    class FragmentActivity {
+        - FragmentController mFragments
+    }
+    class FragmentController
+    class Activity
+
+    FragmentActivity --> FragmentController: hold
+    FragmentActivity --|> Activity
+    ```
+
 - `[:1:0] super.setContentView(layoutResID);`
     `ComponentActivity`调用父类`Activity`.`setContentView`
     ```java
@@ -358,6 +719,38 @@ FragmentManager --> FragmentStore: hold
        [:1:0:0] getWindow().setContentView(layoutResID);
        ...
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant Window
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>Window: setContentView
+    ```
+
+    ```mermaid
+    classDiagram
+
+    class FragmentActivity {
+        - FragmentController mFragments
+    }
+    class FragmentController
+    class Activity {
+        - Window mWindow
+    }
+
+    FragmentActivity --> FragmentController: hold
+    FragmentActivity --|> Activity
+    Activity --> Window: hold
+    ```
+
 - `[:1:0:0] getWindow().setContentView(layoutResID);`
     `Window`.`setContentView`
     ```java
@@ -373,6 +766,46 @@ FragmentManager --> FragmentStore: hold
             [...]    mLayoutInflater.inflate(layoutResID, mContentParent);
             ...
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant PhoneWindow
+    participant LayoutInflater
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>PhoneWindow: setContentView
+    PhoneWindow->>LayoutInflater: inflate
+    ```
+
+    ```mermaid
+    classDiagram
+
+    class FragmentActivity {
+        - FragmentController mFragments
+    }
+    class FragmentController
+    class Activity {
+        - Window mWindow
+    }
+    class PhoneWindow {
+        - LayoutInflater mLayoutInflater
+    }
+    class LayoutInflater
+
+    FragmentActivity --> FragmentController: hold
+    FragmentActivity --|> Activity
+    Activity --> Window: hold
+    PhoneWindow --|> Window
+    PhoneWindow --> LayoutInflater: hold
+    ```
+
     `mContentParent`为`PhoneWindow`的根View，下面会根据`layoutResID`构造`View`并add到`mContentParent`  
     继续-跳过细节 根据传入的layout ResId 初始化 view
     ```java
@@ -461,6 +894,52 @@ FragmentManager --> FragmentStore: hold
     // android.view.LayoutInflater
         private Factory2 mPrivateFactory;
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant PhoneWindow
+    participant LayoutInflater
+    participant LayoutInflater-Factory2
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>PhoneWindow: setContentView
+    PhoneWindow->>LayoutInflater: inflate
+    LayoutInflater->>LayoutInflater-Factory2: onCreateView
+    ```
+
+    ```mermaid
+    classDiagram
+
+    class FragmentActivity {
+        - FragmentController mFragments
+    }
+    class FragmentController
+    class Activity {
+        - Window mWindow
+    }
+    class PhoneWindow {
+        - LayoutInflater mLayoutInflater
+    }
+    class LayoutInflater
+    class LayoutInflater-Factory2
+
+    FragmentActivity --> FragmentController: hold
+    FragmentActivity --|> Activity
+    Activity --> Window: hold
+    PhoneWindow --|> Window
+    PhoneWindow --> LayoutInflater: hold
+    Activity --|> LayoutInflater-Factory2
+    LayoutInflater --> LayoutInflater-Factory2: hold
+    ```
+
+
     `mPrivateFactory`实际上是我们写的的`MainActivity`，所以继续会走到`MainActivity.onCreateView`
     ```java
     // androidx.fragment.app.FragmentActivity
@@ -475,8 +954,53 @@ FragmentManager --> FragmentStore: hold
     ```
     `@param View parent`: xml的根布局`ConstraintLayout`
     `@param String name`: `fragment`，也就是`xml-1`中的`fragment`标签
-
     `dispatchFragmentsOnCreateView(`: 会先尝试通过该方法处理`fragment`标签对应的View，如果有返回结果则跳过`if (v == null)`中的逻辑，我们这里`name`为`framgment`，所以不应该返回null。
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant PhoneWindow
+    participant LayoutInflater
+    participant LayoutInflater-Factory2
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>PhoneWindow: setContentView
+    PhoneWindow->>LayoutInflater: inflate
+    LayoutInflater->>LayoutInflater-Factory2: onCreateView
+    LayoutInflater-Factory2->>FragmentActivity: onCreateView
+    ```
+
+    ```mermaid
+    classDiagram
+
+    class FragmentActivity {
+        - FragmentController mFragments
+    }
+    class FragmentController
+    class Activity {
+        - Window mWindow
+    }
+    class PhoneWindow {
+        - LayoutInflater mLayoutInflater
+    }
+    class LayoutInflater
+    class LayoutInflater-Factory2
+
+    FragmentActivity --> FragmentController: hold
+    FragmentActivity --|> Activity
+    Activity --> Window: hold
+    PhoneWindow --|> Window
+    PhoneWindow --> LayoutInflater: hold
+    Activity --|> LayoutInflater-Factory2
+    LayoutInflater --> LayoutInflater-Factory2: hold
+    ```
+
     ```java
     // androidx.fragment.app.FragmentActivity
         @Nullable
@@ -627,6 +1151,37 @@ FragmentActivity->>FragmentActivity: onStart
 
 以上以`Create`为例，了解了`FragmentActivity`的状态对`Fragment`的状态影响以及`FragmentActivity`, `FragmentController`, `FragmentManager`, `FragmentStateManager`, `Fragment`中间的关系。
 
+```
+MainActivity onCreate
+MainActivity onCreateView 2
+MainActivity onCreateView 1
+MainActivity onCreateView 2
+MainActivity onCreateView 1
+MainActivity onCreateView 2
+MainActivity onCreateView 1
+MainActivity onCreateView 2
+MainActivity onCreateView 1
+MainActivity onCreateView 2
+MainActivity onCreateView 1
+MainActivity onCreateView 2
+fragment 1 onAttach
+MainActivity onAttachFragment
+fragment 1 onCreate
+fragment 1 onCreateView
+fragment 1 onViewCreated
+MainActivity onCreateView 2
+MainActivity onCreateView 1
+MainActivity onCreate end
+MainActivity onStart begin
+fragment 1 onActivityCreated
+fragment 1 onStart
+MainActivity onStart end
+MainActivity onResume
+fragment 1 onResumek
+```
+
+简单总结：
+
 | Activity 生命周期 | Fragment 生命周期回调                                               |
 | ----------------- | ------------------------------------------------------------------- |
 | onCreate          | - onAttach <br> - onCreate <br> - onCreateView <br> - onViewCreated |
@@ -634,16 +1189,8 @@ FragmentActivity->>FragmentActivity: onStart
 | onResume          | - onResume                                                          |
 
 
-
-
-
-
-
 ### 总结
-总结以上，`FragmentActivity` `onCreate` 时将 `Create` 事件 $\xrightarrow{1:通知:1}$ `FragmentController` $\xrightarrow{1:通知:1}$ `FragmentManager` $\xrightarrow{1:通知:n}$ 持有的每个 `FragmentStateManager` $\xrightarrow{1:通知:1}$ `Fragment`
-也就是说 `Fragment` 生命周期随着 `FragmentActivity` 的变化而变化。
-
-
+总结以上，`FragmentActivity` `onCreate` 时将 `Create` 事件 $\xrightarrow{1:通知:1}$ `FragmentController` $\xrightarrow{1:通知:1}$ `FragmentManager` $\xrightarrow{1:通知:n}$ 持有的每个 `FragmentStateManager` $\xrightarrow{1:通知:1}$ `Fragment`。
 
 
 
