@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>demo_title_1 [ Swithun Blog ]</title>
+  <title> [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -87,7 +87,7 @@
               
                 <!--如果是文章-->
                 <ul>
-                    <li class="file">
+                    <li class="file active">
                         <a href="/2023/10/22/Android/temp/">
                             <i class="fa fa-file"></i>
                             temp
@@ -111,7 +111,7 @@
                         
                 <!--如果是文章-->
                 <ul>
-                    <li class="file active">
+                    <li class="file">
                         <a href="/2023/10/10/demo_folder_level1/demo1/">
                             <i class="fa fa-file"></i>
                             demo1
@@ -158,40 +158,26 @@
       <div id="content-inner">
         
 <article id="post">
-  <h1>demo_title_1</h1>
-  <h2 id="math"><a href="#math" class="headerlink" title="math"></a>math</h2><ul>
-<li>inline : A $\xrightarrow{test}$ B</li>
-<li>block:<br>$$\xrightarrow{test2}$$</li>
-</ul>
-<h2 id="mermaid"><a href="#mermaid" class="headerlink" title="mermaid"></a>mermaid</h2><pre class="mermaid">classDiagram
-      class ClientTransactionItem
-      class ActivityTransactionItem
-      class ActivityRelaunchItem
-      class BaseClientRequest {
-         <<interface>>
-         + execute(ClientTransactionHandler client, IBinder token,PendingTransactionActions pendingActions)
-      }
-      ClientTransactionItem <|-- ActivityTransactionItem
-      ActivityTransactionItem <|-- ActivityRelaunchItem
-      BaseClientRequest <|-- ClientTransactionItem: implements</pre>
+  <h1></h1>
+  <pre class="mermaid">sequenceDiagram
+autonumber
 
-<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><p>this is <code>inline code</code></p>
-<p>java</p>
-<pre><code class="java">class A &#123;
-  System -&gt; &#123;
+participant FragmentActivity
+participant FragmentManager
+participant Fragment
 
-  &#125;
-&#125;
-</code></pre>
-<p>kotlin</p>
-<pre><code class="kotlin">class B &#123;
-    fun test() &#123;
+activate FragmentActivity
+FragmentActivity->>FragmentActivity: onCreate begin
+FragmentActivity->>FragmentManager: dispatchCreate() 分发CREATE
+FragmentActivity->>FragmentActivity: setContentView begin
+FragmentActivity->>FragmentActivity: onCreateView
+FragmentActivity->>FragmentManager: moveToExpectedState
+FragmentManager->>Fragment: performAttach
+Fragment->>Fragment: onAttach
+FragmentActivity->>FragmentActivity: onCreate end 
+deactivate FragmentActivity
 
-    &#125;
-&#125;
-</code></pre>
-<h1 id="普通文本"><a href="#普通文本" class="headerlink" title="普通文本"></a>普通文本</h1><p>你好，hello, A -&gt; B</p>
-
+FragmentActivity->>FragmentActivity: onStart</pre>
 </article>
 
 <script type="text/x-mathjax-config">
