@@ -679,6 +679,11 @@ hexo-i18n@^1.0.0:
   dependencies:
     sprintf-js "^1.0.3"
 
+hexo-image-link@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/hexo-image-link/-/hexo-image-link-0.0.5.tgz"
+  integrity sha512-IakmAA0lPATF6iUfHAzYSuZPA6DYLlMj4LTGnT4LeEtmIHjPWsTDgGssPbMJakA47M1vNv5WwiNS3GCtdH2FQw==
+
 hexo-log@^3.0.0, hexo-log@^3.2.0:
   version "3.2.0"
   resolved "https://registry.npmjs.org/hexo-log/-/hexo-log-3.2.0.tgz"

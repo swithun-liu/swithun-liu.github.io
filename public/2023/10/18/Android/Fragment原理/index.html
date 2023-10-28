@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title> [ Swithun Blog ]</title>
+  <title>ViewModel配置变更后仍然存在原理 [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -77,7 +77,7 @@
                 <!--如果是文章-->
                 <ul>
                     <li class="file active">
-                        <a href="/2023/10/15/Android/Fragment原理/">
+                        <a href="/2023/10/18/Android/Fragment原理/">
                             <i class="fa fa-file"></i>
                             Fragment原理
                         </a>
@@ -148,6 +148,17 @@
                 </ul>
 
                  
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/28/test/">
+                            <i class="fa fa-file"></i>
+                            test
+                        </a>
+                    </li>
+                </ul>
+
+              
 </div>
 
 <div id="toc" style="display: none;"></div>
@@ -158,71 +169,10 @@
       <div id="content-inner">
         
 <article id="post">
-  <h1></h1>
-  <p>基于Android Api 33</p>
-<pre><code class="java">// androidx.fragment.app.FragmentActivity
-public class FragmentActivity extends ComponentActivity  ... &#123;
-
-    final FragmentController mFragments = FragmentController.createController(new HostCallbacks());
-</code></pre>
-<pre><code class="java">// androidx.fragment.app.FragmentController
-public class FragmentController &#123;
-    private final FragmentHostCallback&lt;?&gt; mHost;
-</code></pre>
-<pre class="mermaid">classDiagram
-
-class FragmentActivity {
-    - FragmentController mFragments
-}
-class FragmentController {
-    - FragmentHostCallback<?> mHost
-    - FragmentManager getSupportFragmentManager()
-}
-class FragmentManager {
-    <<abstract>>
-    - FragmentStore mFragmentStore
-}
-class FragmentManagerImpl
-class FragmentHostCallback {
-    <<abstract>>
-    - FragmentManager mFragmentManager
-}
-class FragmentStore
-
-FragmentActivity --> FragmentController: hold
-FragmentController --> FragmentHostCallback: hold
-FragmentHostCallback --> FragmentManager: hold
-FragmentManagerImpl --|> FragmentManager: implements
-FragmentManager --> FragmentStore: hold</pre>
-
-<ul>
-<li><p><code>FragmentController</code>&gt; </p>
-<ul>
-<li>Provides integration points with a FragmentManager for a fragment host.<br>“提供与 FragmentManager 集成的接口，用于托管片段（Fragment）。</li>
-<li>It is the responsibility of the host to take care of the Fragment’s lifecycle. The methods provided by FragmentController are for that purpose.<br>宿主（Host）需要负责处理片段（Fragment）的生命周期。FragmentController 提供的方法就是为了这个目的。”</li>
-</ul>
-</li>
-<li><p><code>androidx.fragment.app.FragmentManager</code></p>
-<ul>
-<li><p>Static library support version of the framework’s android.app.FragmentManager. Used to write apps that run on platforms prior to Android 3.0. When running on Android 3.0 or above, this implementation is still used; it does not try to switch to the framework’s implementation. See the framework FragmentManager documentation for a class overview.</p>
-</li>
-<li><p>Your activity must derive from FragmentActivity to use this. From such an activity, you can acquire the FragmentManager by calling FragmentActivity.getSupportFragmentManager.</p>
-</li>
-</ul>
-</li>
-</ul>
-<pre><code class="java">// androidx.fragment.app.Fragment
-    static final int INITIALIZING = -1;          // Not yet attached.
-    static final int ATTACHED = 0;               // Attached to the host.
-    static final int CREATED = 1;                // Created.
-    static final int VIEW_CREATED = 2;           // View Created.
-    static final int AWAITING_EXIT_EFFECTS = 3;  // Downward state, awaiting exit effects
-    static final int ACTIVITY_CREATED = 4;       // Fully created, not started.
-    static final int STARTED = 5;                // Created and started, not resumed.
-    static final int AWAITING_ENTER_EFFECTS = 6; // Upward state, awaiting enter effects
-    static final int RESUMED = 7;                // Created started and resumed.
-</code></pre>
-<p><img src="/image.png" alt="Fragment Lifecycle"></p>
+  <h1>ViewModel配置变更后仍然存在原理</h1>
+  <blockquote>
+<p>基于Android Api 33</p>
+</blockquote>
 <h2 id="Activity的生命周期与Fragment生命周期的关联"><a href="#Activity的生命周期与Fragment生命周期的关联" class="headerlink" title="Activity的生命周期与Fragment生命周期的关联"></a>Activity的生命周期与Fragment生命周期的关联</h2><p><img src="/image-2.png" alt="Alt text"></p>
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 &lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
@@ -1063,6 +1013,25 @@ class FragmentStateManager &#123;
             @NonNull Context context, @NonNull AttributeSet attrs) &#123;
         return mFragments.onCreateView(parent, name, context, attrs);
 </code></pre>
+  <pre class="mermaid">    sequenceDiagram
+  autonumber
+
+  participant FragmentActivity
+  participant FragmentController
+  participant Activity
+  participant PhoneWindow
+  participant LayoutInflater
+  participant LayoutInflater-Factory2
+
+  FragmentActivity->>FragmentActivity: onCreate begin
+  FragmentActivity->>FragmentController: dispatchCreate
+  FragmentActivity->>Activity: setContentView
+  Activity->>PhoneWindow: setContentView
+  PhoneWindow->>LayoutInflater: inflate
+  LayoutInflater->>LayoutInflater-Factory2: onCreateView
+  LayoutInflater-Factory2->>FragmentActivity: onCreateView
+  FragmentActivity->>FragmentController: onCreateView</pre>
+
 <pre><code class="java">// androidx.fragment.app.FragmentController
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context,
             @NonNull AttributeSet attrs) &#123;
@@ -1070,6 +1039,63 @@ class FragmentStateManager &#123;
                 .onCreateView(parent, name, context, attrs);
     &#125;
 </code></pre>
+  <pre class="mermaid">    sequenceDiagram
+  autonumber
+
+  participant FragmentActivity
+  participant FragmentController
+  participant Activity
+  participant PhoneWindow
+  participant LayoutInflater
+  participant LayoutInflater-Factory2
+  participant FragmentLayoutInflaterFactory
+
+  FragmentActivity->>FragmentActivity: onCreate begin
+  FragmentActivity->>FragmentController: dispatchCreate
+  FragmentActivity->>Activity: setContentView
+  Activity->>PhoneWindow: setContentView
+  PhoneWindow->>LayoutInflater: inflate
+  LayoutInflater->>LayoutInflater-Factory2: onCreateView
+  LayoutInflater-Factory2->>FragmentActivity: onCreateView
+  FragmentActivity->>FragmentController: onCreateView
+  FragmentController->>FragmentLayoutInflaterFactory: onCreateView</pre>
+
+  <pre class="mermaid">    classDiagram
+
+  class FragmentActivity {
+      - FragmentController mFragments
+  }
+  class FragmentController {
+      FragmentHostCallback<?> mHost
+  }
+  class Activity {
+      - Window mWindow
+  }
+  class PhoneWindow {
+      - LayoutInflater mLayoutInflater
+  }
+  class LayoutInflater
+  class LayoutInflater-Factory2
+  class FragmentManager {
+      FragmentLayoutInflaterFactory mLayoutInflaterFactory
+  }
+  class FragmentHostCallback {
+      <<abstract>>
+      FragmentManager mFragmentManager
+  }
+  class FragmentLayoutInflaterFactory
+
+  FragmentActivity --> FragmentController: hold
+  FragmentActivity --|> Activity
+  Activity --> Window: hold
+  PhoneWindow --|> Window
+  PhoneWindow --> LayoutInflater: hold
+  Activity --|> LayoutInflater-Factory2
+  LayoutInflater --> LayoutInflater-Factory2: hold
+  FragmentController --> FragmentHostCallback: hold
+  FragmentHostCallback --> FragmentManager: hold
+  FragmentManager --> FragmentLayoutInflaterFactory: hold</pre>
+
 <p>  return <code>FragmentActivity.dispatchFragmentsOnCreateView</code> $\rightarrow$ return <code>FragmentController.onCreateView</code> $\rightarrow$ return <code>FragmentLayoutInflaterFactory.onCreateView</code></p>
 <pre><code class="java">// androidx.fragment.app.FragmentLayoutInflaterFactory
     public View onCreateView(@Nullable final View parent, @NonNull String name,
@@ -1098,6 +1124,72 @@ class FragmentStateManager &#123;
         // 确保走到这行代码是Fragment已经构造好view
    [B2] fragmentStateManager.ensureInflatedView();
 </code></pre>
+  <pre class="mermaid">    sequenceDiagram
+  autonumber
+
+  participant FragmentActivity
+  participant FragmentController
+  participant Activity
+  participant PhoneWindow
+  participant LayoutInflater
+  participant LayoutInflater-Factory2
+  participant FragmentLayoutInflaterFactory
+  participant Fragment
+  participant FragmentStateManager
+
+  FragmentActivity->>FragmentActivity: onCreate begin
+  FragmentActivity->>FragmentController: dispatchCreate
+  FragmentActivity->>Activity: setContentView
+  Activity->>PhoneWindow: setContentView
+  PhoneWindow->>LayoutInflater: inflate
+  LayoutInflater->>LayoutInflater-Factory2: onCreateView
+  LayoutInflater-Factory2->>FragmentActivity: onCreateView
+  FragmentActivity->>FragmentController: onCreateView
+  FragmentController->>FragmentLayoutInflaterFactory: onCreateView
+  FragmentLayoutInflaterFactory->>Fragment: new
+  FragmentLayoutInflaterFactory->>FragmentManager: addFragment
+  FragmentManager->>FragmentLayoutInflaterFactory: addFragment return FragmentStateManager
+  FragmentLayoutInflaterFactory->>FragmentStateManager: moveToExpectedState</pre>
+
+  <pre class="mermaid">    classDiagram
+
+  class FragmentActivity {
+      - FragmentController mFragments
+  }
+  class FragmentController {
+      FragmentHostCallback<?> mHost
+  }
+  class Activity {
+      - Window mWindow
+  }
+  class PhoneWindow {
+      - LayoutInflater mLayoutInflater
+  }
+  class LayoutInflater
+  class LayoutInflater-Factory2
+  class FragmentManager {
+      FragmentLayoutInflaterFactory mLayoutInflaterFactory
+  }
+  class FragmentHostCallback {
+      <<abstract>>
+      FragmentManager mFragmentManager
+  }
+  class FragmentLayoutInflaterFactory {
+      FragmentManager mFragmentManager
+  }
+
+  FragmentActivity --> FragmentController: hold
+  FragmentActivity --|> Activity
+  Activity --> Window: hold
+  PhoneWindow --|> Window
+  PhoneWindow --> LayoutInflater: hold
+  Activity --|> LayoutInflater-Factory2
+  LayoutInflater --> LayoutInflater-Factory2: hold
+  FragmentController --> FragmentHostCallback: hold
+  FragmentHostCallback --> FragmentManager: hold
+  FragmentManager --> FragmentLayoutInflaterFactory: hold
+  FragmentLayoutInflaterFactory --> FragmentManager: ref</pre>
+
 <ul>
 <li><code>fragmentStateManager = mFragmentManager.addFragment(fragment);</code>: 将新建的<code>Fragment</code>添加到<code>FragmentManager</code>中进行管理。</li>
 </ul>
@@ -1148,6 +1240,33 @@ class FragmentStateManager &#123;
         mDispatcher.dispatchOnFragmentAttached(mFragment, false);
     &#125;
 </code></pre>
+  <pre class="mermaid">    sequenceDiagram
+  autonumber
+
+  participant FragmentActivity
+  participant FragmentController
+  participant Activity
+  participant PhoneWindow
+  participant LayoutInflater
+  participant LayoutInflater-Factory2
+  participant FragmentLayoutInflaterFactory
+  participant Fragment
+  participant FragmentStateManager
+
+  FragmentActivity->>FragmentActivity: onCreate begin
+  FragmentActivity->>FragmentController: dispatchCreate
+  FragmentActivity->>Activity: setContentView
+  Activity->>PhoneWindow: setContentView
+  PhoneWindow->>LayoutInflater: inflate
+  LayoutInflater->>LayoutInflater-Factory2: onCreateView
+  LayoutInflater-Factory2->>FragmentActivity: onCreateView
+  FragmentActivity->>FragmentController: onCreateView
+  FragmentController->>FragmentLayoutInflaterFactory: onCreateView
+  FragmentLayoutInflaterFactory->>Fragment: new
+  FragmentLayoutInflaterFactory->>FragmentManager: addFragment
+  FragmentManager->>FragmentLayoutInflaterFactory: addFragment return FragmentStateManager
+  FragmentLayoutInflaterFactory->>FragmentStateManager: moveToExpectedState
+  FragmentStateManager->>Fragment: performAttach</pre>
 </li>
 <li><p><code>[:1:0:0:1:1:0] mFragment.performAttach()</code></p>
 <pre><code class="java">// androidx.fragment.app.Fragment
@@ -1235,7 +1354,7 @@ fragment 1 onResumek
 <table>
 <thead>
 <tr>
-<th>Activity 生命周期</th>
+<th>Activity 生命周期回调</th>
 <th>Fragment 生命周期回调</th>
 </tr>
 </thead>
@@ -1252,8 +1371,8 @@ fragment 1 onResumek
 <td>- onResume</td>
 </tr>
 </tbody></table>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总结以上，<code>FragmentActivity</code> <code>onCreate</code> 时将 <code>Create</code> 事件 $\xrightarrow{1:通知:1}$ <code>FragmentController</code> $\xrightarrow{1:通知:1}$ <code>FragmentManager</code> $\xrightarrow{1:通知:n}$ 持有的每个 <code>FragmentStateManager</code> $\xrightarrow{1:通知:1}$ <code>Fragment</code>。</p>
-<h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>总结以上，<code>FragmentActivity</code> <code>onCreate</code> 时将 <code>Create</code> 事件 $\xrightarrow{1:通知:1}$ <code>FragmentController</code> $\xrightarrow{1:通知:1}$ <code>FragmentManager</code> $\xrightarrow{1:通知:n}$ 持有的每个 <code>FragmentStateManager</code> $\xrightarrow{1:通知:1}$ <code>Fragment</code>。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6970998913754988552">Android Jetpack 开发套件 #7 AndroidX Fragment 核心原理分析</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.51cto.com/article/672135.html">详细聊聊Fragment的实现原理</a></li>
 </ul>

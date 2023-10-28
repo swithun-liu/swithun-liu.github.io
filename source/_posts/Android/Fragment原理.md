@@ -1,78 +1,18 @@
-基于Android Api 33
+---
+title: ViewModel配置变更后仍然存在原理
+author: Swithun Liu
+date: 2023-10-18
+category: Android
+tag: Fragment
+layout: post
+mermaid: true
+---
 
-```java
-// androidx.fragment.app.FragmentActivity
-public class FragmentActivity extends ComponentActivity  ... {
-
-    final FragmentController mFragments = FragmentController.createController(new HostCallbacks());
-
-```
-
-```java
-// androidx.fragment.app.FragmentController
-public class FragmentController {
-    private final FragmentHostCallback<?> mHost;
-```
-
-```mermaid
-classDiagram
-
-class FragmentActivity {
-    - FragmentController mFragments
-}
-class FragmentController {
-    - FragmentHostCallback<?> mHost
-    - FragmentManager getSupportFragmentManager()
-}
-class FragmentManager {
-    <<abstract>>
-    - FragmentStore mFragmentStore
-}
-class FragmentManagerImpl
-class FragmentHostCallback {
-    <<abstract>>
-    - FragmentManager mFragmentManager
-}
-class FragmentStore
-
-FragmentActivity --> FragmentController: hold
-FragmentController --> FragmentHostCallback: hold
-FragmentHostCallback --> FragmentManager: hold
-FragmentManagerImpl --|> FragmentManager: implements
-FragmentManager --> FragmentStore: hold
-```
-
-- `FragmentController`> 
-  - Provides integration points with a FragmentManager for a fragment host.
-    "提供与 FragmentManager 集成的接口，用于托管片段（Fragment）。
-  - It is the responsibility of the host to take care of the Fragment's lifecycle. The methods provided by FragmentController are for that purpose.  
-    宿主（Host）需要负责处理片段（Fragment）的生命周期。FragmentController 提供的方法就是为了这个目的。"
-
-
-- `androidx.fragment.app.FragmentManager`
-  - Static library support version of the framework's android.app.FragmentManager. Used to write apps that run on platforms prior to Android 3.0. When running on Android 3.0 or above, this implementation is still used; it does not try to switch to the framework's implementation. See the framework FragmentManager documentation for a class overview.
-    
-  - Your activity must derive from FragmentActivity to use this. From such an activity, you can acquire the FragmentManager by calling FragmentActivity.getSupportFragmentManager.
-
-```java
-// androidx.fragment.app.Fragment
-    static final int INITIALIZING = -1;          // Not yet attached.
-    static final int ATTACHED = 0;               // Attached to the host.
-    static final int CREATED = 1;                // Created.
-    static final int VIEW_CREATED = 2;           // View Created.
-    static final int AWAITING_EXIT_EFFECTS = 3;  // Downward state, awaiting exit effects
-    static final int ACTIVITY_CREATED = 4;       // Fully created, not started.
-    static final int STARTED = 5;                // Created and started, not resumed.
-    static final int AWAITING_ENTER_EFFECTS = 6; // Upward state, awaiting enter effects
-    static final int RESUMED = 7;                // Created started and resumed.
-
-```
-
-![Fragment Lifecycle](image.png)
+> 基于Android Api 33
 
 ## Activity的生命周期与Fragment生命周期的关联
 
-![Alt text](image-2.png)
+![Alt text](./Fragment原理/image-2.png)
 
 ### 代码
 
@@ -187,7 +127,7 @@ class MainActivity : FragmentActivity() {
     private fun f1() {
         f1?.setOnClickListener {
             val transaction = supportFragmentManager.beginTransaction();
-            transaction.replace(R.id.content_fragment, Fragment2())
+            transaction.add(R.id.content_fragment, Fragment2())
             transaction.commit()
         }
     }
@@ -323,6 +263,8 @@ class Fragment2: Fragment1() {
        [:0] super.onCreate(savedInstanceState)
        [:1] setContentView(R.layout.activity_main)
     ```
+
+#### 关键节点 [:0] FragmentActivity.onCreate
 
 - `[:0] FragmentActivity.onCreate`
     ```java
@@ -674,6 +616,9 @@ class Fragment2: Fragment1() {
     ```
 
     `[:0:1:0:0:0:0]`只是将用来管理`Fragment`的`FragmentStateManager`的状态更新了，这里才是真正更新`Fragment`的状态——但是此时`FragmentManager`管理的`Fragment`数量实际上为0，所以这里先不继续看，后续流程下面`[:1:0:0:1]`会继续讲到。
+
+#### 关键节点 [:1] setContentView(R.layout.activity_main)
+
 - `[:1] setContentView(R.layout.activity_main)`
     执行`[:0] super.onCreate(savedInstanceState)`之后，setContentView
     ```java
@@ -1008,6 +953,28 @@ class Fragment2: Fragment1() {
                 @NonNull Context context, @NonNull AttributeSet attrs) {
             return mFragments.onCreateView(parent, name, context, attrs);
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant PhoneWindow
+    participant LayoutInflater
+    participant LayoutInflater-Factory2
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>PhoneWindow: setContentView
+    PhoneWindow->>LayoutInflater: inflate
+    LayoutInflater->>LayoutInflater-Factory2: onCreateView
+    LayoutInflater-Factory2->>FragmentActivity: onCreateView
+    FragmentActivity->>FragmentController: onCreateView
+    ```
+
     ```java
     // androidx.fragment.app.FragmentController
         public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context,
@@ -1016,6 +983,68 @@ class Fragment2: Fragment1() {
                     .onCreateView(parent, name, context, attrs);
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant PhoneWindow
+    participant LayoutInflater
+    participant LayoutInflater-Factory2
+    participant FragmentLayoutInflaterFactory
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>PhoneWindow: setContentView
+    PhoneWindow->>LayoutInflater: inflate
+    LayoutInflater->>LayoutInflater-Factory2: onCreateView
+    LayoutInflater-Factory2->>FragmentActivity: onCreateView
+    FragmentActivity->>FragmentController: onCreateView
+    FragmentController->>FragmentLayoutInflaterFactory: onCreateView
+    ```
+
+    ```mermaid
+    classDiagram
+
+    class FragmentActivity {
+        - FragmentController mFragments
+    }
+    class FragmentController {
+        FragmentHostCallback<?> mHost
+    }
+    class Activity {
+        - Window mWindow
+    }
+    class PhoneWindow {
+        - LayoutInflater mLayoutInflater
+    }
+    class LayoutInflater
+    class LayoutInflater-Factory2
+    class FragmentManager {
+        FragmentLayoutInflaterFactory mLayoutInflaterFactory
+    }
+    class FragmentHostCallback {
+        <<abstract>>
+        FragmentManager mFragmentManager
+    }
+    class FragmentLayoutInflaterFactory
+
+    FragmentActivity --> FragmentController: hold
+    FragmentActivity --|> Activity
+    Activity --> Window: hold
+    PhoneWindow --|> Window
+    PhoneWindow --> LayoutInflater: hold
+    Activity --|> LayoutInflater-Factory2
+    LayoutInflater --> LayoutInflater-Factory2: hold
+    FragmentController --> FragmentHostCallback: hold
+    FragmentHostCallback --> FragmentManager: hold
+    FragmentManager --> FragmentLayoutInflaterFactory: hold
+    ```
+
     return `FragmentActivity.dispatchFragmentsOnCreateView` $\rightarrow$ return `FragmentController.onCreateView` $\rightarrow$ return `FragmentLayoutInflaterFactory.onCreateView`
     ```java
     // androidx.fragment.app.FragmentLayoutInflaterFactory
@@ -1045,6 +1074,77 @@ class Fragment2: Fragment1() {
             // 确保走到这行代码是Fragment已经构造好view
        [B2] fragmentStateManager.ensureInflatedView();
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant PhoneWindow
+    participant LayoutInflater
+    participant LayoutInflater-Factory2
+    participant FragmentLayoutInflaterFactory
+    participant Fragment
+    participant FragmentStateManager
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>PhoneWindow: setContentView
+    PhoneWindow->>LayoutInflater: inflate
+    LayoutInflater->>LayoutInflater-Factory2: onCreateView
+    LayoutInflater-Factory2->>FragmentActivity: onCreateView
+    FragmentActivity->>FragmentController: onCreateView
+    FragmentController->>FragmentLayoutInflaterFactory: onCreateView
+    FragmentLayoutInflaterFactory->>Fragment: new
+    FragmentLayoutInflaterFactory->>FragmentManager: addFragment
+    FragmentManager->>FragmentLayoutInflaterFactory: addFragment return FragmentStateManager
+    FragmentLayoutInflaterFactory->>FragmentStateManager: moveToExpectedState
+    ```
+
+    ```mermaid
+    classDiagram
+
+    class FragmentActivity {
+        - FragmentController mFragments
+    }
+    class FragmentController {
+        FragmentHostCallback<?> mHost
+    }
+    class Activity {
+        - Window mWindow
+    }
+    class PhoneWindow {
+        - LayoutInflater mLayoutInflater
+    }
+    class LayoutInflater
+    class LayoutInflater-Factory2
+    class FragmentManager {
+        FragmentLayoutInflaterFactory mLayoutInflaterFactory
+    }
+    class FragmentHostCallback {
+        <<abstract>>
+        FragmentManager mFragmentManager
+    }
+    class FragmentLayoutInflaterFactory {
+        FragmentManager mFragmentManager
+    }
+
+    FragmentActivity --> FragmentController: hold
+    FragmentActivity --|> Activity
+    Activity --> Window: hold
+    PhoneWindow --|> Window
+    PhoneWindow --> LayoutInflater: hold
+    Activity --|> LayoutInflater-Factory2
+    LayoutInflater --> LayoutInflater-Factory2: hold
+    FragmentController --> FragmentHostCallback: hold
+    FragmentHostCallback --> FragmentManager: hold
+    FragmentManager --> FragmentLayoutInflaterFactory: hold
+    FragmentLayoutInflaterFactory --> FragmentManager: ref
+    ```
+
     - `fragmentStateManager = mFragmentManager.addFragment(fragment);`: 将新建的`Fragment`添加到`FragmentManager`中进行管理。
 - `[:1:0:0:1] fragmentStateManager.moveToExpectedState();`
     通过FragmentStateManager更新他持有的一对一的Fragment的State  
@@ -1092,6 +1192,36 @@ class Fragment2: Fragment1() {
             mDispatcher.dispatchOnFragmentAttached(mFragment, false);
         }
     ```
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant FragmentActivity
+    participant FragmentController
+    participant Activity
+    participant PhoneWindow
+    participant LayoutInflater
+    participant LayoutInflater-Factory2
+    participant FragmentLayoutInflaterFactory
+    participant Fragment
+    participant FragmentStateManager
+
+    FragmentActivity->>FragmentActivity: onCreate begin
+    FragmentActivity->>FragmentController: dispatchCreate
+    FragmentActivity->>Activity: setContentView
+    Activity->>PhoneWindow: setContentView
+    PhoneWindow->>LayoutInflater: inflate
+    LayoutInflater->>LayoutInflater-Factory2: onCreateView
+    LayoutInflater-Factory2->>FragmentActivity: onCreateView
+    FragmentActivity->>FragmentController: onCreateView
+    FragmentController->>FragmentLayoutInflaterFactory: onCreateView
+    FragmentLayoutInflaterFactory->>Fragment: new
+    FragmentLayoutInflaterFactory->>FragmentManager: addFragment
+    FragmentManager->>FragmentLayoutInflaterFactory: addFragment return FragmentStateManager
+    FragmentLayoutInflaterFactory->>FragmentStateManager: moveToExpectedState
+    FragmentStateManager->>Fragment: performAttach
+    ```
+
 - `[:1:0:0:1:1:0] mFragment.performAttach()`
     ```java
     // androidx.fragment.app.Fragment
@@ -1182,18 +1312,335 @@ fragment 1 onResumek
 
 简单总结：
 
-| Activity 生命周期 | Fragment 生命周期回调                                               |
+| Activity 生命周期回调 | Fragment 生命周期回调                                               |
 | ----------------- | ------------------------------------------------------------------- |
 | onCreate          | - onAttach <br> - onCreate <br> - onCreateView <br> - onViewCreated |
 | onStart           | - onActivityCreated <br> - onStart                                  |
 | onResume          | - onResume                                                          |
 
 
-### 总结
+#### 总结
 总结以上，`FragmentActivity` `onCreate` 时将 `Create` 事件 $\xrightarrow{1:通知:1}$ `FragmentController` $\xrightarrow{1:通知:1}$ `FragmentManager` $\xrightarrow{1:通知:n}$ 持有的每个 `FragmentStateManager` $\xrightarrow{1:通知:1}$ `Fragment`。
 
+### 代码中动态添加Fragment
 
+```kotlin
+// MainActivity
+    private fun f1() {
+        f1?.setOnClickListener {
+       [:2] val transaction = supportFragmentManager.beginTransaction()
+       [:3] transaction.add(R.id.content_fragment, Fragment2())
+       [:4] transaction.commit()
+        }
+    }
+```
+- `[:2] val transaction = supportFragmentManager.beginTransaction()`
+    ```kotlin
+    // androidx.fragment.app.FragmentManager
+        public FragmentTransaction beginTransaction() {
+            return new BackStackRecord(this);
+        }
+    ```
+    ```mermaid
+    classDiagram
+    class FragmentTransaction
+    class BackStackRecord
+    BackStackRecord --|> FragmentTransaction: extends
+    ```
+- `[:3] transaction.add(R.id.content_fragment, Fragment2())`
+    ```java
+    // androidx.fragment.app.FragmentTransaction
+        public FragmentTransaction add(@IdRes int containerViewId, @NonNull Fragment fragment) {
+       [:3:0] doAddOp(containerViewId, fragment, null, OP_ADD);
+            return this;
+        }
+    ```
+    其中`OP_ADD`⬇️ = 1
+    ```java
+    // androidx.fragment.app.FragmentTransaction
+        static final int OP_NULL = 0;
+        static final int OP_ADD = 1;
+        static final int OP_REPLACE = 2;
+        static final int OP_REMOVE = 3;
+        static final int OP_HIDE = 4;
+        static final int OP_SHOW = 5;
+        static final int OP_DETACH = 6;
+        static final int OP_ATTACH = 7;
+        static final int OP_SET_PRIMARY_NAV = 8;
+        static final int OP_UNSET_PRIMARY_NAV = 9;
+        static final int OP_SET_MAX_LIFECYCLE = 10;
+    ```
+- `[:3:0] doAddOp(containerViewId, fragment, null, OP_ADD)`
+    ```java
+    // androidx.fragment.app.FragmentTransaction
+        void doAddOp(int containerViewId, Fragment fragment, @Nullable String tag, int opcmd) {
+            ...
+       [:3:0:1] addOp(new Op(opcmd, fragment));
+        }
+    ```
+- `[:3:0:1] addOp(new Op(opcmd, fragment))`
+    ```java
+    // androidx.fragment.app.FragmentTransaction
+        void addOp(Op op) {
+            mOps.add(op);
+            ...
+        }
+    ```
 
-## reference
+    ```java
+    // androidx.fragment.app.FragmentTransaction
+        ArrayList<Op> mOps = new ArrayList<>();
+    ```
+
+    ```mermaid
+    classDiagram
+    class FragmentTransaction {
+        ArrayList"Op" mOps
+    }
+    class BackStackRecord
+    class FragmentTransaction-Op
+
+    BackStackRecord--|>FragmentTransaction: extends
+    FragmentTransaction-->FragmentTransaction-Op: holds
+    ```
+
+    `FragmentTransaction` 中有一个 `Op` list记录我们添加的操作——`OP_ADD`
+- `[:4] transaction.commit()`
+    ```java
+    // androidx.fragment.app.FragmentTransaction
+        public abstract int commit();
+    ```
+
+    ```java
+    // androidx.fragment.app.BackStackRecord
+        @Override
+        public int commit() {
+            return commitInternal(false);
+        }
+    ```
+
+    ```java
+        // androidx.fragment.app.BackStackRecord
+        int commitInternal(boolean allowStateLoss) {
+            ...
+        [:4:0] mManager.enqueueAction(this, allowStateLoss);
+            ...
+        }
+    ```
+
+    ```mermaid
+    sequenceDiagram
+        participant BackStackRecord
+        participant FragmentManager
+        BackStackRecord->>FragmentManager: enqueueAction
+    ```
+
+- `[:4:0] mManager.enqueueAction(this, allowStateLoss);`
+    ```java
+    // androidx.fragment.app.FragmentManager
+        void enqueueAction(@NonNull OpGenerator action, boolean allowStateLoss) {
+            ...
+                mPendingActions.add(action);
+       [:4:0:0] scheduleCommit();
+            ...
+        }
+    ```
+
+    ```java
+    // androidx.fragment.app.FragmentManager
+        private final ArrayList<OpGenerator> mPendingActions = new ArrayList<>();
+    ```
+
+    ```java
+    // androidx.fragment.app.FragmentManager
+        interface OpGenerator {
+            /**
+             * Generate transactions to add to {@code records} and whether or not the transaction is
+             * an add or pop to {@code isRecordPop}.
+             *
+             * records and isRecordPop must be added equally so that each transaction in records
+             * matches the boolean for whether or not it is a pop in isRecordPop.
+             *
+             * @param records A list to add transactions to.
+             * @param isRecordPop A list to add whether or not the transactions added to records is
+             *                    a pop transaction.
+             * @return true if something was added or false otherwise.
+             */
+            boolean generateOps(@NonNull ArrayList<BackStackRecord> records,
+                    @NonNull ArrayList<Boolean> isRecordPop);
+        }
+    ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+        participant BackStackRecord
+        participant FragmentManager
+        BackStackRecord->>FragmentManager: enqueueAction
+        FragmentManager->>FragmentManager: mPendingActions.add(action)
+        FragmentManager->>FragmentManager: scheduleCommit
+    ```
+
+    ```mermaid
+    classDiagram
+    class FragmentTransaction {
+        ArrayList"Op" mOps
+    }
+    class BackStackRecord
+    class FragmentTransaction-Op
+    class FragmentManager-OpGenerator
+    class FragmentManager {
+        ArrayList"OpGenerator" mPendingActions
+    }
+
+    BackStackRecord--|>FragmentTransaction: extends
+    FragmentTransaction-->FragmentTransaction-Op: holds
+    BackStackRecord--|> FragmentManager-OpGenerator: implements
+    FragmentManager-->FragmentManager-OpGenerator: holds
+    ```
+
+- `[:4:0:0] scheduleCommit();`
+    ```java
+    // androidx.fragment.app.FragmentManager
+        void scheduleCommit() {
+            synchronized (mPendingActions) {
+                    ...
+          [:4:0:0:0] mHost.getHandler().post(mExecCommit);
+                    ...
+        }
+    ```
+- `[:4:0:0:0] mHost.getHandler().post(mExecCommit)`  
+    `mExecCommit` ⬇️被放入消息队列，之后会被执行。
+
+    ```java
+        // androidx.fragment.app.FragmentManager
+        private Runnable mExecCommit = new Runnable() {
+            @Override
+            public void run() {
+      [:4:0:0:0:0] execPendjingActions(true);
+            }
+        };
+    ```
+- `[:4:0:0:0:0] execPendjingActions(true);`
+    ```java
+        // androidx.fragment.app.FragmentManager
+        boolean execPendingActions(boolean allowStateLoss) {
+            ensureExecReady(allowStateLoss);
+
+    [:4:0:0:0:0:0]while (generateOpsForPendingActions(mTmpRecords, mTmpIsPop)) {
+                mExecutingActions = true;
+                try {
+     [:4:0:0:0:0:1] removeRedundantOperationsAndExecute(mTmpRecords, mTmpIsPop);
+                    ...
+    ```
+- `[:4:0:0:0:0:0] generateOpsForPendingActions(mTmpRecords, mTmpIsPop)`
+    ```java
+        // androidx.fragment.app.FragmentManager
+        private boolean generateOpsForPendingActions(@NonNull ArrayList<BackStackRecord> records,
+                @NonNull ArrayList<Boolean> isPop) {
+                ...
+                for (int i = 0; i < numActions; i++) {
+      [:4:0:0:0:0:0:0] didSomething |= mPendingActions.get(i).generateOps(records, isPop);
+                }
+                ...
+        }
+    ```
+    这里对`mPendingActions`中的每一个Action都调用`generateOps`——会处理到之前在`[:4:0]`添加的Action
+- `[:4:0:0:0:0:0:0] mPendingActions.get(i).generateOps(records, isPop)`
+    ```java
+        // androidx.fragment.app.BackStackRecord
+        public boolean generateOps(@NonNull ArrayList<BackStackRecord> records,
+                @NonNull ArrayList<Boolean> isRecordPop) {
+
+            ...
+            records.add(this);
+            ...
+        }
+    ```
+    `BackStackRecord`将自己添加到传入的`records`中
+- `[:4:0:0:0:0:1] removeRedundantOperationsAndExecute(mTmpRecords, mTmpIsPop)`  
+    遍历`[:4:0:0:0:0:0]`返回的每一个record，对其处理
+    ```java
+        // androidx.fragment.app.FragmentManager
+        private void removeRedundantOperationsAndExecute(@NonNull ArrayList<BackStackRecord> records,
+                @NonNull ArrayList<Boolean> isRecordPop) {
+            ...
+            final int numRecords = records.size();
+
+            for (int recordNum = 0; recordNum < numRecords; recordNum++) {
+                ...
+                       int reorderingEnd = recordNum + 1;
+      [:4:0:0:0:0:1:0] executeOpsTogether(records, isRecordPop, recordNum, reorderingEnd);
+                ...
+            }
+        }
+    ```
+    遍历执行record，`executeOpsTogether(records`传入了整个`records`——只有一个`OP_ADD`，通过后面两个参数指定要执行的 record的开始位置和结束位置——recordNum(0)和reorderingEnd(recordNum + 1 = 0 + 1 = 1)，也就相当于挨个执行。
+- `[:4:0:0:0:0:1:0] executeOpsTogether(records, isRecordPop, recordNum, reorderingEnd)`
+    ```java
+        // androidx.fragment.app.FragmentManager
+        private void executeOpsTogether(@NonNull ArrayList<BackStackRecord> records,
+                @NonNull ArrayList<Boolean> isRecordPop, int startIndex, int endIndex) {
+            ...
+    [:4:0:0:0:0:1:0:0] executeOps(records, isRecordPop, startIndex, endIndex);
+            ...
+                                Fragment fragment = op.mFragment;
+                                FragmentStateManager fragmentStateManager =
+                                        createOrGetFragmentStateManager(fragment);
+                                fragmentStateManager.moveToExpectedState();
+            ...
+            ...
+    ```
+    `startIndex`: `recordNum` = 0  
+    `endIndex`: `reorderingEnd` = 1  
+- `[:4:0:0:0:0:1:0:0] executeOps(records, isRecordPop, startIndex, endIndex);`
+    ```java
+        // androidx.fragment.app.FragmentManager
+        private static void executeOps(@NonNull ArrayList<BackStackRecord> records,
+            @NonNull ArrayList<Boolean> isRecordPop, int startIndex, int endIndex) {
+            for (int i = startIndex; i < endIndex; i++) {
+     [:4:0:0:0:0:1:0:0:0] record.executeOps();
+                }
+            }
+        }
+    ```
+- `[:4:0:0:0:0:1:0:0:0] record.executeOps();`
+    ```java
+        // androidx.fragment.app.BackStackRecord
+        void executeOps() {
+            final int numOps = mOps.size();
+            for (int opNum = 0; opNum < numOps; opNum++) {
+                switch (op.mCmd) {
+                    case OP_ADD:
+                        f.setAnimations(op.mEnterAnim, op.mExitAnim, op.mPopEnterAnim, op.mPopExitAnim);
+                        mManager.setExitAnimationOrder(f, false);
+    [:4:0:0:0:0:1:0:0:0:0] mManager.addFragment(f);
+                        break;
+    ```
+    `mOps`的数量为1——`[:3:0:1]` 添加的OP_ADD
+- `[:4:0:0:0:0:1:0:0:0:0] mManager.addFragment(f);`
+    ```java
+        // androidx.fragment.app.FragmentManager
+        FragmentStateManager addFragment(@NonNull Fragment fragment) {
+            if (isLoggingEnabled(Log.VERBOSE)) Log.v(TAG, "add: " + fragment);
+            FragmentStateManager fragmentStateManager = createOrGetFragmentStateManager(fragment);
+            fragment.mFragmentManager = this;
+            mFragmentStore.makeActive(fragmentStateManager);
+            if (!fragment.mDetached) {
+                mFragmentStore.addFragment(fragment);
+                fragment.mRemoving = false;
+                if (fragment.mView == null) {
+                    fragment.mHiddenChanged = false;
+                }
+                if (isMenuAvailable(fragment)) {
+                    mNeedMenuInvalidate = true;
+                }
+            }
+            return fragmentStateManager;
+        }
+    ```
+
+## 参考
 - [Android Jetpack 开发套件 #7 AndroidX Fragment 核心原理分析](https://juejin.cn/post/6970998913754988552)
 - [详细聊聊Fragment的实现原理](https://www.51cto.com/article/672135.html)
+- [Android：Fragment详细介绍 & 使用方法解析](https://blog.csdn.net/JMW1407/article/details/114069742)
