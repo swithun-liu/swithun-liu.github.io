@@ -14,7 +14,7 @@ mermaid: true
 
 ![Alt text](./Fragment原理/image-2.png)
 
-### 代码
+### 示例代码
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -1170,7 +1170,7 @@ class Fragment2: Fragment1() {
     ```
 - `[:1:0:0:1:0] while ((newState = computeExpectedState()) != mFragment.mState) {`
     - `computeExpectedState()`: 根据FragmentManager等等计算mFragment应该达到的状态，先不看这里的复杂计算，但是最终的结果是2，对应`Fragment.VIEW_CREATED`，即Fragment应该进行到构造好View的状态
-    - `while`: `mFragment`不断切换到下一个状态，知道达到目标状态——`VIEW_CREATED`
+    - `while`: `mFragment`不断切换到下一个状态，直到达到目标状态——`VIEW_CREATED`
     - `mFragment.mState`: 当前`mFragment.mState`为`INITIALIZING`，则表示会依次执行`FragmentManager.attach()`、`FragmentManager.create()`、`FragmentManager.createView()`
     ```java
         static final int INITIALIZING = -1;          // Not yet attached.
@@ -1341,11 +1341,34 @@ fragment 1 onResumek
             return new BackStackRecord(this);
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    ```
+
     ```mermaid
     classDiagram
     class FragmentTransaction
     class BackStackRecord
+    class FragmentManager
+    class FragmentManager-BackStackEntry
+    class FragmentManager-OpGenerator
+
     BackStackRecord --|> FragmentTransaction: extends
+    BackStackRecord --|> FragmentManager-BackStackEntry: impl
+    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    FragmentManager --> BackStackRecord: create
     ```
 - `[:3] transaction.add(R.id.content_fragment, Fragment2())`
     ```java
@@ -1355,6 +1378,23 @@ fragment 1 onResumek
             return this;
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    ```
+
     其中`OP_ADD`⬇️ = 1
     ```java
     // androidx.fragment.app.FragmentTransaction
@@ -1395,13 +1435,22 @@ fragment 1 onResumek
     ```mermaid
     classDiagram
     class FragmentTransaction {
-        ArrayList"Op" mOps
+        mOps: ArrayList<OP>
     }
     class BackStackRecord
-    class FragmentTransaction-Op
+    class FragmentManager
+    class FragmentManager-BackStackEntry
+    class FragmentManager-OpGenerator
+    class FragmentTransaction-Op {
+        mCmd: int
+        mFragment: Fragment
+    }
 
-    BackStackRecord--|>FragmentTransaction: extends
-    FragmentTransaction-->FragmentTransaction-Op: holds
+    BackStackRecord --|> FragmentTransaction: extends
+    BackStackRecord --|> FragmentManager-BackStackEntry: impl
+    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    FragmentManager --> BackStackRecord: create
+    FragmentTransaction --> FragmentTransaction-Op: holds
     ```
 
     `FragmentTransaction` 中有一个 `Op` list记录我们添加的操作——`OP_ADD`
@@ -1409,6 +1458,23 @@ fragment 1 onResumek
     ```java
     // androidx.fragment.app.FragmentTransaction
         public abstract int commit();
+    ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
     ```
 
     ```java
@@ -1430,9 +1496,20 @@ fragment 1 onResumek
 
     ```mermaid
     sequenceDiagram
-        participant BackStackRecord
-        participant FragmentManager
-        BackStackRecord->>FragmentManager: enqueueAction
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
     ```
 
 - `[:4:0] mManager.enqueueAction(this, allowStateLoss);`
@@ -1474,29 +1551,44 @@ fragment 1 onResumek
     ```mermaid
     sequenceDiagram
     autonumber
-        participant BackStackRecord
-        participant FragmentManager
-        BackStackRecord->>FragmentManager: enqueueAction
-        FragmentManager->>FragmentManager: mPendingActions.add(action)
-        FragmentManager->>FragmentManager: scheduleCommit
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
+    FragmentManager ->> FragmentManager: mPendingActions.add
     ```
 
     ```mermaid
     classDiagram
     class FragmentTransaction {
-        ArrayList"Op" mOps
+        mOps: ArrayList"OP"
     }
     class BackStackRecord
-    class FragmentTransaction-Op
-    class FragmentManager-OpGenerator
     class FragmentManager {
-        ArrayList"OpGenerator" mPendingActions
+        mPendingActions: ArrayList"OpGenerator"
+    }
+    class FragmentManager-BackStackEntry
+    class FragmentManager-OpGenerator
+    class FragmentTransaction-Op {
+        mCmd: int
+        mFragment: Fragment
     }
 
-    BackStackRecord--|>FragmentTransaction: extends
-    FragmentTransaction-->FragmentTransaction-Op: holds
-    BackStackRecord--|> FragmentManager-OpGenerator: implements
-    FragmentManager-->FragmentManager-OpGenerator: holds
+    BackStackRecord --|> FragmentTransaction: extends
+    BackStackRecord --|> FragmentManager-BackStackEntry: impl
+    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    FragmentManager --> BackStackRecord: create
+    FragmentTransaction --> FragmentTransaction-Op: holds
+    FragmentManager --> FragmentManager-OpGenerator: holds
     ```
 
 - `[:4:0:0] scheduleCommit();`
@@ -1509,9 +1601,28 @@ fragment 1 onResumek
                     ...
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
+    FragmentManager ->> FragmentManager: mPendingActions.add
+    FragmentManager ->> FragmentManager: scheduleCommit
+    ```
 - `[:4:0:0:0] mHost.getHandler().post(mExecCommit)`  
     `mExecCommit` ⬇️被放入消息队列，之后会被执行。
-
     ```java
         // androidx.fragment.app.FragmentManager
         private Runnable mExecCommit = new Runnable() {
@@ -1533,6 +1644,26 @@ fragment 1 onResumek
      [:4:0:0:0:0:1] removeRedundantOperationsAndExecute(mTmpRecords, mTmpIsPop);
                     ...
     ```
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
+    FragmentManager ->> FragmentManager: mPendingActions.add
+    FragmentManager ->> FragmentManager: scheduleCommit
+    FragmentManager ->> FragmentManager: execPendingActions
+    ```
 - `[:4:0:0:0:0:0] generateOpsForPendingActions(mTmpRecords, mTmpIsPop)`
     ```java
         // androidx.fragment.app.FragmentManager
@@ -1546,6 +1677,57 @@ fragment 1 onResumek
         }
     ```
     这里对`mPendingActions`中的每一个Action都调用`generateOps`——会处理到之前在`[:4:0]`添加的Action
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+    participant OpGenerator
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
+    FragmentManager ->> FragmentManager: mPendingActions.add
+    FragmentManager ->> FragmentManager: scheduleCommit
+    FragmentManager ->> FragmentManager: execPendingActions
+    FragmentManager ->> OpGenerator: generateOps
+    OpGenerator ->> BackStackRecord: generateOps
+    ```
+
+    ```mermaid
+    classDiagram
+    class FragmentTransaction {
+        mOps: ArrayList"OP"
+    }
+    class BackStackRecord
+    class FragmentManager {
+        mPendingActions: ArrayList"OpGenerator"
+    }
+    class FragmentManager-BackStackEntry
+    class FragmentManager-OpGenerator {
+        boolean generateOps()
+    }
+    class FragmentTransaction-Op {
+        mCmd: int
+        mFragment: Fragment
+    }
+
+    BackStackRecord --|> FragmentTransaction: extends
+    BackStackRecord --|> FragmentManager-BackStackEntry: impl
+    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    FragmentManager --> BackStackRecord: create
+    FragmentTransaction --> FragmentTransaction-Op: holds
+    FragmentManager --> FragmentManager-OpGenerator: holds
+    ```
+
 - `[:4:0:0:0:0:0:0] mPendingActions.get(i).generateOps(records, isPop)`
     ```java
         // androidx.fragment.app.BackStackRecord
@@ -1576,6 +1758,32 @@ fragment 1 onResumek
         }
     ```
     遍历执行record，`executeOpsTogether(records`传入了整个`records`——只有一个`OP_ADD`，通过后面两个参数指定要执行的 record的开始位置和结束位置——recordNum(0)和reorderingEnd(recordNum + 1 = 0 + 1 = 1)，也就相当于挨个执行。
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+    participant OpGenerator
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
+    FragmentManager ->> FragmentManager: mPendingActions.add
+    FragmentManager ->> FragmentManager: scheduleCommit
+    FragmentManager ->> FragmentManager: execPendingActions
+    FragmentManager ->> OpGenerator: generateOps
+    OpGenerator ->> BackStackRecord: generateOps
+    FragmentManager ->> FragmentManager: removeRedundantOperationsAndExecute
+    ```
+
 - `[:4:0:0:0:0:1:0] executeOpsTogether(records, isRecordPop, recordNum, reorderingEnd)`
     ```java
         // androidx.fragment.app.FragmentManager
@@ -1584,11 +1792,9 @@ fragment 1 onResumek
             ...
     [:4:0:0:0:0:1:0:0] executeOps(records, isRecordPop, startIndex, endIndex);
             ...
-                                Fragment fragment = op.mFragment;
-                                FragmentStateManager fragmentStateManager =
-                                        createOrGetFragmentStateManager(fragment);
-                                fragmentStateManager.moveToExpectedState();
+             [:4:0:0:0:0:1:0:1] fragmentStateManager.moveToExpectedState();
             ...
+            
             ...
     ```
     `startIndex`: `recordNum` = 0  
@@ -1604,6 +1810,63 @@ fragment 1 onResumek
             }
         }
     ```
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+    participant OpGenerator
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
+    FragmentManager ->> FragmentManager: mPendingActions.add
+    FragmentManager ->> FragmentManager: scheduleCommit
+    FragmentManager ->> FragmentManager: execPendingActions
+    FragmentManager ->> OpGenerator: generateOps
+    OpGenerator ->> BackStackRecord: generateOps
+    FragmentManager ->> FragmentManager: removeRedundantOperationsAndExecute
+    FragmentManager ->> FragmentManager: executeOpsTogether
+    FragmentManager ->> FragmentManager: executeOps
+    FragmentManager ->> BackStackRecord: executeOps
+    ```
+
+    ```mermaid
+    classDiagram
+    class FragmentTransaction {
+        mOps: ArrayList"OP"
+    }
+    class BackStackRecord {
+        executeOps(): void
+    }
+    class FragmentManager {
+        mPendingActions: ArrayList"OpGenerator"
+    }
+    class FragmentManager-BackStackEntry
+    class FragmentManager-OpGenerator {
+        boolean generateOps()
+    }
+    class FragmentTransaction-Op {
+        mCmd: int
+        mFragment: Fragment
+    }
+
+    BackStackRecord --|> FragmentTransaction: extends
+    BackStackRecord --|> FragmentManager-BackStackEntry: impl
+    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    FragmentManager --> BackStackRecord: create
+    FragmentTransaction --> FragmentTransaction-Op: holds
+    FragmentManager --> FragmentManager-OpGenerator: holds
+    ```
+
 - `[:4:0:0:0:0:1:0:0:0] record.executeOps();`
     ```java
         // androidx.fragment.app.BackStackRecord
@@ -1618,6 +1881,36 @@ fragment 1 onResumek
                         break;
     ```
     `mOps`的数量为1——`[:3:0:1]` 添加的OP_ADD
+
+    ```mermaid
+    sequenceDiagram
+    autonumber
+
+    participant MainActivity
+    participant FragmentManager
+    participant FragmentTransaction
+    participant BackStackRecord
+    participant OpGenerator
+
+    MainActivity ->> FragmentManager: beginTransaction
+    FragmentManager ->> FragmentTransaction: new
+    FragmentManager ->> BackStackRecord: new
+    FragmentManager ->> MainActivity: return (FragmentTransaction)BackStackRecord
+    MainActivity ->> FragmentTransaction: add
+    MainActivity ->> FragmentTransaction: commit
+    FragmentTransaction ->> FragmentManager: enqueueAction
+    FragmentManager ->> FragmentManager: mPendingActions.add
+    FragmentManager ->> FragmentManager: scheduleCommit
+    FragmentManager ->> FragmentManager: execPendingActions
+    FragmentManager ->> OpGenerator: generateOps
+    OpGenerator ->> BackStackRecord: generateOps
+    FragmentManager ->> FragmentManager: removeRedundantOperationsAndExecute
+    FragmentManager ->> FragmentManager: executeOpsTogether
+    FragmentManager ->> FragmentManager: executeOps
+    FragmentManager ->> BackStackRecord: executeOps
+    BackStackRecord ->> FragmentManager: addFragment
+    ```
+
 - `[:4:0:0:0:0:1:0:0:0:0] mManager.addFragment(f);`
     ```java
         // androidx.fragment.app.FragmentManager
@@ -1639,6 +1932,8 @@ fragment 1 onResumek
             return fragmentStateManager;
         }
     ```
+- `[:4:0:0:0:0:1:0:1] fragmentStateManager.moveToExpectedState()`  
+    这里回到上面说过的 `[:1:0:0:1]`
 
 ## 参考
 - [Android Jetpack 开发套件 #7 AndroidX Fragment 核心原理分析](https://juejin.cn/post/6970998913754988552)
