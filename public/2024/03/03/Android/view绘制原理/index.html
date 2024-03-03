@@ -170,7 +170,309 @@
         
 <article id="post">
   <h1>view绘制原理</h1>
-  
+  <pre class="mermaid">flowchart TD
+DecoreView
+ViewGroup
+ViewGroup2["ViewGroup"]
+View1["View"]
+View2["View"]
+View3["View"]
+View4["View"]
+
+DecoreView --> |自上而下刷新|ViewGroup
+ViewGroup --> ViewGroup2
+ViewGroup --> View1
+ViewGroup --> View2
+ViewGroup2--> View3
+ViewGroup2 --> View4</pre>
+
+
+<ul>
+<li>[1709475090] <code>invalidate</code></li>
+</ul>
+<pre><code class="java">// android.view.View
+    @UnsupportedAppUsage
+    public void invalidate(boolean invalidateCache) &#123;
+       [1709475107] invalidateInternal(0, 0, mRight - mLeft, mBottom - mTop, invalidateCache, true);
+    &#125;
+</code></pre>
+<ul>
+<li>[1709475107] <code>invalidateInternal</code></li>
+</ul>
+<pre><code class="java">// android.view.View
+    void invalidateInternal(int l, int t, int r, int b, boolean invalidateCache,
+            boolean fullInvalidate) &#123;
+        if (mGhostView != null) &#123;
+            mGhostView.invalidate(true);
+            return;
+        &#125;
+
+        if (skipInvalidate()) &#123;
+            return;
+        &#125;
+
+        // Reset content capture caches
+        mPrivateFlags4 &amp;= ~PFLAG4_CONTENT_CAPTURE_IMPORTANCE_MASK;
+        mContentCaptureSessionCached = false;
+
+        if ((mPrivateFlags &amp; (PFLAG_DRAWN | PFLAG_HAS_BOUNDS)) == (PFLAG_DRAWN | PFLAG_HAS_BOUNDS)
+                || (invalidateCache &amp;&amp; (mPrivateFlags &amp; PFLAG_DRAWING_CACHE_VALID) == PFLAG_DRAWING_CACHE_VALID)
+                || (mPrivateFlags &amp; PFLAG_INVALIDATED) != PFLAG_INVALIDATED
+                || (fullInvalidate &amp;&amp; isOpaque() != mLastIsOpaque)) &#123;
+            if (fullInvalidate) &#123;
+                mLastIsOpaque = isOpaque();
+                mPrivateFlags &amp;= ~PFLAG_DRAWN;
+            &#125;
+
+            [1709477262] mPrivateFlags |= PFLAG_DIRTY;
+
+            if (invalidateCache) &#123;
+                mPrivateFlags |= PFLAG_INVALIDATED;
+                mPrivateFlags &amp;= ~PFLAG_DRAWING_CACHE_VALID;
+            &#125;
+
+            // Propagate the damage rectangle to the parent view.
+            final AttachInfo ai = mAttachInfo;
+            [1709475296] final ViewParent p = mParent;
+            if (p != null &amp;&amp; ai != null &amp;&amp; l &lt; r &amp;&amp; t &lt; b) &#123;
+                final Rect damage = ai.mTmpInvalRect;
+                [1709479770] damage.set(l, t, r, b);
+                [1709475402] p.invalidateChild(this, damage);
+            &#125;
+
+            // Damage the entire projection receiver, if necessary.
+            if (mBackground != null &amp;&amp; mBackground.isProjected()) &#123;
+                final View receiver = getProjectionReceiver();
+                if (receiver != null) &#123;
+                    receiver.damageInParent();
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+</code></pre>
+<p>[1709479625]l, r, t, b传入的就是调用invalidate的View 需要重绘的区域，注意这里传入的 l, r都是0，t是宽，b是高度，所以传入的不是相对 mParent 的位置。</p>
+<ul>
+<li>[1709477262] <code>mPrivateFlags |= PFLAG_DIRTY;</code></li>
+</ul>
+<p>标记dirty——<code>View</code>正在被重绘</p>
+<ul>
+<li>[1709479770] <code>damage.set(l, t, r, b);</code></li>
+</ul>
+<p>设置重绘区域, l,t,r,b来自[1709479625]</p>
+<ul>
+<li>[1709475296] <code>final ViewParent p = mParent</code></li>
+</ul>
+<p>这个View所附加到的父级View</p>
+<pre><code class="java">// android.view.View
+    /**
+     * The parent this view is attached to.
+     * &#123;@hide&#125;
+     *
+     * @see #getParent()
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected ViewParent mParent;
+</code></pre>
+<ul>
+<li>[1709475402] <code>p.invalidateChild(this, damage)</code></li>
+</ul>
+<p>子视图的全部或部分内容已变脏，需要重新绘制。</p>
+<pre><code class="java">// android.view.ViewParent
+    /**
+     * All or part of a child is dirty and needs to be redrawn.
+     * 
+     * @param child The child which is dirty
+     * @param r The area within the child that is invalid
+     *
+     * @deprecated Use &#123;@link #onDescendantInvalidated(View, View)&#125; instead.
+     */
+    @Deprecated
+    public void invalidateChild(View child, Rect r);
+</code></pre>
+<p>实现该方法的<code>ViewParent</code>实现类只有<code>ViewGroup</code></p>
+<pre class="mermaid">classDiagram
+class ViewGroup
+class ViewParent {
+    <<interface>>
+}
+ViewGroup --|> ViewParent: impl</pre>
+
+<ul>
+<li>[1709475903] <code>ViewGroup.invalidateChild</code></li>
+</ul>
+<pre><code class="java">//android.view.ViewGroup 
+    @Deprecated
+    @Override
+    public final void invalidateChild(View child, final Rect dirty) &#123;
+        final AttachInfo attachInfo = mAttachInfo;
+        if (attachInfo != null &amp;&amp; attachInfo.mHardwareAccelerated) &#123;
+            // HW accelerated fast path
+            onDescendantInvalidated(child, child);
+            return;
+        &#125;
+
+        [1709476329] ViewParent parent = this;
+        if (attachInfo != null) &#123;
+            // If the child is drawing an animation, we want to copy this flag onto
+            // ourselves and the parent to make sure the invalidate request goes
+            // through
+            final boolean drawAnimation = (child.mPrivateFlags &amp; PFLAG_DRAW_ANIMATION) != 0;
+
+            // Check whether the child that requests the invalidate is fully opaque
+            // Views being animated or transformed are not considered opaque because we may
+            // be invalidating their old position and need the parent to paint behind them.
+            Matrix childMatrix = child.getMatrix();
+            // Mark the child as dirty, using the appropriate flag
+            // Make sure we do not set both flags at the same time
+
+            if (child.mLayerType != LAYER_TYPE_NONE) &#123;
+                mPrivateFlags |= PFLAG_INVALIDATED;
+                mPrivateFlags &amp;= ~PFLAG_DRAWING_CACHE_VALID;
+            &#125;
+
+            final int[] location = attachInfo.mInvalidateChildLocation;
+            location[CHILD_LEFT_INDEX] = child.mLeft;
+            location[CHILD_TOP_INDEX] = child.mTop;
+            if (!childMatrix.isIdentity() ||
+                    (mGroupFlags &amp; ViewGroup.FLAG_SUPPORT_STATIC_TRANSFORMATIONS) != 0) &#123;
+                RectF boundingRect = attachInfo.mTmpTransformRect;
+                boundingRect.set(dirty);
+                Matrix transformMatrix;
+                if ((mGroupFlags &amp; ViewGroup.FLAG_SUPPORT_STATIC_TRANSFORMATIONS) != 0) &#123;
+                    Transformation t = attachInfo.mTmpTransformation;
+                    boolean transformed = getChildStaticTransformation(child, t);
+                    if (transformed) &#123;
+                        transformMatrix = attachInfo.mTmpMatrix;
+                        transformMatrix.set(t.getMatrix());
+                        if (!childMatrix.isIdentity()) &#123;
+                            transformMatrix.preConcat(childMatrix);
+                        &#125;
+                    &#125; else &#123;
+                        transformMatrix = childMatrix;
+                    &#125;
+                &#125; else &#123;
+                    transformMatrix = childMatrix;
+                &#125;
+                transformMatrix.mapRect(boundingRect);
+                dirty.set((int) Math.floor(boundingRect.left),
+                        (int) Math.floor(boundingRect.top),
+                        (int) Math.ceil(boundingRect.right),
+                        (int) Math.ceil(boundingRect.bottom));
+            &#125;
+
+            do &#123;
+                View view = null;
+                if (parent instanceof View) &#123;
+                    view = (View) parent;
+                &#125;
+
+                if (drawAnimation) &#123;
+                    if (view != null) &#123;
+                        view.mPrivateFlags |= PFLAG_DRAW_ANIMATION;
+                    &#125; else if (parent instanceof ViewRootImpl) &#123;
+                        ((ViewRootImpl) parent).mIsAnimating = true;
+                    &#125;
+                &#125;
+
+                // If the parent is dirty opaque or not dirty, mark it dirty with the opaque
+                // flag coming from the child that initiated the invalidate
+                if (view != null) &#123;
+                    if ((view.mPrivateFlags &amp; PFLAG_DIRTY_MASK) != PFLAG_DIRTY) &#123;
+                        view.mPrivateFlags = (view.mPrivateFlags &amp; ~PFLAG_DIRTY_MASK) | PFLAG_DIRTY;
+                    &#125;
+                &#125;
+
+                [1709476371] parent = parent.invalidateChildInParent(location, dirty);
+                if (view != null) &#123;
+                    // Account for transform on current parent
+                    Matrix m = view.getMatrix();
+                    if (!m.isIdentity()) &#123;
+                        RectF boundingRect = attachInfo.mTmpTransformRect;
+                        boundingRect.set(dirty);
+                        m.mapRect(boundingRect);
+                        dirty.set((int) Math.floor(boundingRect.left),
+                                (int) Math.floor(boundingRect.top),
+                                (int) Math.ceil(boundingRect.right),
+                                (int) Math.ceil(boundingRect.bottom));
+                    &#125;
+                &#125;
+            &#125; while (parent != null);
+        &#125;
+    &#125;
+</code></pre>
+<ul>
+<li>[1709476371] <code>parent = parent.invalidateChildInParent(location, dirty);</code></li>
+</ul>
+<p>最开始parent就是View的mParent - ViewGroup自己 <code>[1709476329] ViewParent parent = this;</code><br>不断循环，pareng赋值为<code>invalidateChildInParent</code>的返回值</p>
+<ul>
+<li>[1709476540] <code>ViewParent.invalidateChildInParent(int[] location, Rect r)</code></li>
+</ul>
+<pre><code class="java">// android.view.ViewParent
+    @Deprecated
+    public ViewParent invalidateChildInParent(int[] location, Rect r);
+</code></pre>
+<pre><code class="java">//android.view.ViewGroup 
+    @Deprecated
+    @Override
+    public ViewParent invalidateChildInParent(final int[] location, final Rect dirty) &#123;
+        if ((mPrivateFlags &amp; (PFLAG_DRAWN | PFLAG_DRAWING_CACHE_VALID)) != 0) &#123;
+            // either DRAWN, or DRAWING_CACHE_VALID
+            if ((mGroupFlags &amp; (FLAG_OPTIMIZE_INVALIDATE | FLAG_ANIMATION_DONE))
+                    != FLAG_OPTIMIZE_INVALIDATE) &#123;
+                [1709480037] dirty.offset(location[CHILD_LEFT_INDEX] - mScrollX,
+                        location[CHILD_TOP_INDEX] - mScrollY);
+                if ((mGroupFlags &amp; FLAG_CLIP_CHILDREN) == 0) &#123;
+                    [1709481021] dirty.union(0, 0, mRight - mLeft, mBottom - mTop);
+                &#125;
+
+                final int left = mLeft;
+                final int top = mTop;
+
+                if ((mGroupFlags &amp; FLAG_CLIP_CHILDREN) == FLAG_CLIP_CHILDREN) &#123;
+                    if (!dirty.intersect(0, 0, mRight - left, mBottom - top)) &#123;
+                        dirty.setEmpty();
+                    &#125;
+                &#125;
+
+                location[CHILD_LEFT_INDEX] = left;
+                location[CHILD_TOP_INDEX] = top;
+            &#125; else &#123;
+
+                if ((mGroupFlags &amp; FLAG_CLIP_CHILDREN) == FLAG_CLIP_CHILDREN) &#123;
+                    dirty.set(0, 0, mRight - mLeft, mBottom - mTop);
+                &#125; else &#123;
+                    // in case the dirty rect extends outside the bounds of this container
+                    dirty.union(0, 0, mRight - mLeft, mBottom - mTop);
+                &#125;
+                location[CHILD_LEFT_INDEX] = mLeft;
+                location[CHILD_TOP_INDEX] = mTop;
+
+                mPrivateFlags &amp;= ~PFLAG_DRAWN;
+            &#125;
+            mPrivateFlags &amp;= ~PFLAG_DRAWING_CACHE_VALID;
+            if (mLayerType != LAYER_TYPE_NONE) &#123;
+                mPrivateFlags |= PFLAG_INVALIDATED;
+            &#125;
+
+            return mParent;
+        &#125;
+
+        return null;
+    &#125;
+</code></pre>
+<ul>
+<li>[1709480037] <code>dirty.offset(location[CHILD_LEFT_INDEX] - mScrollX, location[CHILD_TOP_INDEX] - mScrollY);</code></li>
+</ul>
+<p>[1709479625]说过传入的重绘区域不是相对父布局的位置，所以这里转换为相对父布局(当前View)的位置;<br>这里还考虑的mScrollX，和mScrollY，因为子View可能已经不在可视区域了</p>
+<ul>
+<li>[1709481021] <code>dirty.union(0, 0, mRight - mLeft, mBottom - mTop);</code></li>
+</ul>
+<p>[1709480037]将重绘位置转换为相对相对父布局(当前View)的位置，然后与当前View的绘制范围取交集，所以union之后一定&lt;&#x3D;之前传入的重绘范围，比如子View已经滚出当前ViewGroup，那就没有要重绘的区域了。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6854573222386958344">View Invalidate流程</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15127673/4252441">android invalidate 执行流程详解</a></li>
+</ul>
+
 </article>
 
 <script type="text/x-mathjax-config">

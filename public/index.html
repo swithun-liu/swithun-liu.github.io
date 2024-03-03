@@ -191,7 +191,27 @@
       </time>
 
       <div class="article-digest">
-        
+        flowchart TD
+DecoreView
+ViewGroup
+ViewGroup2["ViewGroup"]
+View1["View"]
+View2["View"]
+View3["View"]
+View4["View"]
+
+DecoreView --> |自上而下刷新|ViewGroup
+ViewGroup --> ViewGroup2
+ViewGroup --> View1
+ViewGroup --> View2
+ViewGroup2--> View3
+ViewGroup2 --> View4
+
+
+
+[1709475090] invalidate
+
+// android.view.Vi
         ...
       </div>
 
