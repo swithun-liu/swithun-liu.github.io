@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title> [ Swithun Blog ]</title>
+  <title>demo_title_2 [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -66,17 +66,6 @@
                 <!--如果是文章-->
                 <ul>
                     <li class="file">
-                        <a href="/2023/10/10/Android/2023-10-10-viewmodel原理/">
-                            <i class="fa fa-file"></i>
-                            2023-10-10-viewmodel原理
-                        </a>
-                    </li>
-                </ul>
-
-              
-                <!--如果是文章-->
-                <ul>
-                    <li class="file">
                         <a href="/2023/10/18/Android/Fragment原理/">
                             <i class="fa fa-file"></i>
                             Fragment原理
@@ -87,10 +76,10 @@
               
                 <!--如果是文章-->
                 <ul>
-                    <li class="file active">
-                        <a href="/2023/10/22/Android/temp/">
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
                             <i class="fa fa-file"></i>
-                            temp
+                            viewmodel原理
                         </a>
                     </li>
                 </ul>
@@ -100,21 +89,43 @@
                 </ul>
 
                  
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/28/test/">
+                            <i class="fa fa-file"></i>
+                            test
+                        </a>
+                    </li>
+                </ul>
+
+              
 
                 <!--如果是文件夹-->
                 <ul>
                     <li class="directory">
                         <a href="#" class="directory">
                             <i class="fa fa-folder"></i>
-                            demo_folder_level1
+                            主题演示
                         </a>
                         
                 <!--如果是文章-->
                 <ul>
                     <li class="file">
-                        <a href="/2023/10/10/demo_folder_level1/demo1/">
+                        <a href="/2023/10/10/主题演示/demo1/">
                             <i class="fa fa-file"></i>
                             demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
                         </a>
                     </li>
                 </ul>
@@ -131,8 +142,8 @@
                         
                 <!--如果是文章-->
                 <ul>
-                    <li class="file">
-                        <a href="/2023/10/10/demo_folder_level1/demo_folder_level2/demo2/">
+                    <li class="file active">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
                             <i class="fa fa-file"></i>
                             demo2
                         </a>
@@ -148,17 +159,6 @@
                 </ul>
 
                  
-                <!--如果是文章-->
-                <ul>
-                    <li class="file">
-                        <a href="/2023/10/28/test/">
-                            <i class="fa fa-file"></i>
-                            test
-                        </a>
-                    </li>
-                </ul>
-
-              
 </div>
 
 <div id="toc" style="display: none;"></div>
@@ -169,26 +169,37 @@
       <div id="content-inner">
         
 <article id="post">
-  <h1></h1>
-  <pre class="mermaid">sequenceDiagram
-autonumber
+  <h1>demo_title_2</h1>
+  <h2 id="math"><a href="#math" class="headerlink" title="math"></a>math</h2><ul>
+<li>inline : A $\xrightarrow{test}$ B</li>
+<li>block:<br>$$\xrightarrow{test2}$$</li>
+</ul>
+<h2 id="mermaid"><a href="#mermaid" class="headerlink" title="mermaid"></a>mermaid</h2><pre class="mermaid">classDiagram
+      class ClientTransactionItem
+      class ActivityTransactionItem
+      class ActivityRelaunchItem
+      class BaseClientRequest {
+         <<interface>>
+         + execute(ClientTransactionHandler client, IBinder token,PendingTransactionActions pendingActions)
+      }
+      ClientTransactionItem <|-- ActivityTransactionItem
+      ActivityTransactionItem <|-- ActivityRelaunchItem
+      BaseClientRequest <|-- ClientTransactionItem: implements</pre>
 
-participant FragmentActivity
-participant FragmentManager
-participant Fragment
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><p>this is <code>inline code</code></p>
+<p>java</p>
+<pre><code class="java">class A &#123;
+  System
+&#125;
+</code></pre>
+<p>kotlin</p>
+<pre><code class="kotlin">class B &#123;
+    fun test() &#123;
 
-activate FragmentActivity
-FragmentActivity->>FragmentActivity: onCreate begin
-FragmentActivity->>FragmentManager: dispatchCreate() 分发CREATE
-FragmentActivity->>FragmentActivity: setContentView begin
-FragmentActivity->>FragmentActivity: onCreateView
-FragmentActivity->>FragmentManager: moveToExpectedState
-FragmentManager->>Fragment: performAttach
-Fragment->>Fragment: onAttach
-FragmentActivity->>FragmentActivity: onCreate end 
-deactivate FragmentActivity
+    &#125;
+&#125;
+</code></pre>
 
-FragmentActivity->>FragmentActivity: onStart</pre>
 </article>
 
 <script type="text/x-mathjax-config">
