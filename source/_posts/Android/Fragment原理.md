@@ -1,5 +1,5 @@
 ---
-title: ViewModel配置变更后仍然存在原理
+title: Fragment实现原理
 author: Swithun Liu
 date: 2023-10-18
 category: Android
@@ -849,14 +849,14 @@ class Fragment2: Fragment1() {
     participant Activity
     participant PhoneWindow
     participant LayoutInflater
-    participant LayoutInflater-Factory2
+    participant `LayoutInflater-Factory2`
 
     FragmentActivity->>FragmentActivity: onCreate begin
     FragmentActivity->>FragmentController: dispatchCreate
     FragmentActivity->>Activity: setContentView
     Activity->>PhoneWindow: setContentView
     PhoneWindow->>LayoutInflater: inflate
-    LayoutInflater->>LayoutInflater-Factory2: onCreateView
+    LayoutInflater->>`LayoutInflater-Factory2`: onCreateView
     ```
 
     ```mermaid
@@ -873,15 +873,15 @@ class Fragment2: Fragment1() {
         - LayoutInflater mLayoutInflater
     }
     class LayoutInflater
-    class LayoutInflater-Factory2
+    class `LayoutInflater-Factory2`
 
     FragmentActivity --> FragmentController: hold
     FragmentActivity --|> Activity
     Activity --> Window: hold
     PhoneWindow --|> Window
     PhoneWindow --> LayoutInflater: hold
-    Activity --|> LayoutInflater-Factory2
-    LayoutInflater --> LayoutInflater-Factory2: hold
+    Activity --|> `LayoutInflater-Factory2`
+    LayoutInflater --> `LayoutInflater-Factory2`: hold
     ```
 
 
@@ -1023,7 +1023,7 @@ class Fragment2: Fragment1() {
         - LayoutInflater mLayoutInflater
     }
     class LayoutInflater
-    class LayoutInflater-Factory2
+    class `LayoutInflater-Factory2`
     class FragmentManager {
         FragmentLayoutInflaterFactory mLayoutInflaterFactory
     }
@@ -1038,8 +1038,8 @@ class Fragment2: Fragment1() {
     Activity --> Window: hold
     PhoneWindow --|> Window
     PhoneWindow --> LayoutInflater: hold
-    Activity --|> LayoutInflater-Factory2
-    LayoutInflater --> LayoutInflater-Factory2: hold
+    Activity --|> `LayoutInflater-Factory2`
+    LayoutInflater --> `LayoutInflater-Factory2`: hold
     FragmentController --> FragmentHostCallback: hold
     FragmentHostCallback --> FragmentManager: hold
     FragmentManager --> FragmentLayoutInflaterFactory: hold
@@ -1120,7 +1120,7 @@ class Fragment2: Fragment1() {
         - LayoutInflater mLayoutInflater
     }
     class LayoutInflater
-    class LayoutInflater-Factory2
+    class `LayoutInflater-Factory2`
     class FragmentManager {
         FragmentLayoutInflaterFactory mLayoutInflaterFactory
     }
@@ -1137,8 +1137,8 @@ class Fragment2: Fragment1() {
     Activity --> Window: hold
     PhoneWindow --|> Window
     PhoneWindow --> LayoutInflater: hold
-    Activity --|> LayoutInflater-Factory2
-    LayoutInflater --> LayoutInflater-Factory2: hold
+    Activity --|> `LayoutInflater-Factory2`
+    LayoutInflater --> `LayoutInflater-Factory2`: hold
     FragmentController --> FragmentHostCallback: hold
     FragmentHostCallback --> FragmentManager: hold
     FragmentManager --> FragmentLayoutInflaterFactory: hold
@@ -1362,12 +1362,12 @@ fragment 1 onResumek
     class FragmentTransaction
     class BackStackRecord
     class FragmentManager
-    class FragmentManager-BackStackEntry
-    class FragmentManager-OpGenerator
+    class `FragmentManager-BackStackEntry`
+    class `FragmentManager-OpGenerator`
 
     BackStackRecord --|> FragmentTransaction: extends
-    BackStackRecord --|> FragmentManager-BackStackEntry: impl
-    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+    BackStackRecord --|>` FragmentManager-OpGenerator`: impl
     FragmentManager --> BackStackRecord: create
     ```
 - `[:3] transaction.add(R.id.content_fragment, Fragment2())`
@@ -1439,18 +1439,18 @@ fragment 1 onResumek
     }
     class BackStackRecord
     class FragmentManager
-    class FragmentManager-BackStackEntry
-    class FragmentManager-OpGenerator
-    class FragmentTransaction-Op {
+    class `FragmentManager-BackStackEntry`
+    class `FragmentManager-OpGenerator`
+    class `FragmentTransaction-Op` {
         mCmd: int
         mFragment: Fragment
     }
 
     BackStackRecord --|> FragmentTransaction: extends
-    BackStackRecord --|> FragmentManager-BackStackEntry: impl
-    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+    BackStackRecord --|> `FragmentManager-OpGenerator`: impl
     FragmentManager --> BackStackRecord: create
-    FragmentTransaction --> FragmentTransaction-Op: holds
+    FragmentTransaction --> `FragmentTransaction-Op`: holds
     ```
 
     `FragmentTransaction` 中有一个 `Op` list记录我们添加的操作——`OP_ADD`
@@ -1576,19 +1576,19 @@ fragment 1 onResumek
     class FragmentManager {
         mPendingActions: ArrayList"OpGenerator"
     }
-    class FragmentManager-BackStackEntry
-    class FragmentManager-OpGenerator
-    class FragmentTransaction-Op {
+    class `FragmentManager-BackStackEntry`
+    class `FragmentManager-OpGenerator`
+    class `FragmentTransaction-Op` {
         mCmd: int
         mFragment: Fragment
     }
 
     BackStackRecord --|> FragmentTransaction: extends
-    BackStackRecord --|> FragmentManager-BackStackEntry: impl
-    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+    BackStackRecord --|> `FragmentManager-OpGenerator`: impl
     FragmentManager --> BackStackRecord: create
-    FragmentTransaction --> FragmentTransaction-Op: holds
-    FragmentManager --> FragmentManager-OpGenerator: holds
+    FragmentTransaction --> `FragmentTransaction-Op`: holds
+    FragmentManager --> `FragmentManager-OpGenerator`: holds
     ```
 
 - `[:4:0:0] scheduleCommit();`
@@ -1711,21 +1711,21 @@ fragment 1 onResumek
     class FragmentManager {
         mPendingActions: ArrayList"OpGenerator"
     }
-    class FragmentManager-BackStackEntry
-    class FragmentManager-OpGenerator {
+    class `FragmentManager-BackStackEntry`
+    class `FragmentManager-OpGenerator` {
         boolean generateOps()
     }
-    class FragmentTransaction-Op {
+    class `FragmentTransaction-Op` {
         mCmd: int
         mFragment: Fragment
     }
 
     BackStackRecord --|> FragmentTransaction: extends
-    BackStackRecord --|> FragmentManager-BackStackEntry: impl
-    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+    BackStackRecord --|> `FragmentManager-OpGenerator`: impl
     FragmentManager --> BackStackRecord: create
-    FragmentTransaction --> FragmentTransaction-Op: holds
-    FragmentManager --> FragmentManager-OpGenerator: holds
+    FragmentTransaction --> `FragmentTransaction-Op`: holds
+    FragmentManager --> `FragmentManager-OpGenerator`: holds
     ```
 
 - `[:4:0:0:0:0:0:0] mPendingActions.get(i).generateOps(records, isPop)`
@@ -1850,21 +1850,21 @@ fragment 1 onResumek
     class FragmentManager {
         mPendingActions: ArrayList"OpGenerator"
     }
-    class FragmentManager-BackStackEntry
-    class FragmentManager-OpGenerator {
+    class `FragmentManager-BackStackEntry`
+    class `FragmentManager-OpGenerator` {
         boolean generateOps()
     }
-    class FragmentTransaction-Op {
+    class `FragmentTransaction-Op` {
         mCmd: int
         mFragment: Fragment
     }
 
     BackStackRecord --|> FragmentTransaction: extends
-    BackStackRecord --|> FragmentManager-BackStackEntry: impl
-    BackStackRecord --|> FragmentManager-OpGenerator: impl
+    BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+    BackStackRecord --|> `FragmentManager-OpGenerator`: impl
     FragmentManager --> BackStackRecord: create
-    FragmentTransaction --> FragmentTransaction-Op: holds
-    FragmentManager --> FragmentManager-OpGenerator: holds
+    FragmentTransaction --> `FragmentTransaction-Op`: holds
+    FragmentManager --> `FragmentManager-OpGenerator`: holds
     ```
 
 - `[:4:0:0:0:0:1:0:0:0] record.executeOps();`
