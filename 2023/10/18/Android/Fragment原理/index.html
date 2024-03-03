@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>ViewModel配置变更后仍然存在原理 [ Swithun Blog ]</title>
+  <title>Fragment实现原理 [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -169,7 +169,7 @@
       <div id="content-inner">
         
 <article id="post">
-  <h1>ViewModel配置变更后仍然存在原理</h1>
+  <h1>Fragment实现原理</h1>
   <blockquote>
 <p>基于Android Api 33</p>
 </blockquote>
@@ -925,14 +925,14 @@ class FragmentStateManager &#123;
   participant Activity
   participant PhoneWindow
   participant LayoutInflater
-  participant LayoutInflater-Factory2
+  participant `LayoutInflater-Factory2`
 
   FragmentActivity->>FragmentActivity: onCreate begin
   FragmentActivity->>FragmentController: dispatchCreate
   FragmentActivity->>Activity: setContentView
   Activity->>PhoneWindow: setContentView
   PhoneWindow->>LayoutInflater: inflate
-  LayoutInflater->>LayoutInflater-Factory2: onCreateView</pre>
+  LayoutInflater->>`LayoutInflater-Factory2`: onCreateView</pre>
 
   <pre class="mermaid">    classDiagram
 
@@ -947,15 +947,15 @@ class FragmentStateManager &#123;
       - LayoutInflater mLayoutInflater
   }
   class LayoutInflater
-  class LayoutInflater-Factory2
+  class `LayoutInflater-Factory2`
 
   FragmentActivity --> FragmentController: hold
   FragmentActivity --|> Activity
   Activity --> Window: hold
   PhoneWindow --|> Window
   PhoneWindow --> LayoutInflater: hold
-  Activity --|> LayoutInflater-Factory2
-  LayoutInflater --> LayoutInflater-Factory2: hold</pre>
+  Activity --|> `LayoutInflater-Factory2`
+  LayoutInflater --> `LayoutInflater-Factory2`: hold</pre>
 
 
 <p>  <code>mPrivateFactory</code>实际上是我们写的的<code>MainActivity</code>，所以继续会走到<code>MainActivity.onCreateView</code></p>
@@ -1079,7 +1079,7 @@ class FragmentStateManager &#123;
       - LayoutInflater mLayoutInflater
   }
   class LayoutInflater
-  class LayoutInflater-Factory2
+  class `LayoutInflater-Factory2`
   class FragmentManager {
       FragmentLayoutInflaterFactory mLayoutInflaterFactory
   }
@@ -1094,8 +1094,8 @@ class FragmentStateManager &#123;
   Activity --> Window: hold
   PhoneWindow --|> Window
   PhoneWindow --> LayoutInflater: hold
-  Activity --|> LayoutInflater-Factory2
-  LayoutInflater --> LayoutInflater-Factory2: hold
+  Activity --|> `LayoutInflater-Factory2`
+  LayoutInflater --> `LayoutInflater-Factory2`: hold
   FragmentController --> FragmentHostCallback: hold
   FragmentHostCallback --> FragmentManager: hold
   FragmentManager --> FragmentLayoutInflaterFactory: hold</pre>
@@ -1170,7 +1170,7 @@ class FragmentStateManager &#123;
       - LayoutInflater mLayoutInflater
   }
   class LayoutInflater
-  class LayoutInflater-Factory2
+  class `LayoutInflater-Factory2`
   class FragmentManager {
       FragmentLayoutInflaterFactory mLayoutInflaterFactory
   }
@@ -1187,8 +1187,8 @@ class FragmentStateManager &#123;
   Activity --> Window: hold
   PhoneWindow --|> Window
   PhoneWindow --> LayoutInflater: hold
-  Activity --|> LayoutInflater-Factory2
-  LayoutInflater --> LayoutInflater-Factory2: hold
+  Activity --|> `LayoutInflater-Factory2`
+  LayoutInflater --> `LayoutInflater-Factory2`: hold
   FragmentController --> FragmentHostCallback: hold
   FragmentHostCallback --> FragmentManager: hold
   FragmentManager --> FragmentLayoutInflaterFactory: hold
@@ -1409,12 +1409,12 @@ fragment 1 onResumek
   class FragmentTransaction
   class BackStackRecord
   class FragmentManager
-  class FragmentManager-BackStackEntry
-  class FragmentManager-OpGenerator
+  class `FragmentManager-BackStackEntry`
+  class `FragmentManager-OpGenerator`
 
   BackStackRecord --|> FragmentTransaction: extends
-  BackStackRecord --|> FragmentManager-BackStackEntry: impl
-  BackStackRecord --|> FragmentManager-OpGenerator: impl
+  BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+  BackStackRecord --|>` FragmentManager-OpGenerator`: impl
   FragmentManager --> BackStackRecord: create</pre></li>
 <li><p><code>[:3] transaction.add(R.id.content_fragment, Fragment2())</code></p>
 <pre><code class="java">// androidx.fragment.app.FragmentTransaction
@@ -1476,18 +1476,18 @@ fragment 1 onResumek
   }
   class BackStackRecord
   class FragmentManager
-  class FragmentManager-BackStackEntry
-  class FragmentManager-OpGenerator
-  class FragmentTransaction-Op {
+  class `FragmentManager-BackStackEntry`
+  class `FragmentManager-OpGenerator`
+  class `FragmentTransaction-Op` {
       mCmd: int
       mFragment: Fragment
   }
 
   BackStackRecord --|> FragmentTransaction: extends
-  BackStackRecord --|> FragmentManager-BackStackEntry: impl
-  BackStackRecord --|> FragmentManager-OpGenerator: impl
+  BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+  BackStackRecord --|> `FragmentManager-OpGenerator`: impl
   FragmentManager --> BackStackRecord: create
-  FragmentTransaction --> FragmentTransaction-Op: holds</pre>
+  FragmentTransaction --> `FragmentTransaction-Op`: holds</pre>
 
 <p>  <code>FragmentTransaction</code> 中有一个 <code>Op</code> list记录我们添加的操作——<code>OP_ADD</code></p>
 </li>
@@ -1594,19 +1594,19 @@ fragment 1 onResumek
   class FragmentManager {
       mPendingActions: ArrayList"OpGenerator"
   }
-  class FragmentManager-BackStackEntry
-  class FragmentManager-OpGenerator
-  class FragmentTransaction-Op {
+  class `FragmentManager-BackStackEntry`
+  class `FragmentManager-OpGenerator`
+  class `FragmentTransaction-Op` {
       mCmd: int
       mFragment: Fragment
   }
 
   BackStackRecord --|> FragmentTransaction: extends
-  BackStackRecord --|> FragmentManager-BackStackEntry: impl
-  BackStackRecord --|> FragmentManager-OpGenerator: impl
+  BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+  BackStackRecord --|> `FragmentManager-OpGenerator`: impl
   FragmentManager --> BackStackRecord: create
-  FragmentTransaction --> FragmentTransaction-Op: holds
-  FragmentManager --> FragmentManager-OpGenerator: holds</pre>
+  FragmentTransaction --> `FragmentTransaction-Op`: holds
+  FragmentManager --> `FragmentManager-OpGenerator`: holds</pre>
 </li>
 <li><p><code>[:4:0:0] scheduleCommit();</code></p>
 <pre><code class="java">// androidx.fragment.app.FragmentManager
@@ -1715,21 +1715,21 @@ fragment 1 onResumek
   class FragmentManager {
       mPendingActions: ArrayList"OpGenerator"
   }
-  class FragmentManager-BackStackEntry
-  class FragmentManager-OpGenerator {
+  class `FragmentManager-BackStackEntry`
+  class `FragmentManager-OpGenerator` {
       boolean generateOps()
   }
-  class FragmentTransaction-Op {
+  class `FragmentTransaction-Op` {
       mCmd: int
       mFragment: Fragment
   }
 
   BackStackRecord --|> FragmentTransaction: extends
-  BackStackRecord --|> FragmentManager-BackStackEntry: impl
-  BackStackRecord --|> FragmentManager-OpGenerator: impl
+  BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+  BackStackRecord --|> `FragmentManager-OpGenerator`: impl
   FragmentManager --> BackStackRecord: create
-  FragmentTransaction --> FragmentTransaction-Op: holds
-  FragmentManager --> FragmentManager-OpGenerator: holds</pre>
+  FragmentTransaction --> `FragmentTransaction-Op`: holds
+  FragmentManager --> `FragmentManager-OpGenerator`: holds</pre>
 </li>
 <li><p><code>[:4:0:0:0:0:0:0] mPendingActions.get(i).generateOps(records, isPop)</code></p>
 <pre><code class="java">    // androidx.fragment.app.BackStackRecord
@@ -1842,21 +1842,21 @@ fragment 1 onResumek
   class FragmentManager {
       mPendingActions: ArrayList"OpGenerator"
   }
-  class FragmentManager-BackStackEntry
-  class FragmentManager-OpGenerator {
+  class `FragmentManager-BackStackEntry`
+  class `FragmentManager-OpGenerator` {
       boolean generateOps()
   }
-  class FragmentTransaction-Op {
+  class `FragmentTransaction-Op` {
       mCmd: int
       mFragment: Fragment
   }
 
   BackStackRecord --|> FragmentTransaction: extends
-  BackStackRecord --|> FragmentManager-BackStackEntry: impl
-  BackStackRecord --|> FragmentManager-OpGenerator: impl
+  BackStackRecord --|> `FragmentManager-BackStackEntry`: impl
+  BackStackRecord --|> `FragmentManager-OpGenerator`: impl
   FragmentManager --> BackStackRecord: create
-  FragmentTransaction --> FragmentTransaction-Op: holds
-  FragmentManager --> FragmentManager-OpGenerator: holds</pre>
+  FragmentTransaction --> `FragmentTransaction-Op`: holds
+  FragmentManager --> `FragmentManager-OpGenerator`: holds</pre>
 </li>
 <li><p><code>[:4:0:0:0:0:1:0:0:0] record.executeOps();</code></p>
 <pre><code class="java">    // androidx.fragment.app.BackStackRecord
