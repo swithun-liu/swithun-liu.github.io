@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>自定义View实现腿拽展开面板 [ Swithun Blog ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/18/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/03/Android/view绘制原理/">
+                            <i class="fa fa-file"></i>
+                            view绘制原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file active">
+                        <a href="/2024/03/09/Android/自定义View实现拖拽展开面板/">
+                            <i class="fa fa-file"></i>
+                            自定义View实现拖拽展开面板
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            主题演示
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="post">
+  <h1>自定义View实现腿拽展开面板</h1>
+  <img src="/2024/03/09/Android/%E8%87%AA%E5%AE%9A%E4%B9%89View%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%B1%95%E5%BC%80%E9%9D%A2%E6%9D%BF/20240309191130.gif" class="" title="alt text">
+
+
+<ul>
+<li>自定义View继承 <code>FrameLayout</code></li>
+</ul>
+<pre><code class="kotlin">class ExpandPanel @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) &#123;
+</code></pre>
+<ul>
+<li>随便给面板加点东西</li>
+</ul>
+<pre><code class="kotlin">// ExpandPanel
+    init &#123;
+        for (i in 0..4) &#123;
+            val tv = TextView(context).also &#123;
+                it.text = &quot;haha$&#123;i&#125;&quot;
+                it.setTextColor(resources.getColor(R.color.white))
+            &#125;
+            bg.addView(tv)
+        &#125;
+        val layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+        bg.addView(touchBar, layoutParams)
+        addView(bg, layoutParams)
+        ...
+</code></pre>
+<p>5个 <code>textview</code> 作为内容，最后加一个 <code>LinearLayout</code> 作为拖拽条</p>
+<img src="/2024/03/09/Android/%E8%87%AA%E5%AE%9A%E4%B9%89View%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%B1%95%E5%BC%80%E9%9D%A2%E6%9D%BF/image.png" class="" title="alt text">
+
+<ul>
+<li>增加两个 <code>ValueAnimator</code> 分别用来实现 展开动画&#x2F;关闭动画</li>
+</ul>
+<pre><code class="kotlin">// ExpandPanel
+    private var expandAnimation = ValueAnimator()
+    private var closeAnimation = ValueAnimator()
+</code></pre>
+<p>展开动画</p>
+<pre><code class="kotlin">// ExpandPanel
+    fun expand() &#123;
+        // 先停止所有动画
+        closeAnimation.cancel()
+        expandAnimation.cancel()
+        // 当前内容(包含拖拽条)的高度
+        val height = bg.height.takeUnless &#123; it == 0 &#125; ?: return
+        // 当前展开占比
+        val process = (height + bg.translationY) / height
+        // 设置动画 开始-结束
+        expandAnimation.setFloatValues(process, 1f)
+        // 设置动画耗时
+        expandAnimation.duration = ((1f - process) * animationTime).toLong()
+        // 启动动画
+        expandAnimation.start()
+    &#125;
+</code></pre>
+<p>关闭动画</p>
+<pre><code class="kotlin">// ExpandPanel
+    fun close() &#123;
+        closeAnimation.cancel()
+        expandAnimation.cancel()
+        val height = bg.height.takeUnless &#123; it == 0 &#125; ?: return
+        val process = Math.max((height + bg.translationY) / height, 0f)
+        closeAnimation.setFloatValues(process, 0f)
+        closeAnimation.duration = ((process * animationTime).toLong())
+        closeAnimation.start()
+    &#125;
+</code></pre>
+<ul>
+<li>监听动画，移动内容实现展开关闭</li>
+</ul>
+<pre><code class="kotlin">// ExpandPanel
+    init &#123;
+        ...
+
+        expandAnimation.addUpdateListener(::onAnimationUpdate)
+        closeAnimation.addUpdateListener(::onAnimationUpdate)
+
+        ...
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// ExpandPanel
+    private fun onAnimationUpdate(valueAnimator: ValueAnimator) &#123;
+        val process = valueAnimator.animatedValue as? Float ?: return
+        // 根据动画进度，设置内容的偏移
+        bg.translationY = (-bg.height).toFloat() * (1 - process)
+    &#125;
+</code></pre>
+<ul>
+<li>增加状态记录</li>
+</ul>
+<pre><code class="kotlin">// ExpandPanel
+    var state = ExpandPanelState.CLOSED
+    ...
+
+    enum class ExpandPanelState &#123;
+        CLOSING,
+        OPENING,
+        CLOSED,
+        OPENED
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// ExpandPanel
+    init &#123;
+        ...
+        expandAnimation.addListener(expandAnimatorListener)
+        closeAnimation.addListener(closeAnimatorListener)
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// ExpandPanel
+    private var expandAnimatorListener = object : Animator.AnimatorListener &#123;
+        override fun onAnimationStart(animation: Animator) &#123;
+            state = ExpandPanelState.OPENING
+        &#125;
+
+        override fun onAnimationEnd(animation: Animator) &#123;
+            state = ExpandPanelState.OPENED
+        &#125;
+
+        override fun onAnimationCancel(animation: Animator) &#123;
+        &#125;
+
+        override fun onAnimationRepeat(animation: Animator) &#123;&#125;
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// ExpandPanel
+    private var closeAnimatorListener = object : Animator.AnimatorListener &#123;
+        override fun onAnimationStart(animation: Animator) &#123;
+            state = ExpandPanelState.CLOSING
+        &#125;
+
+        override fun onAnimationEnd(animation: Animator) &#123;
+            state = ExpandPanelState.CLOSED
+        &#125;
+
+        override fun onAnimationCancel(animation: Animator) &#123;
+        &#125;
+
+        override fun onAnimationRepeat(animation: Animator) &#123;&#125;
+
+    &#125;
+</code></pre>
+<ul>
+<li>增加按钮——展开开关</li>
+</ul>
+<pre><code class="kotlin">class MainActivity : AppCompatActivity() &#123;
+
+    override fun onCreate(savedInstanceState: Bundle?) &#123;
+        super.onCreate(savedInstanceState)
+        val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        setContentView(binding.root)
+
+        binding.openCloseBtn.setOnClickListener &#123;
+            when (binding.panel.state) &#123;
+                ExpandPanel.ExpandPanelState.CLOSING, ExpandPanel.ExpandPanelState.CLOSED -&gt; binding.panel.expand()
+                ExpandPanel.ExpandPanelState.OPENING, ExpandPanel.ExpandPanelState.OPENED -&gt; binding.panel.close()
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<ul>
+<li>拖拽实现</li>
+</ul>
+<pre><code class="kotlin">// ExpandPanel
+    init &#123;
+        ...
+        touchBar.setOnTouchListener(::handelTouchBarTouch)
+        ...
+    &#125;
+</code></pre>
+<pre><code class="kotlin">// ExpandPanel
+    private fun handelTouchBarTouch(view: View, motionEvent: MotionEvent): Boolean &#123;
+        when (motionEvent.action) &#123;
+            MotionEvent.ACTION_DOWN -&gt; &#123;
+                // 记录 内容最开始的偏移量
+                virtualTranslationY = bg.translationY
+                // 记录位置
+                lastY = motionEvent.rawY
+            &#125;
+
+            MotionEvent.ACTION_MOVE -&gt; &#123;
+                // 新位置
+                val newY = motionEvent.rawY
+                // 计算移动距离
+                val moveY = newY - lastY
+
+                // 记录同步偏移后的内容偏移量
+                virtualTranslationY += moveY
+                when &#123;
+                    // 内容移动偏移量不能大于0，将其偏移量设置为0
+                    virtualTranslationY &gt; 0f -&gt; bg.translationY = 0f
+                    // 内容移动偏移量不能小于(-高度)，将其偏移量设置为(-高度)
+                    virtualTranslationY &lt; -height.toFloat() -&gt; bg.translationY =
+                        -height.toFloat()
+                    // 其他情况合法
+                    else -&gt; bg.translationY = virtualTranslationY
+                &#125;
+                // 记录位置
+                lastY = newY
+            &#125;
+
+            // 松手后自动动画
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -&gt; &#123;
+                // 当松手时不是完全展开，就关闭（0可调整为其他阈值，比如总高度*百分之多少）
+                if (bg.translationY &lt; 0) &#123;
+                    close()
+                &#125; else &#123;
+                    expand()
+                &#125;
+            &#125;
+        &#125;
+        return true
+    &#125;
+</code></pre>
+
+</article>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Swithun Liu using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.0.0-alpha.4/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>
