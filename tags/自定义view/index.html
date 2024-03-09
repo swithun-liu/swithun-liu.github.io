@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title> [ Swithun Blog ]</title>
+  <title>Tag: 自定义view [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -133,7 +133,7 @@
               
                 <!--如果是文章-->
                 <ul>
-                    <li class="file active">
+                    <li class="file">
                         <a href="/2023/10/22/主题演示/temp/">
                             <i class="fa fa-file"></i>
                             temp
@@ -179,48 +179,22 @@
     <div id="content-outer">
       <div id="content-inner">
         
-<article id="post">
-  <h1></h1>
-  <pre class="mermaid">sequenceDiagram
-autonumber
-
-participant FragmentActivity
-participant FragmentManager
-participant Fragment
-
-activate FragmentActivity
-FragmentActivity->>FragmentActivity: onCreate begin
-FragmentActivity->>FragmentManager: dispatchCreate() 分发CREATE
-FragmentActivity->>FragmentActivity: setContentView begin
-FragmentActivity->>FragmentActivity: onCreateView
-FragmentActivity->>FragmentManager: moveToExpectedState
-FragmentManager->>Fragment: performAttach
-Fragment->>Fragment: onAttach
-FragmentActivity->>FragmentActivity: onCreate end 
-deactivate FragmentActivity
-
-FragmentActivity->>FragmentActivity: onStart</pre>
-</article>
-
-<script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-</script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<div id="tag">
+  <h1>自定义view</h1>
+  
+    <div class="tag-item">
+      <a href="/2024/03/09/Android/%E8%87%AA%E5%AE%9A%E4%B9%89View%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%B1%95%E5%BC%80%E9%9D%A2%E6%9D%BF/">
+        自定义View实现腿拽展开面板
+      </a>
+      <time datetime="2024-03-09T11:09:15.000Z">
+        2024-03-09
+      </time>
+    </div>
+  
+</div>
 
 <div id="paginator">
-  
+  <span class="page-number current">1</span>
 </div>
 
       </div>
