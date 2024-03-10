@@ -1,5 +1,5 @@
 ---
-title: 自定义View实现腿拽展开面板
+title: 自定义View实现拖拽展开面板
 date: 2024-03-09 19:09:15
 category: Android
 tags: 自定义view
