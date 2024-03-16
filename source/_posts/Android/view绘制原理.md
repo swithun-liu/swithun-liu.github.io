@@ -7,6 +7,13 @@ tags: view
 mermaid: true
 ---
 
+> 基于android api-33
+
+
+![alt text](./view绘制原理/image.png)
+
+
+
 ```mermaid
 flowchart TD
 DecoreView
@@ -26,7 +33,7 @@ ViewGroup2 --> View4
 ```
 
 
-- [1709475090] `invalidate`
+## [1709475090] `invalidate`
 ```java
 // android.view.View
     @UnsupportedAppUsage
@@ -35,7 +42,7 @@ ViewGroup2 --> View4
     }
 ```
 
-- [1709475107] `invalidateInternal`
+## [1709475107] `invalidateInternal`
 ```java
 // android.view.View
     void invalidateInternal(int l, int t, int r, int b, boolean invalidateCache,
@@ -91,15 +98,15 @@ ViewGroup2 --> View4
 
 [1709479625]l, r, t, b传入的就是调用invalidate的View 需要重绘的区域，注意这里传入的 l, r都是0，t是宽，b是高度，所以传入的不是相对 mParent 的位置。
 
-- [1709477262] `mPrivateFlags |= PFLAG_DIRTY;`
+## [1709477262] `mPrivateFlags |= PFLAG_DIRTY;`
 
 标记dirty——`View`正在被重绘
 
-- [1709479770] `damage.set(l, t, r, b);`
+## [1709479770] `damage.set(l, t, r, b);`
 
 设置重绘区域, l,t,r,b来自[1709479625]
 
-- [1709475296] `final ViewParent p = mParent`
+## [1709475296] `final ViewParent p = mParent`
 
 这个View所附加到的父级View
 ```java
@@ -114,7 +121,7 @@ ViewGroup2 --> View4
     protected ViewParent mParent;
 ```
 
-- [1709475402] `p.invalidateChild(this, damage)`  
+## [1709475402] `p.invalidateChild(this, damage)`  
 
 子视图的全部或部分内容已变脏，需要重新绘制。
 ```java
@@ -141,7 +148,7 @@ class ViewParent {
 ViewGroup --|> ViewParent: impl
 ```
 
-- [1709475903] `ViewGroup.invalidateChild`
+## [1709475903] `ViewGroup.invalidateChild`
 ```java
 //android.view.ViewGroup 
     @Deprecated
@@ -244,12 +251,12 @@ ViewGroup --|> ViewParent: impl
     }
 ```
 
-- [1709476371] `parent = parent.invalidateChildInParent(location, dirty);`
+## [1709476371] `parent = parent.invalidateChildInParent(location, dirty);`
 
 最开始parent就是View的mParent - ViewGroup自己 `[1709476329] ViewParent parent = this;`
-不断循环，pareng赋值为`invalidateChildInParent`的返回值
+不断循环，parent赋值为`invalidateChildInParent`的返回值
 
-- [1709476540] `ViewParent.invalidateChildInParent(int[] location, Rect r)`
+## [1709476540] `ViewParent.invalidateChildInParent(int[] location, Rect r)`
 
 ```java
 // android.view.ViewParent
@@ -301,23 +308,212 @@ ViewGroup --|> ViewParent: impl
                 mPrivateFlags |= PFLAG_INVALIDATED;
             }
 
-            return mParent;
+            [1710057745] return mParent;
         }
 
         return null;
     }
 ```
 
-- [1709480037] `dirty.offset(location[CHILD_LEFT_INDEX] - mScrollX, location[CHILD_TOP_INDEX] - mScrollY);`
+## [1709480037] `dirty.offset(location[CHILD_LEFT_INDEX] - mScrollX, location[CHILD_TOP_INDEX] - mScrollY);`
 
 [1709479625]说过传入的重绘区域不是相对父布局的位置，所以这里转换为相对父布局(当前View)的位置;  
 这里还考虑的mScrollX，和mScrollY，因为子View可能已经不在可视区域了
 
-- [1709481021] `dirty.union(0, 0, mRight - mLeft, mBottom - mTop);`
+## [1709481021] `dirty.union(0, 0, mRight - mLeft, mBottom - mTop);`
 
 [1709480037]将重绘位置转换为相对相对父布局(当前View)的位置，然后与当前View的绘制范围取交集，所以union之后一定<=之前传入的重绘范围，比如子View已经滚出当前ViewGroup，那就没有要重绘的区域了。
 
+## [1710057745] `return mParent`
 
+返回自己的mParent
+
+## [1709476540] `ViewParent.invalidateChildInParent(int[] location, Rect r)` 
+
+```java
+// android.view.ViewRootImpl
+    public ViewParent invalidateChildInParent(int[] location, Rect dirty) {
+        checkThread();
+        if (DEBUG_DRAW) Log.v(mTag, "Invalidate child: " + dirty);
+
+        if (dirty == null) {
+            invalidate();
+            return null;
+        } else if (dirty.isEmpty() && !mIsAnimating) {
+            return null;
+        }
+
+        if (mCurScrollY != 0 || mTranslator != null) {
+            mTempRect.set(dirty);
+            dirty = mTempRect;
+            if (mCurScrollY != 0) {
+                dirty.offset(0, -mCurScrollY);
+            }
+            if (mTranslator != null) {
+                mTranslator.translateRectInAppWindowToScreen(dirty);
+            }
+            if (mAttachInfo.mScalingRequired) {
+                dirty.inset(-1, -1);
+            }
+        }
+
+        [1710057983] invalidateRectOnScreen(dirty);
+
+        return null;
+    }
+```
+实现 `ViewParent` 接口的还有 `ViewRootImpl`，`ViewParent` 不断返回 `mParent`，最终就会来到 `ViewRootImpl`
+
+## [1710057983] `invalidateRectOnScreen(dirty);`
+
+```java
+// android.view.ViewRootImpl
+    private void invalidateRectOnScreen(Rect dirty) {
+        final Rect localDirty = mDirty;
+
+        // Add the new dirty rect to the current one
+        localDirty.union(dirty.left, dirty.top, dirty.right, dirty.bottom);
+        // Intersect with the bounds of the window to skip
+        // updates that lie outside of the visible region
+        final float appScale = mAttachInfo.mApplicationScale;
+        final boolean intersected = localDirty.intersect(0, 0,
+                (int) (mWidth * appScale + 0.5f), (int) (mHeight * appScale + 0.5f));
+        if (!intersected) {
+            localDirty.setEmpty();
+        }
+        if (!mWillDrawSoon && (intersected || mIsAnimating)) {
+            [1710058154] scheduleTraversals();
+        }
+    }
+```
+
+## [1710058154] `scheduleTraversals();`
+
+```java
+// android.view.ViewRootImpl
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+    void scheduleTraversals() {
+        if (!mTraversalScheduled) {
+            mTraversalScheduled = true;
+            mTraversalBarrier = mHandler.getLooper().getQueue().postSyncBarrier();
+            [1710058425] mChoreographer.postCallback(
+                    Choreographer.CALLBACK_TRAVERSAL, [1710058293] mTraversalRunnable, null);
+            notifyRendererOfFramePending();
+            pokeDrawLockIfNeeded();
+        }
+    }
+```
+
+## [1710058425] `mChoreographer.postCallback(`
+
+```java
+// android.view.Choreographer
+    public void postCallback(int callbackType, Runnable action, Object token) {
+        postCallbackDelayed(callbackType, action, token, 0);
+    }
+```
+
+将action排队执行，所以回去看  [1710058293] `mTraversalRunnable` 是什么
+
+
+## [1710058293] `mTraversalRunnable`
+
+
+```java
+// android.view.ViewRootImpl
+    final TraversalRunnable mTraversalRunnable = new TraversalRunnable();
+```
+
+```java
+// android.view.ViewRootImpl
+    final class TraversalRunnable implements Runnable {
+        @Override
+        public void run() {
+            [1710058592] doTraversal();
+        }
+    }
+```
+## [1710058592] `doTraversal();`
+
+```java
+// android.view.ViewRootImpl
+    void doTraversal() {
+        if (mTraversalScheduled) {
+            mTraversalScheduled = false;
+            mHandler.getLooper().getQueue().removeSyncBarrier(mTraversalBarrier);
+
+            if (mProfile) {
+                Debug.startMethodTracing("ViewAncestor");
+            }
+
+            [1710058976] performTraversals();
+
+            if (mProfile) {
+                Debug.stopMethodTracing();
+                mProfile = false;
+            }
+        }
+    }
+```
+
+## [1710058976] `performTraversals();`
+
+```java
+// android.view.ViewRootImpl
+    private void performTraversals() {
+        ...
+                   [1710059482] performMeasure(childWidthMeasureSpec, childHeightMeasureSpec);
+```
+
+## [1710059482] `performMeasure(childWidthMeasureSpec, childHeightMeasureSpec);`
+
+```java
+// android.view.ViewRootImpl
+    private void performMeasure(int childWidthMeasureSpec, int childHeightMeasureSpec) {
+        if (mView == null) {
+            return;
+        }
+        Trace.traceBegin(Trace.TRACE_TAG_VIEW, "measure");
+        try {
+            [1710059534] mView.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+        } finally {
+            Trace.traceEnd(Trace.TRACE_TAG_VIEW);
+        }
+    }
+```
+
+## [1710059534] `mView.measure(childWidthMeasureSpec, childHeightMeasureSpec);`
+
+
+
+```mermaid
+sequenceDiagram
+participant Rc as Rect
+
+View ->> View: invalidate
+View ->> View: invalidateInternal (传入自身l,t,r,b)
+View ->> ViewParent: invalidateChild
+ViewParent ->> ViewGroup: (impl) invalidateChild
+loop parent = invalidateChildInParent() != null
+    ViewGroup ->> ViewParent: invalidateChildInParent
+    ViewGroup ->> ViewGroup: (impl) invalidateChildInParent
+    ViewGroup ->> Rc: offset 将dirty(l,t,r,b)相对当前做偏移
+    ViewGroup ->> Rc: union 将dirty与当前取交集
+end
+ViewGroup ->> ViewParent: invalidateChildInParent
+ViewGroup ->> ViewRootImpl: (impl) invalidateChildInParent
+ViewRootImpl ->> ViewRootImpl: invalidateRectOnScreen
+ViewRootImpl ->> ViewRootImpl: scheduleTraversals 
+ViewRootImpl ->> ViewRootImpl: doTraversal
+ViewRootImpl ->> ViewRootImpl: performTraversals
+```
+
+```mermaid
+sequenceDiagram
+ViewRootImpl ->> ViewRootImpl: performTraversals
+ViewRootImpl ->> ViewRootImpl: performMeasure
+ViewRootImpl ->> View: measure
+```
 
 # 参考
 
