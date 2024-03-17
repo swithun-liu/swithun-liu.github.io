@@ -230,32 +230,9 @@ public final class WindowManagerImpl implements WindowManager {
 ```java
     public Activity handleLaunchActivity(ActivityClientRecord r,
             PendingTransactionActions pendingActions, Intent customIntent) {
-        // If we are getting ready to gc after going to the background, well
-        // we are back active so skip it.
-        unscheduleGcIdler();
-        mSomeActivitiesChanged = true;
-
-        if (r.profilerInfo != null) {
-            mProfiler.setProfiler(r.profilerInfo);
-            mProfiler.startProfiling();
-        }
-
-        // Make sure we are running with the most recent config.
-        mConfigurationController.handleConfigurationChanged(null, null);
-
-        if (localLOGV) Slog.v(
-            TAG, "Handling launch of " + r);
-
-        // Initialize before creating the activity
-        if (ThreadedRenderer.sRendererEnabled
-                && (r.activityInfo.flags & ActivityInfo.FLAG_HARDWARE_ACCELERATED) != 0) {
-            HardwareRenderer.preload();
-        }
+        ...
         [1710583987] WindowManagerGlobal.initialize();
-
-        // Hint the GraphicsEnvironment that an activity is launching on the process.
-        GraphicsEnvironment.hintActivityLaunch();
-
+        ...
         [1710583914] final Activity a = performLaunchActivity(r, customIntent);
 
         if (a != null) {
@@ -276,7 +253,7 @@ public final class WindowManagerImpl implements WindowManager {
     }
 ```
 
-## [1710583987] WindowManagerGlobal.initialize();
+## [1710583837]#[1710583987] WindowManagerGlobal.initialize();
 
 ```java
 // android.view.WindowManager
@@ -288,41 +265,31 @@ public final class WindowManagerGlobal {
     }
 ```
 
-## [1710584110] getWindowManagerService();
+## [1710583987]#[1710584110] getWindowManagerService();
 
 ```java
 // android.view.WindowManager
     @UnsupportedAppUsage
     public static IWindowManager getWindowManagerService() {
         synchronized (WindowManagerGlobal.class) {
-            if (sWindowManagerService == null) {
                 [1710584184] sWindowManagerService = IWindowManager.Stub.asInterface(
                         ServiceManager.getService("window"));
-                try {
-                    if (sWindowManagerService != null) {
-                        ValueAnimator.setDurationScale(
-                                sWindowManagerService.getCurrentAnimatorScale());
-                        sUseBLASTAdapter = sWindowManagerService.useBLAST();
-                    }
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
+                        ...
             return sWindowManagerService;
         }
     }
 ```
 
-## [1710584184] sWindowManagerService = IWindowManager.Stub.asInterface(
+## [1710584110]#[1710584184] sWindowManagerService = IWindowManager.Stub.asInterface(
 
 将 `sWindowManagerService` 作为 `WindowManagerGlobal` 的静态变量保存
 
 ```java
-// android.view.WindowManager
+// android.view.WindowManagerGlobal
     private static IWindowManager sWindowManagerService;
 ```
 
-## [1710583914] final Activity a = performLaunchActivity(r, customIntent);
+## [1710583837]#[1710583914] final Activity a = performLaunchActivity(r, customIntent);
 
 创建`Activity`，
 
@@ -330,145 +297,23 @@ public final class WindowManagerGlobal {
 // android.app.ActivityThread
     /**  Core implementation of activity launch. */
     private Activity performLaunchActivity(ActivityClientRecord r, Intent customIntent) {
-        ActivityInfo aInfo = r.activityInfo;
-        if (r.packageInfo == null) {
-            r.packageInfo = getPackageInfo(aInfo.applicationInfo, r.compatInfo,
-                    Context.CONTEXT_INCLUDE_CODE);
-        }
-
-        ComponentName component = r.intent.getComponent();
-        if (component == null) {
-            component = r.intent.resolveActivity(
-                mInitialApplication.getPackageManager());
-            r.intent.setComponent(component);
-        }
-
-        if (r.activityInfo.targetActivity != null) {
-            component = new ComponentName(r.activityInfo.packageName,
-                    r.activityInfo.targetActivity);
-        }
-
+        ...
         [1710592951] ContextImpl appContext = createBaseContextForActivity(r);
-        Activity activity = null;
-        try {
-            java.lang.ClassLoader cl = appContext.getClassLoader();
+        ...
             [1710584434] activity = mInstrumentation.newActivity(
                     cl, component.getClassName(), r.intent);
-            StrictMode.incrementExpectedActivityCount(activity.getClass());
-            r.intent.setExtrasClassLoader(cl);
-            r.intent.prepareToEnterProcess(isProtectedComponent(r.activityInfo),
-                    appContext.getAttributionSource());
-            if (r.state != null) {
-                r.state.setClassLoader(cl);
-            }
-        } catch (Exception e) {
-            if (!mInstrumentation.onException(activity, e)) {
-                throw new RuntimeException(
-                    "Unable to instantiate activity " + component
-                    + ": " + e.toString(), e);
-            }
-        }
-
-        try {
-            Application app = r.packageInfo.makeApplicationInner(false, mInstrumentation);
-
-            if (localLOGV) Slog.v(TAG, "Performing launch of " + r);
-            if (localLOGV) Slog.v(
-                    TAG, r + ": app=" + app
-                    + ", appName=" + app.getPackageName()
-                    + ", pkg=" + r.packageInfo.getPackageName()
-                    + ", comp=" + r.intent.getComponent().toShortString()
-                    + ", dir=" + r.packageInfo.getAppDir());
-
-            // updatePendingActivityConfiguration() reads from mActivities to update
-            // ActivityClientRecord which runs in a different thread. Protect modifications to
-            // mActivities to avoid race.
-            synchronized (mResourcesManager) {
-                mActivities.put(r.token, r);
-            }
-
-            if (activity != null) {
-                CharSequence title = r.activityInfo.loadLabel(appContext.getPackageManager());
-                Configuration config =
-                        new Configuration(mConfigurationController.getCompatConfiguration());
-                if (r.overrideConfig != null) {
-                    config.updateFrom(r.overrideConfig);
-                }
-                if (DEBUG_CONFIGURATION) Slog.v(TAG, "Launching activity "
-                        + r.activityInfo.name + " with config " + config);
-                Window window = null;
-                if (r.mPendingRemoveWindow != null && r.mPreserveWindow) {
-                    window = r.mPendingRemoveWindow;
-                    r.mPendingRemoveWindow = null;
-                    r.mPendingRemoveWindowManager = null;
-                }
-
-                // Activity resources must be initialized with the same loaders as the
-                // application context.
-                appContext.getResources().addLoaders(
-                        app.getResources().getLoaders().toArray(new ResourcesLoader[0]));
-
-                appContext.setOuterContext(activity);
+                ...
                 [1710584653] activity.attach(appContext, this, getInstrumentation(), r.token,
                         r.ident, app, r.intent, r.activityInfo, title, r.parent,
                         r.embeddedID, r.lastNonConfigurationInstances, config,
                         r.referrer, r.voiceInteractor, window, r.activityConfigCallback,
                         r.assistToken, r.shareableActivityToken);
-
-                if (customIntent != null) {
-                    activity.mIntent = customIntent;
-                }
-                r.lastNonConfigurationInstances = null;
-                checkAndBlockForNetworkAccess();
-                activity.mStartedActivity = false;
-                int theme = r.activityInfo.getThemeResource();
-                if (theme != 0) {
-                    activity.setTheme(theme);
-                }
-
-                if (r.mActivityOptions != null) {
-                    activity.mPendingOptions = r.mActivityOptions;
-                    r.mActivityOptions = null;
-                }
-                activity.mLaunchedFromBubble = r.mLaunchedFromBubble;
-                activity.mCalled = false;
-                // Assigning the activity to the record before calling onCreate() allows
-                // ActivityThread#getActivity() lookup for the callbacks triggered from
-                // ActivityLifecycleCallbacks#onActivityCreated() or
-                // ActivityLifecycleCallback#onActivityPostCreated().
-                r.activity = activity;
-                if (r.isPersistable()) {
-                    mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);
-                } else {
-                    mInstrumentation.callActivityOnCreate(activity, r.state);
-                }
-                if (!activity.mCalled) {
-                    throw new SuperNotCalledException(
-                        "Activity " + r.intent.getComponent().toShortString() +
-                        " did not call through to super.onCreate()");
-                }
-                mLastReportedWindowingMode.put(activity.getActivityToken(),
-                        config.windowConfiguration.getWindowingMode());
-            }
-            r.setState(ON_CREATE);
-
-        } catch (SuperNotCalledException e) {
-            throw e;
-
-        } catch (Exception e) {
-            if (!mInstrumentation.onException(activity, e)) {
-                throw new RuntimeException(
-                    "Unable to start activity " + component
-                    + ": " + e.toString(), e);
-            }
-        }
-
+        ...
         return activity;
     }
-
 ```
 
-## [1710592951] ContextImpl appContext = createBaseContextForActivity(r);
+## [1710583914]#[1710592951] ContextImpl appContext = createBaseContextForActivity(r);
 
 ```java
 // android.app.ActivityThread
@@ -476,34 +321,17 @@ public final class WindowManagerGlobal {
         final int displayId = ActivityClient.getInstance().getDisplayId(r.token);
         [1710593100] ContextImpl appContext = ContextImpl.createActivityContext(
                 this, r.packageInfo, r.activityInfo, r.token, displayId, r.overrideConfig);
-
-        final DisplayManagerGlobal dm = DisplayManagerGlobal.getInstance();
-        // For debugging purposes, if the activity's package name contains the value of
-        // the "debug.use-second-display" system property as a substring, then show
-        // its content on a secondary display if there is one.
-        String pkgName = SystemProperties.get("debug.second-display.pkg");
-        if (pkgName != null && !pkgName.isEmpty()
-                && r.packageInfo.mPackageName.contains(pkgName)) {
-            for (int id : dm.getDisplayIds()) {
-                if (id != DEFAULT_DISPLAY) {
-                    Display display =
-                            dm.getCompatibleDisplay(id, appContext.getResources());
-                    appContext = (ContextImpl) appContext.createDisplayContext(display);
-                    break;
-                }
-            }
-        }
+        ...
         return appContext;
     }
 ```
-## [1710593100] ContextImpl appContext = ContextImpl.createActivityContext(
+## [1710592951]#[1710593100] ContextImpl appContext = ContextImpl.createActivityContext(
 
 ```java
 // android.app.ContextImpl
     static ContextImpl createActivityContext(ActivityThread mainThread,
             LoadedApk packageInfo, ActivityInfo activityInfo, IBinder activityToken, int displayId,
             Configuration overrideConfiguration) {
-
         ...
         [1710596093] ContextImpl context = new ContextImpl(null, mainThread, packageInfo, ContextParams.EMPTY,
                 attributionTag, null, activityInfo.splitName, activityToken, null, 0, classLoader,
@@ -513,7 +341,7 @@ public final class WindowManagerGlobal {
 
 `[1710596093] ContextImpl context = new ContextImpl` 这里新建一个 `ContextImpl`
 
-## [1710584434] activity = mInstrumentation.newActivity(
+## [1710583914]#[1710584434] activity = mInstrumentation.newActivity(
 
 ```java
 // android.app.Instrumentation
@@ -538,7 +366,7 @@ public final class WindowManagerGlobal {
 
 通过 `ClassLoader` 加载 `Activity`
 
-## [1710584653] activity.attach(appContext, this, getInstrumentation(), r.token,
+## [1710583914]#[1710584653] activity.attach(appContext, this, getInstrumentation(), r.token,
 
 ```java
 // android.app.Activity
@@ -550,47 +378,10 @@ public final class WindowManagerGlobal {
             Configuration config, String referrer, IVoiceInteractor voiceInteractor,
             Window window, ActivityConfigCallback activityConfigCallback, IBinder assistToken,
             IBinder shareableActivityToken) {
-        attachBaseContext(context);
-
-        mFragments.attachHost(null /*parent*/);
-
+        [1710661255] attachBaseContext(context);
+        ...
         [1710584779] mWindow = new PhoneWindow(this, window, activityConfigCallback);
-        mWindow.setWindowControllerCallback(mWindowControllerCallback);
-        mWindow.setCallback(this);
-        mWindow.setOnWindowDismissedCallback(this);
-        mWindow.getLayoutInflater().setPrivateFactory(this);
-        if (info.softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED) {
-            mWindow.setSoftInputMode(info.softInputMode);
-        }
-        if (info.uiOptions != 0) {
-            mWindow.setUiOptions(info.uiOptions);
-        }
-        mUiThread = Thread.currentThread();
-
-        mMainThread = aThread;
-        mInstrumentation = instr;
-        mToken = token;
-        mAssistToken = assistToken;
-        mShareableActivityToken = shareableActivityToken;
-        mIdent = ident;
-        mApplication = application;
-        mIntent = intent;
-        mReferrer = referrer;
-        mComponent = intent.getComponent();
-        mActivityInfo = info;
-        mTitle = title;
-        mParent = parent;
-        mEmbeddedID = id;
-        mLastNonConfigurationInstances = lastNonConfigurationInstances;
-        if (voiceInteractor != null) {
-            if (lastNonConfigurationInstances != null) {
-                mVoiceInteractor = lastNonConfigurationInstances.voiceInteractor;
-            } else {
-                mVoiceInteractor = new VoiceInteractor(voiceInteractor, this, this,
-                        Looper.myLooper());
-            }
-        }
-
+        ...
         [1710591610] mWindow.setWindowManager(
                 [1710591904] (WindowManager)context.getSystemService([1710595218]Context.WINDOW_SERVICE),
                 mToken, mComponent.flattenToString(),
@@ -612,21 +403,82 @@ public final class WindowManagerGlobal {
 ```
 
 ```java
-// android.app.Android
+// android.app.Activity
     @UnsupportedAppUsage
     [1710596612] private Window mWindow;
 ```
 
 ```java
-// android.app.Android
+// android.app.Activity
     @UnsupportedAppUsage
     [1710596656] private WindowManager mWindowManager;
 ```
 
+## [1710584653]#[1710661255] attachBaseContext(context);
+
+给 `Activity` 设置 `mBase`(base context)
+
+```java
+// android.app.Activity
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        [1710661335] super.attachBaseContext(newBase);
+        ...
+```
+## [1710661255]#[1710661335] super.attachBaseContext(newBase);
+
+```java
+// android.view.ContextThemeWrapper
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        [1710661397] super.attachBaseContext(newBase);
+    }
+```
+
+## [1710661335]#[1710661397] super.attachBaseContext(newBase);
+
+Set the base context for this ContextWrapper.  All calls will then be delegated to the base context.
+
+```java
+// android.content.ContextWrapper
+    protected void attachBaseContext(Context base) {
+        if (mBase != null) {
+            throw new IllegalStateException("Base context already set");
+        }
+        mBase = base;
+    }
+```
+
+所以 `ContextWrapper`是什么
+
+## [1710661397]#[1710662024] ContextWrapper
+
+Proxying implementation of Context that simply delegates all of its calls to another Context
+
+```java
+public class ContextWrapper extends Context {
+```
+
+```mermaid
+classDiagram
+class Context {
+    <<abstract>>
+}
+class ContextWrapper {
+    mBase Context
+}
+class ContextThemeWrapper
+class Activity
+
+ContextWrapper --|> Context
+Context --o ContextWrapper
+ContextThemeWrapper --|> ContextWrapper
+Activity --|> ContextThemeWrapper
+```
 
 ## [1710591904] (WindowManager)context.getSystemService(Context.WINDOW_SERVICE),
 
-`context` 来自 `[1710596093]`
+`context` 来自 `[1710596093]`，也就是 `Activity.mBase (Context)`(see [1710661255])
 
 ```java
 // frameworks/base/core/java/android/app/ContextImpl.java
@@ -637,7 +489,7 @@ public final class WindowManagerGlobal {
     }
 ```
 
-## [1710594900] SystemServiceRegistry.getSystemService(this, name)
+## [1710591904]#[1710594900] SystemServiceRegistry.getSystemService(this, name)
 
 ```java
     /**
@@ -645,37 +497,18 @@ public final class WindowManagerGlobal {
      * @hide
      */
     public static Object getSystemService(ContextImpl ctx, String name) {
-        if (name == null) {
-            return null;
-        }
+        ..
         final ServiceFetcher<?> fetcher = [1710595007] SYSTEM_SERVICE_FETCHERS.get(name);
-        if (fetcher == null) {
-            if (sEnableServiceNotFoundWtf) {
-                Slog.wtf(TAG, "Unknown manager requested: " + name);
-            }
-            return null;
-        }
-
+        ..
         final Object ret = fetcher.getService(ctx);
-        if (sEnableServiceNotFoundWtf && ret == null) {
-            // Some services do return null in certain situations, so don't do WTF for them.
-            switch (name) {
-                case Context.CONTENT_CAPTURE_MANAGER_SERVICE:
-                case Context.APP_PREDICTION_SERVICE:
-                case Context.INCREMENTAL_SERVICE:
-                case Context.ETHERNET_SERVICE:
-                    return null;
-            }
-            Slog.wtf(TAG, "Manager wrapper not available: " + name);
-            return null;
-        }
+        ..
         return ret;
     }
 ```
 
 从 `[1710595007] SYSTEM_SERVICE_FETCHERS` 中获取先前通过 `[1710592455] registerService` 注册的 fetcher,也就是个 Factory，使用其创建 `Service`, 而对于传入的 Key(`[1710595218]Context.WINDOW_SERVICE`)，返回的 Fetcher 会创建 `[1710595130] WindowManagerImpl(ctx)`, 也就是 `WindowManager` 的实现类
 
-## [1710592317] SystemServiceRegistry
+## [1710594900]#[1710592317] SystemServiceRegistry
 
 Manages all of the system services that can be returned by {@link Context#getSystemService}
 
@@ -692,7 +525,7 @@ public final class SystemServiceRegistry {
             }});
 ```
 
-## [1710592455] registerService(Context.WINDOW_SERVICE, WindowManager.class,
+## [1710592317]#[1710592455] registerService(Context.WINDOW_SERVICE, WindowManager.class,
 
 ```java
 // android.app.SystemServiceRegistry
@@ -705,9 +538,9 @@ public final class SystemServiceRegistry {
 
 ```
 
-## [1710584779] mWindow = new PhoneWindow(this, window, activityConfigCallback);
+## [1710584653]#[1710584779] mWindow = new PhoneWindow(this, window, activityConfigCallback);
 
-在当前 `Activity` 创建 `Window`
+在当前 `Activity` 创建 `Window`，并且赋值给 `Activity.mWindow`
 
 ```java
 // android.app.Activity
@@ -715,24 +548,20 @@ public final class SystemServiceRegistry {
     private Window mWindow;
 ```
 
-## [1710591610] mWindow.setWindowManager(
+## [1710584653]#[1710591610] mWindow.setWindowManager(
 
 为 `Window` 设置 `WindowManager`
+
+此时 `mWindow` 就是 `Activity.mWindow`(see [1710662024])，
 
 ```java
 // android.view.Window
     public void setWindowManager(WindowManager wm, IBinder appToken, String appName,
             boolean hardwareAccelerated) {
-        mAppToken = appToken;
-        mAppName = appName;
-        mHardwareAccelerated = hardwareAccelerated;
-        if (wm == null) {
-            wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
-        }
+        ...
         [1710596387] mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(this);
     }
 ```
-## [1710596387] mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(this);
 
 ```java
 // android.view.Window
@@ -741,7 +570,7 @@ public final class SystemServiceRegistry {
 ```
 给 Window#`[1710596791] private WindowManager mWindowManager;` 赋值
 
-## [1710596387] mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(this);
+## [1710591610]#[1710596387] mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(this);
 
 ```java
 // android.view.WindowManagerImpl
@@ -759,7 +588,23 @@ public final class SystemServiceRegistry {
     }
 ```
 
-## [1710596714] mWindowManager = mWindow.getWindowManager();
+```mermaid
+classDiagram
+class Window {
+    <<interface>>
+}
+class WindowManager {
+    <<interface>>
+}
+class WindowManagerImpl {
+    mParentWindow Window
+}
+
+WindowManagerImpl --|> WindowManager: impl
+Window --o WindowManagerImpl
+```
+
+## [1710584653]#[1710596714] mWindowManager = mWindow.getWindowManager();
 
 给 `[1710596656] private WindowManager mWindowManager;` 赋值
 
@@ -780,6 +625,18 @@ public final class SystemServiceRegistry {
 ## 总结以上
 
 ```mermaid
+sequenceDiagram
+ActivityThread -> ActivityThread: handleLaunchActivity
+ActivityThread -> ActivityThread: performLaunchActivity
+ActivityThread -> ActivityThread: 创建Activity的base Context
+ActivityThread -> ActivityThread: 创建Activity
+ActivityThread -> Activity: attach
+Activity -> Activity: attachBaseContext(ContextImpl绑定-装饰者模式)
+Activity -> Activity: 新建PhoneWindow赋值给Activity.mWindow
+Activity -> Window: 创建WindowManager赋值给Activity.mWindowManager
+```
+
+```mermaid
 classDiagram
 class ViewManager {
     <<interface>>
@@ -798,3 +655,4 @@ WindowManagerImpl --|> WindowManager: impl
 ## 参考
 
 - [Android窗口机制（一）初识Android的窗口结构](https://www.jianshu.com/p/40a9c93b5a8d)
+- [Android -- Activity启动过程中的上下文环境初始化分析](https://blog.csdn.net/csdn_of_coder/article/details/78147399)
