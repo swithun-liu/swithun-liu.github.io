@@ -225,6 +225,556 @@ public interface WindowManager extends ViewManager {
 public final class WindowManagerImpl implements WindowManager {
 ```
 
+## [1710680968] startActivity
+
+```java
+// android.app.Activity
+    @Override
+    public void startActivity(Intent intent) {
+        [1710681027] this.startActivity(intent, null);
+    }
+```
+
+## [1710680968]#[1710681027] this.startActivity(intent, null);
+
+```java
+// android.app.Activity
+    @Override
+    public void startActivity(Intent intent, @Nullable Bundle options) {
+        ..
+            [1710681049] startActivityForResult(intent, -1);
+```
+## [1710681027]#[1710681049] startActivityForResult(intent, -1);
+
+```java
+    public void startActivityForResult(@RequiresPermission Intent intent, int requestCode,
+            @Nullable Bundle options) {
+            ...
+            Instrumentation.ActivityResult ar =
+                [1710684070] mInstrumentation.execStartActivity(
+                    this, mMainThread.getApplicationThread(), mToken, this,
+                    intent, requestCode, options);
+```
+
+## [1710681049]#[1710684070] mInstrumentation.execStartActivity(
+
+```java
+// android.app.ActivityTaskManager
+    public ActivityResult execStartActivity(
+            Context who, IBinder contextThread, IBinder token, Activity target,
+            Intent intent, int requestCode, Bundle options) {
+        IApplicationThread whoThread = (IApplicationThread) contextThread;
+        Uri referrer = target != null ? target.onProvideReferrer() : null;
+        if (referrer != null) {
+            intent.putExtra(Intent.EXTRA_REFERRER, referrer);
+        }
+        if (mActivityMonitors != null) {
+            synchronized (mSync) {
+                final int N = mActivityMonitors.size();
+                for (int i=0; i<N; i++) {
+                    final ActivityMonitor am = mActivityMonitors.get(i);
+                    ActivityResult result = null;
+                    if (am.ignoreMatchingSpecificIntents()) {
+                        if (options == null) {
+                            options = ActivityOptions.makeBasic().toBundle();
+                        }
+                        result = am.onStartActivity(who, intent, options);
+                    }
+                    if (result != null) {
+                        am.mHits++;
+                        return result;
+                    } else if (am.match(who, null, intent)) {
+                        am.mHits++;
+                        if (am.isBlocking()) {
+                            return requestCode >= 0 ? am.getResult() : null;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        try {
+            intent.migrateExtraStreamToClipData(who);
+            intent.prepareToLeaveProcess(who);
+            int result = ActivityTaskManager.[1710684185]getService().[1710684660]startActivity(whoThread,
+                    who.getOpPackageName(), who.getAttributionTag(), intent,
+                    intent.resolveTypeIfNeeded(who.getContentResolver()), token,
+                    target != null ? target.mEmbeddedID : null, requestCode, 0, null, options);
+            checkStartActivityResult(result, intent);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Failure from system", e);
+        }
+        return null;
+    }
+```
+
+## [1710684070]#[1710684185]getService()
+
+```java
+// android.app.ActivityTaskManager
+    public static IActivityTaskManager getService() {
+        return [1710684283]IActivityTaskManagerSingleton.[1710684319]get();
+    }
+```
+
+## [1710684185]#[1710684283]IActivityTaskManagerSingleton
+
+```java
+    @UnsupportedAppUsage(trackingBug = 129726065)
+    private static final Singleton<IActivityTaskManager> IActivityTaskManagerSingleton =
+            new Singleton<IActivityTaskManager>() {
+                @Override
+                protected IActivityTaskManager create() {
+                    final IBinder b = ServiceManager.getService(Context.ACTIVITY_TASK_SERVICE);
+                    return [1710684357] IActivityTaskManager.Stub.asInterface(b);
+                }
+            };
+```
+
+## [1710684357]#[1710684283] IActivityTaskManager.Stub.asInterface(b);
+
+## [1710684283]#[1710684660]startActivity(whoThread,
+
+夸进程调用
+
+// android.server.wm.ActivityTaskManagerService
+
+```java
+    @Override
+    public final int startActivity(IApplicationThread caller, String callingPackage,
+            String callingFeatureId, Intent intent, String resolvedType, IBinder resultTo,
+            String resultWho, int requestCode, int startFlags, ProfilerInfo profilerInfo,
+            Bundle bOptions) {
+        return [1710684705] startActivityAsUser(caller, callingPackage, callingFeatureId, intent, resolvedType,
+                resultTo, resultWho, requestCode, startFlags, profilerInfo, bOptions,
+                UserHandle.getCallingUserId());
+    }
+```
+
+## [1710684660]#[1710684705] startActivityAsUser(caller, callingPackage, callingFeatureId, intent, resolvedType,
+
+```java
+    @Override
+    public int startActivityAsUser(IApplicationThread caller, String callingPackage,
+            String callingFeatureId, Intent intent, String resolvedType, IBinder resultTo,
+            String resultWho, int requestCode, int startFlags, ProfilerInfo profilerInfo,
+            Bundle bOptions, int userId) {
+        return [1710684754] startActivityAsUser(caller, callingPackage, callingFeatureId, intent, resolvedType,
+                resultTo, resultWho, requestCode, startFlags, profilerInfo, bOptions, userId,
+                true /*validateIncomingUser*/);
+    }
+```
+
+## [1710684705]#[1710684754] startActivityAsUser(caller, callingPackage, callingFeatureId, intent, resolvedType,
+
+```java
+    private int startActivityAsUser(IApplicationThread caller, String callingPackage,
+            @Nullable String callingFeatureId, Intent intent, String resolvedType,
+            IBinder resultTo, String resultWho, int requestCode, int startFlags,
+            ProfilerInfo profilerInfo, Bundle bOptions, int userId, boolean validateIncomingUser) {
+        assertPackageMatchesCallingUid(callingPackage);
+        enforceNotIsolatedCaller("startActivityAsUser");
+        if (Process.isSdkSandboxUid(Binder.getCallingUid())) {
+            SdkSandboxManagerLocal sdkSandboxManagerLocal = LocalManagerRegistry.getManager(
+                    SdkSandboxManagerLocal.class);
+            if (sdkSandboxManagerLocal == null) {
+                throw new IllegalStateException("SdkSandboxManagerLocal not found when starting"
+                        + " an activity from an SDK sandbox uid.");
+            }
+            sdkSandboxManagerLocal.enforceAllowedToStartActivity(intent);
+        }
+
+        userId = getActivityStartController().checkTargetUser(userId, validateIncomingUser,
+                Binder.getCallingPid(), Binder.getCallingUid(), "startActivityAsUser");
+
+        // TODO: Switch to user app stacks here.
+        return getActivityStartController().obtainStarter(intent, "startActivityAsUser")
+                .setCaller(caller)
+                .setCallingPackage(callingPackage)
+                .setCallingFeatureId(callingFeatureId)
+                .setResolvedType(resolvedType)
+                .setResultTo(resultTo)
+                .setResultWho(resultWho)
+                .setRequestCode(requestCode)
+                .setStartFlags(startFlags)
+                .setProfilerInfo(profilerInfo)
+                .setActivityOptions(bOptions)
+                .setUserId(userId)
+                .[1710685003]execute();
+
+    }
+```
+
+## [1710684754]#[1710685003]execute()
+
+```java
+// android.server.wm.ActivityStarter
+    int execute() {
+        try {
+            // Refuse possible leaked file descriptors
+            if (mRequest.intent != null && mRequest.intent.hasFileDescriptors()) {
+                throw new IllegalArgumentException("File descriptors passed in Intent");
+            }
+
+            final LaunchingState launchingState;
+            synchronized (mService.mGlobalLock) {
+                final ActivityRecord caller = ActivityRecord.forTokenLocked(mRequest.resultTo);
+                final int callingUid = mRequest.realCallingUid == Request.DEFAULT_REAL_CALLING_UID
+                        ?  Binder.getCallingUid() : mRequest.realCallingUid;
+                launchingState = mSupervisor.getActivityMetricsLogger().notifyActivityLaunching(
+                        mRequest.intent, caller, callingUid);
+            }
+
+            // If the caller hasn't already resolved the activity, we're willing
+            // to do so here. If the caller is already holding the WM lock here,
+            // and we need to check dynamic Uri permissions, then we're forced
+            // to assume those permissions are denied to avoid deadlocking.
+            if (mRequest.activityInfo == null) {
+                mRequest.resolveActivity(mSupervisor);
+            }
+
+            // Add checkpoint for this shutdown or reboot attempt, so we can record the original
+            // intent action and package name.
+            if (mRequest.intent != null) {
+                String intentAction = mRequest.intent.getAction();
+                String callingPackage = mRequest.callingPackage;
+                if (intentAction != null && callingPackage != null
+                        && (Intent.ACTION_REQUEST_SHUTDOWN.equals(intentAction)
+                                || Intent.ACTION_SHUTDOWN.equals(intentAction)
+                                || Intent.ACTION_REBOOT.equals(intentAction))) {
+                    ShutdownCheckPoints.recordCheckPoint(intentAction, callingPackage, null);
+                }
+            }
+
+            int res;
+            synchronized (mService.mGlobalLock) {
+                final boolean globalConfigWillChange = mRequest.globalConfig != null
+                        && mService.getGlobalConfiguration().diff(mRequest.globalConfig) != 0;
+                final Task rootTask = mRootWindowContainer.getTopDisplayFocusedRootTask();
+                if (rootTask != null) {
+                    rootTask.mConfigWillChange = globalConfigWillChange;
+                }
+                ProtoLog.v(WM_DEBUG_CONFIGURATION, "Starting activity when config "
+                        + "will change = %b", globalConfigWillChange);
+
+                final long origId = Binder.clearCallingIdentity();
+
+                res = resolveToHeavyWeightSwitcherIfNeeded();
+                if (res != START_SUCCESS) {
+                    return res;
+                }
+                [1710685731] res = executeRequest(mRequest);
+
+                Binder.restoreCallingIdentity(origId);
+
+                if (globalConfigWillChange) {
+                    // If the caller also wants to switch to a new configuration, do so now.
+                    // This allows a clean switch, as we are waiting for the current activity
+                    // to pause (so we will not destroy it), and have not yet started the
+                    // next activity.
+                    mService.mAmInternal.enforceCallingPermission(
+                            android.Manifest.permission.CHANGE_CONFIGURATION,
+                            "updateConfiguration()");
+                    if (rootTask != null) {
+                        rootTask.mConfigWillChange = false;
+                    }
+                    ProtoLog.v(WM_DEBUG_CONFIGURATION,
+                                "Updating to new configuration after starting activity.");
+
+                    mService.updateConfigurationLocked(mRequest.globalConfig, null, false);
+                }
+
+                // The original options may have additional info about metrics. The mOptions is not
+                // used here because it may be cleared in setTargetRootTaskIfNeeded.
+                final ActivityOptions originalOptions = mRequest.activityOptions != null
+                        ? mRequest.activityOptions.getOriginalOptions() : null;
+                // If the new record is the one that started, a new activity has created.
+                final boolean newActivityCreated = mStartActivity == mLastStartActivityRecord;
+                // Notify ActivityMetricsLogger that the activity has launched.
+                // ActivityMetricsLogger will then wait for the windows to be drawn and populate
+                // WaitResult.
+                mSupervisor.getActivityMetricsLogger().notifyActivityLaunched(launchingState, res,
+                        newActivityCreated, mLastStartActivityRecord, originalOptions);
+                if (mRequest.waitResult != null) {
+                    mRequest.waitResult.result = res;
+                    res = waitResultIfNeeded(mRequest.waitResult, mLastStartActivityRecord,
+                            launchingState);
+                }
+                return getExternalResult(res);
+            }
+        } finally {
+            onExecutionComplete();
+        }
+    }
+```
+
+## [1710685003]#[1710685731] res = executeRequest(mRequest);
+
+```java
+// android.server.wm.ActivityStarter
+    private int executeRequest(Request request) {
+        ...
+        [1710685907] final ActivityRecord r = new ActivityRecord.Builder(mService)
+                .setCaller(callerApp)
+                .setLaunchedFromPid(callingPid)
+                .setLaunchedFromUid(callingUid)
+                .setLaunchedFromPackage(callingPackage)
+                .setLaunchedFromFeature(callingFeatureId)
+                .setIntent(intent)
+                .setResolvedType(resolvedType)
+                .setActivityInfo(aInfo)
+                .setConfiguration(mService.getGlobalConfiguration())
+                .setResultTo(resultRecord)
+                .setResultWho(resultWho)
+                .setRequestCode(requestCode)
+                .setComponentSpecified(request.componentSpecified)
+                .setRootVoiceInteraction(voiceSession != null)
+                .setActivityOptions(checkedOptions)
+                .setSourceRecord(sourceRecord)
+                .build();
+        ...
+        mLastStartActivityResult = [1710685981] startActivityUnchecked(r, sourceRecord, voiceSession,
+                request.voiceInteractor, startFlags, true /* doResume */, checkedOptions,
+                inTask, inTaskFragment, restrictedBgActivity, intentGrants);
+
+```
+
+## [1710685731]#[1710685907] final ActivityRecord r = new ActivityRecord.Builder(mService)
+
+创建 `ActivityRecord`，记录 `Activity` 的关键信息
+
+## [1710685731]#[1710685981] startActivityUnchecked(r, sourceRecord, voiceSession,
+
+```java
+// android.server.wm.ActivityStarter
+    private int startActivityUnchecked(final ActivityRecord r, ActivityRecord sourceRecord,
+            IVoiceInteractionSession voiceSession, IVoiceInteractor voiceInteractor,
+            int startFlags, boolean doResume, ActivityOptions options, Task inTask,
+            TaskFragment inTaskFragment, boolean restrictedBgActivity,
+            NeededUriGrants intentGrants) {
+        ...
+            result = [1710686083] startActivityInner(r, sourceRecord, voiceSession, voiceInteractor,
+                    startFlags, doResume, options, inTask, inTaskFragment, restrictedBgActivity,
+                    intentGrants);
+        ...
+    }
+```
+
+## [1710685981]#[1710686083] startActivityInner(r, sourceRecord, voiceSession, voiceInteractor,
+
+```java
+// android.server.wm.ActivityStarter
+    int startActivityInner(final ActivityRecord r, ActivityRecord sourceRecord,
+            IVoiceInteractionSession voiceSession, IVoiceInteractor voiceInteractor,
+            int startFlags, boolean doResume, ActivityOptions options, Task inTask,
+            TaskFragment inTaskFragment, boolean restrictedBgActivity,
+            NeededUriGrants intentGrants) {
+            ...
+                [1710686250] mRootWindowContainer.resumeFocusedTasksTopActivities(
+                        mTargetRootTask, mStartActivity, mOptions, mTransientLaunch);
+```
+
+## [1710686083]#[1710686250] mRootWindowContainer.resumeFocusedTasksTopActivities(
+
+```java
+// android.server.wm.RootWindowContainer
+    boolean resumeFocusedTasksTopActivities(
+            Task targetRootTask, ActivityRecord target, ActivityOptions targetOptions,
+            boolean deferPause) {
+                ...
+                    result |= [1710686434] focusedRoot.resumeTopActivityUncheckedLocked(target, targetOptions);
+```
+
+## [1710686250]#[1710686434] focusedRoot.resumeTopActivityUncheckedLocked(target, targetOptions);
+
+```java
+// android.server.wm.Task
+    boolean resumeTopActivityUncheckedLocked(ActivityRecord prev, ActivityOptions options) {
+        return [1710686479] resumeTopActivityUncheckedLocked(prev, options, false /* skipPause */);
+    }
+```
+
+## [1710686434]#[1710686479] resumeTopActivityUncheckedLocked(prev, options, false /* skipPause */);
+
+```java
+// android.server.wm.Task
+    boolean resumeTopActivityUncheckedLocked(ActivityRecord prev, ActivityOptions options,
+            boolean deferPause) {
+        ...
+                            someActivityResumed = [1710686767]resumeTopActivityInnerLocked(prev, options, deferPause);
+```
+
+## [1710686479]#[1710686767]resumeTopActivityInnerLocked(prev, options, deferPause);
+
+```java
+// android.server.wm.Task
+    private boolean resumeTopActivityInnerLocked(ActivityRecord prev, ActivityOptions options,
+            boolean deferPause) {
+            ...
+            resumed[0] |= [1710686819]f.resumeTopActivity(prev, options, deferPause);
+    }
+```
+
+## [1710686767]#[1710686819]f.resumeTopActivity(prev, options, deferPause);
+
+```java
+// android.server.wm.TaskFragment
+    final boolean resumeTopActivity(ActivityRecord prev, ActivityOptions options,
+            boolean deferPause) {
+            ...
+            [1710686992]mTaskSupervisor.startSpecificActivity(next, true, true);
+
+```
+
+## [1710686819]#[1710686992]mTaskSupervisor.startSpecificActivity(next, true, true);
+
+```java
+// android.server.wm.ActivityTaskSupervisor
+    void startSpecificActivity(ActivityRecord r, boolean andResume, boolean checkConfig) {
+        // Is this activity's application already running?
+        ...
+                [1710687088]realStartActivityLocked(r, wpc, andResume, checkConfig);
+```
+
+## [1710686992]#[1710687088]realStartActivityLocked(r, wpc, andResume, checkConfig);
+
+```java
+// android.server.wm.ActivityTaskSupervisor
+    boolean realStartActivityLocked(ActivityRecord r, WindowProcessController proc,
+            boolean andResume, boolean checkConfig) throws RemoteException {
+                ...
+                // Create activity launch transaction.
+                [1710687197] final ClientTransaction clientTransaction = ClientTransaction.obtain(
+                        proc.getThread(), r.token);
+                ...
+                [1710687306] mService.getLifecycleManager().scheduleTransaction(clientTransaction);
+
+
+```
+
+## [1710687088]#[1710687197] final ClientTransaction clientTransaction = ClientTransaction.obtain(
+
+创建启动 Activity 的事务
+
+## [1710687088]#[1710687306] mService.getLifecycleManager().scheduleTransaction(clientTransaction);
+
+```java
+// android.server.wm.ActivityTaskManagerService
+    ClientLifecycleManager getLifecycleManager() {
+        return mLifecycleManager;
+    }
+```
+
+```java
+// android.server.wm.ClientLifecycleManager
+    void scheduleTransaction(ClientTransaction transaction) throws RemoteException {
+        final IApplicationThread client = transaction.getClient();
+        [1710687541] transaction.schedule();
+        if (!(client instanceof Binder)) {
+            // If client is not an instance of Binder - it's a remote call and at this point it is
+            // safe to recycle the object. All objects used for local calls will be recycled after
+            // the transaction is executed on client in ActivityThread.
+            transaction.recycle();
+        }
+    }
+```
+
+## [1710687306]#[1710687541] transaction.schedule();
+
+```java
+// android.app.servertransaction.ClientTransaction
+    public void schedule() throws RemoteException {
+        [1710687621]mClient.scheduleTransaction(this);
+    }
+```
+
+## [1710687541]#[1710687621]mClient.scheduleTransaction(this);
+
+通过夸进程调用回到客户端
+
+```java
+// android.app.ActivityThread.ApplicationThread
+        public void scheduleTransaction(ClientTransaction transaction) throws RemoteException {
+            [1710687752] ActivityThread.this.scheduleTransaction(transaction);
+        }
+```
+
+## [1710687621]#[1710687752] ActivityThread.this.scheduleTransaction(transaction);
+
+由 ActivityThread 的父类 ClientTransactionHandler 实现
+
+```java
+// android.app.ClientTransactionHandler
+    void scheduleTransaction(ClientTransaction transaction) {
+        transaction.preExecute(this);
+        [1710688032] sendMessage(ActivityThread.H.EXECUTE_TRANSACTION, transaction);
+    }
+```
+
+## [1710687752]#[1710688032] sendMessage(ActivityThread.H.EXECUTE_TRANSACTION, transaction);
+
+```java
+// android.app.ActivityThread
+    void sendMessage(int what, Object obj) {
+        sendMessage(what, obj, 0, 0, false);
+    }
+
+    private void sendMessage(int what, Object obj, int arg1) {
+        sendMessage(what, obj, arg1, 0, false);
+    }
+
+    private void sendMessage(int what, Object obj, int arg1, int arg2) {
+        sendMessage(what, obj, arg1, arg2, false);
+    }
+
+    private void sendMessage(int what, Object obj, int arg1, int arg2, boolean async) {
+        if (DEBUG_MESSAGES) {
+            Slog.v(TAG,
+                    "SCHEDULE " + what + " " + mH.codeToString(what) + ": " + arg1 + " / " + obj);
+        }
+        Message msg = Message.obtain();
+        msg.what = what;
+        msg.obj = obj;
+        msg.arg1 = arg1;
+        msg.arg2 = arg2;
+        if (async) {
+            msg.setAsynchronous(true);
+        }
+        [1710688095]mH.sendMessage(msg);
+    }
+
+```
+
+## [1710688032]#[1710688095]mH.sendMessage(msg);
+
+mH是个handler，直接看如果处理 message
+
+```java
+// android.app.ActivityThread.H
+    class H extends Handler {
+        ...
+            public void handleMessage(Message msg) {
+                ...
+                case EXECUTE_TRANSACTION:
+                    final ClientTransaction transaction = (ClientTransaction) msg.obj;
+                    [1710688254] mTransactionExecutor.execute(transaction);
+                    if (isSystem()) {
+                        // Client transactions inside system process are recycled on the client side
+                        // instead of ClientLifecycleManager to avoid being cleared before this
+                        // message is handled.
+                        transaction.recycle();
+                    }
+                    // TODO(lifecycler): Recycle locally scheduled transactions.
+                    break;
+
+```
+
+## [1710688095]#[1710688254] mTransactionExecutor.execute(transaction);
+
+```java
+
+```
+
 ## [1710583837] handleRelaunchActivity
 
 ```java
@@ -308,6 +858,8 @@ public final class WindowManagerGlobal {
                         r.embeddedID, r.lastNonConfigurationInstances, config,
                         r.referrer, r.voiceInteractor, window, r.activityConfigCallback,
                         r.assistToken, r.shareableActivityToken);
+                ...
+                   [1710680290] mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);
         ...
         return activity;
     }
@@ -619,6 +1171,9 @@ Window --o WindowManagerImpl
         return mWindowManager;
     }
 ```
+
+## [1710583837]#[1710680290] mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);
+
 
 `mWindowManager` 在 `[1710591610]` -> `[1710596387]` 处赋值
 
