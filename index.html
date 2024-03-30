@@ -107,6 +107,17 @@
                 </ul>
 
               
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/10/Android/Android窗口机制/">
+                            <i class="fa fa-file"></i>
+                            Android窗口机制
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -196,7 +207,39 @@
 
     <div class="recent-post-right">
 
-      <a class="recent-post-title" href="/2024/03/09/Android/%E8%87%AA%E5%AE%9A%E4%B9%89View%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%B1%95%E5%BC%80%E9%9D%A2%E6%9D%BF/">自定义View实现腿拽展开面板</a>
+      <a class="recent-post-title" href="/2024/03/10/Android/Android%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">Android窗口机制</a>
+      <time class="recent-post-time" datetime="2024-03-10T09:59:40.000Z">
+        2024-03-10
+      </time>
+
+      <div class="article-digest">
+        
+
+window// frameworks/base/core/java/android/view/Window.java
+
+/**
+ * Abstract base class for a top-level window look and behavior policy.  An
+ * instance of this class should be used as the top-level view added to the
+ * window manager. It provides standard UI policies such as a background, title
+ 
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/03/09/Android/%E8%87%AA%E5%AE%9A%E4%B9%89View%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%B1%95%E5%BC%80%E9%9D%A2%E6%9D%BF/">自定义View实现拖拽展开面板</a>
       <time class="recent-post-time" datetime="2024-03-09T11:09:15.000Z">
         2024-03-09
       </time>
@@ -244,7 +287,14 @@ class ExpandPanel @JvmOverloads constructor(
       </time>
 
       <div class="article-digest">
-        flowchart TD
+        
+基于android api-33
+
+
+
+
+
+flowchart TD
 DecoreView
 ViewGroup
 ViewGroup2["ViewGroup"]
@@ -261,10 +311,7 @@ ViewGroup2--> View3
 ViewGroup2 --> View4
 
 
-
-[1709475090] invalidate
-
-// android.view.Vi
+[1709475090] invalida
         ...
       </div>
 
