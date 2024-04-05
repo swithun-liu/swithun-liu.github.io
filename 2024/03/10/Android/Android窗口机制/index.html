@@ -773,6 +773,63 @@ public final class WindowManagerImpl implements WindowManager &#123;
 </code></pre>
 <h2 id="1710688095-1710688254-mTransactionExecutor-execute-transaction"><a href="#1710688095-1710688254-mTransactionExecutor-execute-transaction" class="headerlink" title="[1710688095]#[1710688254] mTransactionExecutor.execute(transaction);"></a>[1710688095]#[1710688254] mTransactionExecutor.execute(transaction);</h2><pre><code class="java">
 </code></pre>
+<h2 id="总结以上-1"><a href="#总结以上-1" class="headerlink" title="总结以上"></a>总结以上</h2><pre class="mermaid">sequenceDiagram
+Activity -> Activity: startActivity
+activate Activity
+Activity -> Activity: startActivityForResult
+activate Activity
+Activity -> Instrumentation: execStartActivity
+note right of Instrumentation: 负责Application<br>和Activity的<br>创建和生命周期控制
+activate Instrumentation
+note right of Instrumentation: 夸进程调用
+Instrumentation -> ActivityTaskManagerService: startActivity
+activate ActivityTaskManagerService
+ActivityTaskManagerService -> ActivityTaskManagerService: startActivityAsUser
+note right of ActivityTaskManagerService: 构造ActivityStarter
+ActivityTaskManagerService -> ActivityStarter: execute
+note right of ActivityStarter: 专门负责<br>一个 Activity 的启动操作。<br> 它的主要作用包括<br>解析 Intent、<br>创建 ActivityRecord、<br>如果有可能<br>还要创建 TaskRecord
+activate ActivityStarter
+ActivityStarter -> ActivityStarter: executeRequest
+ActivityStarter -> ActivityRecord: new
+ActivityStarter -> ActivityStarter: startActivityUnchecked
+ActivityStarter -> ActivityStarter: startActivityInner
+ActivityStarter -> RootWindowContainer: resumeFocusedTasksTopActivities
+activate RootWindowContainer
+RootWindowContainer -> Task: resumeTopActivityUncheckedLocked
+activate Task
+Task -> Task: resumeTopActivityInnerLocked
+Task -> TaskFragment: resumeTopActivity
+activate TaskFragment
+TaskFragment -> ActivityTaskSupervisor: startSpecificActivity
+activate ActivityTaskSupervisor
+ActivityTaskSupervisor -> ClientTransaction: new
+ActivityTaskSupervisor -> ClientLifecycleManager: scheduleTransaction
+activate ClientLifecycleManager
+ClientLifecycleManager -> ApplicationThread: scheduleTransaction
+activate ApplicationThread
+ApplicationThread -> ActivityThread: scheduleTransaction
+ActivityThread-> ActivityThread.H: handleMessage
+activate ActivityThread.H
+ActivityThread.H -> TransactionExecutor: execute
+activate TransactionExecutor
+TransactionExecutor -> TransactionExecutor: executeCallbacks
+TransactionExecutor -> TransactionExecutor: cycleToPath
+TransactionExecutor -> TransactionExecutor: performLifecycleSequence
+TransactionExecutor -> TransactionExecutor: handleLaunchActivity
+deactivate TransactionExecutor
+deactivate ActivityThread.H
+deactivate ApplicationThread
+deactivate ClientLifecycleManager
+deactivate ActivityTaskSupervisor
+deactivate TaskFragment
+deactivate Task
+deactivate RootWindowContainer
+deactivate ActivityStarter
+deactivate ActivityTaskManagerService
+deactivate Instrumentation
+deactivate Activity
+deactivate Activity</pre>
+
 <h2 id="1710583837-handleRelaunchActivity"><a href="#1710583837-handleRelaunchActivity" class="headerlink" title="[1710583837] handleRelaunchActivity"></a>[1710583837] handleRelaunchActivity</h2><pre><code class="java">    public Activity handleLaunchActivity(ActivityClientRecord r,
             PendingTransactionActions pendingActions, Intent customIntent) &#123;
         ...
@@ -944,9 +1001,7 @@ public final class WindowManagerGlobal &#123;
 <pre><code class="java">public class ContextWrapper extends Context &#123;
 </code></pre>
 <pre class="mermaid">classDiagram
-class Context {
-    <<abstract>>
-}
+class Context
 class ContextWrapper {
     mBase Context
 }
@@ -1057,15 +1112,26 @@ Window --o WindowManagerImpl</pre>
     &#125;
 </code></pre>
 <h2 id="1710583837-1710680290-mInstrumentation-callActivityOnCreate-activity-r-state-r-persistentState"><a href="#1710583837-1710680290-mInstrumentation-callActivityOnCreate-activity-r-state-r-persistentState" class="headerlink" title="[1710583837]#[1710680290] mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);"></a>[1710583837]#[1710680290] mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);</h2><p><code>mWindowManager</code> 在 <code>[1710591610]</code> -&gt; <code>[1710596387]</code> 处赋值</p>
-<h2 id="总结以上-1"><a href="#总结以上-1" class="headerlink" title="总结以上"></a>总结以上</h2><pre class="mermaid">sequenceDiagram
+<h2 id="总结以上-2"><a href="#总结以上-2" class="headerlink" title="总结以上"></a>总结以上</h2><pre class="mermaid">sequenceDiagram
 ActivityThread -> ActivityThread: handleLaunchActivity
+activate ActivityThread
 ActivityThread -> ActivityThread: performLaunchActivity
+activate ActivityThread
 ActivityThread -> ActivityThread: 创建Activity的base Context
-ActivityThread -> ActivityThread: 创建Activity
+ActivityThread -> Instrumentation: newActivity
 ActivityThread -> Activity: attach
+activate Activity
 Activity -> Activity: attachBaseContext(ContextImpl绑定-装饰者模式)
 Activity -> Activity: 新建PhoneWindow赋值给Activity.mWindow
-Activity -> Window: 创建WindowManager赋值给Activity.mWindowManager</pre>
+Activity -> Window: 创建WindowManager赋值给Activity.mWindowManager
+deactivate Activity
+ActivityThread -> Instrumentation: callActivityOnCreate
+activate Instrumentation
+Instrumentation -> Activity: performCreate
+Activity -> Activity: onCreate
+deactivate Instrumentation
+deactivate ActivityThread
+deactivate ActivityThread</pre>
 
 <pre class="mermaid">classDiagram
 class ViewManager {
@@ -1074,16 +1140,28 @@ class ViewManager {
 class WindowManager {
     <<interface>>
 }
+class Window {
+    <<abstract>>
+    WindowManager mWindowManager
+}
+class Activity {
+    Window mWindow
+    WindowManager mWindowManager
+}
 class ViewGroup
 class WindowManagerImpl
 
 WindowManager --|> ViewManager: extend
 ViewGroup --|> ViewManager: impl
-WindowManagerImpl --|> WindowManager: impl</pre>
+WindowManagerImpl --|> WindowManager: impl
+Window --> WindowManager
+Activity --> Window
+Activity --> WindowManager</pre>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/40a9c93b5a8d">Android窗口机制（一）初识Android的窗口结构</a></li>
 <li><a target="_blank" rel="noopener" href="https://blog.csdn.net/csdn_of_coder/article/details/78147399">Android – Activity启动过程中的上下文环境初始化分析</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6994823348190445604#heading-1">Android 11源码分析： Activity的启动流程</a></li>
 </ul>
 
 </article>
