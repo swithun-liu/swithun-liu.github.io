@@ -775,6 +775,67 @@ mH是个handler，直接看如果处理 message
 
 ```
 
+## 总结以上
+
+```mermaid
+sequenceDiagram
+Activity -> Activity: startActivity
+activate Activity
+Activity -> Activity: startActivityForResult
+activate Activity
+Activity -> Instrumentation: execStartActivity
+note right of Instrumentation: 负责Application<br>和Activity的<br>创建和生命周期控制
+activate Instrumentation
+note right of Instrumentation: 夸进程调用
+Instrumentation -> ActivityTaskManagerService: startActivity
+activate ActivityTaskManagerService
+ActivityTaskManagerService -> ActivityTaskManagerService: startActivityAsUser
+note right of ActivityTaskManagerService: 构造ActivityStarter
+ActivityTaskManagerService -> ActivityStarter: execute
+note right of ActivityStarter: 专门负责<br>一个 Activity 的启动操作。<br> 它的主要作用包括<br>解析 Intent、<br>创建 ActivityRecord、<br>如果有可能<br>还要创建 TaskRecord
+activate ActivityStarter
+ActivityStarter -> ActivityStarter: executeRequest
+ActivityStarter -> ActivityRecord: new
+ActivityStarter -> ActivityStarter: startActivityUnchecked
+ActivityStarter -> ActivityStarter: startActivityInner
+ActivityStarter -> RootWindowContainer: resumeFocusedTasksTopActivities
+activate RootWindowContainer
+RootWindowContainer -> Task: resumeTopActivityUncheckedLocked
+activate Task
+Task -> Task: resumeTopActivityInnerLocked
+Task -> TaskFragment: resumeTopActivity
+activate TaskFragment
+TaskFragment -> ActivityTaskSupervisor: startSpecificActivity
+activate ActivityTaskSupervisor
+ActivityTaskSupervisor -> ClientTransaction: new
+ActivityTaskSupervisor -> ClientLifecycleManager: scheduleTransaction
+activate ClientLifecycleManager
+ClientLifecycleManager -> ApplicationThread: scheduleTransaction
+activate ApplicationThread
+ApplicationThread -> ActivityThread: scheduleTransaction
+ActivityThread-> ActivityThread.H: handleMessage
+activate ActivityThread.H
+ActivityThread.H -> TransactionExecutor: execute
+activate TransactionExecutor
+TransactionExecutor -> TransactionExecutor: executeCallbacks
+TransactionExecutor -> TransactionExecutor: cycleToPath
+TransactionExecutor -> TransactionExecutor: performLifecycleSequence
+TransactionExecutor -> TransactionExecutor: handleLaunchActivity
+deactivate TransactionExecutor
+deactivate ActivityThread.H
+deactivate ApplicationThread
+deactivate ClientLifecycleManager
+deactivate ActivityTaskSupervisor
+deactivate TaskFragment
+deactivate Task
+deactivate RootWindowContainer
+deactivate ActivityStarter
+deactivate ActivityTaskManagerService
+deactivate Instrumentation
+deactivate Activity
+deactivate Activity
+```
+
 ## [1710583837] handleRelaunchActivity
 
 ```java
@@ -1013,9 +1074,7 @@ public class ContextWrapper extends Context {
 
 ```mermaid
 classDiagram
-class Context {
-    <<abstract>>
-}
+class Context
 class ContextWrapper {
     mBase Context
 }
@@ -1182,13 +1241,24 @@ Window --o WindowManagerImpl
 ```mermaid
 sequenceDiagram
 ActivityThread -> ActivityThread: handleLaunchActivity
+activate ActivityThread
 ActivityThread -> ActivityThread: performLaunchActivity
+activate ActivityThread
 ActivityThread -> ActivityThread: 创建Activity的base Context
-ActivityThread -> ActivityThread: 创建Activity
+ActivityThread -> Instrumentation: newActivity
 ActivityThread -> Activity: attach
+activate Activity
 Activity -> Activity: attachBaseContext(ContextImpl绑定-装饰者模式)
 Activity -> Activity: 新建PhoneWindow赋值给Activity.mWindow
 Activity -> Window: 创建WindowManager赋值给Activity.mWindowManager
+deactivate Activity
+ActivityThread -> Instrumentation: callActivityOnCreate
+activate Instrumentation
+Instrumentation -> Activity: performCreate
+Activity -> Activity: onCreate
+deactivate Instrumentation
+deactivate ActivityThread
+deactivate ActivityThread
 ```
 
 ```mermaid
@@ -1199,15 +1269,27 @@ class ViewManager {
 class WindowManager {
     <<interface>>
 }
+class Window {
+    <<abstract>>
+    WindowManager mWindowManager
+}
+class Activity {
+    Window mWindow
+    WindowManager mWindowManager
+}
 class ViewGroup
 class WindowManagerImpl
 
 WindowManager --|> ViewManager: extend
 ViewGroup --|> ViewManager: impl
 WindowManagerImpl --|> WindowManager: impl
+Window --> WindowManager
+Activity --> Window
+Activity --> WindowManager
 ```
 
 ## 参考
 
 - [Android窗口机制（一）初识Android的窗口结构](https://www.jianshu.com/p/40a9c93b5a8d)
 - [Android -- Activity启动过程中的上下文环境初始化分析](https://blog.csdn.net/csdn_of_coder/article/details/78147399)
+- [Android 11源码分析： Activity的启动流程](https://juejin.cn/post/6994823348190445604#heading-1)
