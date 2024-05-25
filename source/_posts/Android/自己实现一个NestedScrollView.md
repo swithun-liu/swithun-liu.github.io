@@ -6,6 +6,11 @@ tags:
 
 ![演示](./自己实现一个NestedScrollView/20240525130127.gif)
 
+## 完整代码
+
+[见github](https://github.com/swithun-liu/practice-android/tree/main/LearNestedScrolling)
+
+## 子view
 
 ```kotlin
 import android.content.Context
@@ -20,8 +25,6 @@ import androidx.core.view.NestedScrollingChild3
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
-
-## 子view
 
 class ChildNestedScrollView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -414,4 +417,3 @@ class ParentNestedScrollView @JvmOverloads constructor(
 
 }
 ```
-
