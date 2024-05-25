@@ -216,8 +216,8 @@
   <h1>自己实现一个NestedScrollView</h1>
   <img src="/2024/05/25/Android/%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AANestedScrollView/20240525130127.gif" class="" title="演示">
 
-
-<pre><code class="kotlin">import android.content.Context
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><p><a target="_blank" rel="noopener" href="https://github.com/swithun-liu/practice-android/tree/main/LearNestedScrolling">见github</a></p>
+<h2 id="子view"><a href="#子view" class="headerlink" title="子view"></a>子view</h2><pre><code class="kotlin">import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -229,8 +229,6 @@ import androidx.core.view.NestedScrollingChild3
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
-
-## 子view
 
 class ChildNestedScrollView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
