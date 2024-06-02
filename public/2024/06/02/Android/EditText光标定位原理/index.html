@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Category: demo [ Swithun Blog ]</title>
+  <title>EditText光标定位原理 [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -142,7 +142,7 @@
               
                 <!--如果是文章-->
                 <ul>
-                    <li class="file">
+                    <li class="file active">
                         <a href="/2024/06/02/Android/EditText光标定位原理/">
                             <i class="fa fa-file"></i>
                             EditText光标定位原理
@@ -223,31 +223,86 @@
     <div id="content-outer">
       <div id="content-inner">
         
-<div id="category">
-  <h1>demo</h1>
-  
-    <div class="category-item">
-      <a href="/2023/10/10/%E4%B8%BB%E9%A2%98%E6%BC%94%E7%A4%BA/demo1/">
-        demo_title_1
-      </a>
-      <time datetime="2023-10-09T16:00:00.000Z">
-        2023-10-10
-      </time>
-    </div>
-  
-    <div class="category-item">
-      <a href="/2023/10/10/%E4%B8%BB%E9%A2%98%E6%BC%94%E7%A4%BA/demo_folder_level2/demo2/">
-        demo_title_2
-      </a>
-      <time datetime="2023-10-09T16:00:00.000Z">
-        2023-10-10
-      </time>
-    </div>
-  
-</div>
+<article id="post">
+  <h1>EditText光标定位原理</h1>
+  <pre class="mermaid">
+classDiagram
+  direction TB
+  class EditText 
+  class TextView 
+  class View  
+  TextView <|-- EditText
+  View <|-- TextView</pre>
+
+
+<pre class="mermaid">sequenceDiagram
+
+participant TextView
+participant ArrowKeyMovementMethod
+participant Touch
+participant Parent
+
+TextView --> ArrowKeyMovementMethod: onTouchEvent
+activate TextView
+ ArrowKeyMovementMethod -> Touch: onTouchEvent
+ activate ArrowKeyMovementMethod 
  
+  par ACTION_DOWN
+   Touch -> TextView: 设置DragState Span
+  and ACTION_MOVE
+    Touch -> TextView: scrollTo
+ 
+  end
+
+  par ACTION_DOWN
+   ArrowKeyMovementMethod -> TextView: 选中文本时做一些记录(通过Span)
+ 
+  end
+ deactivate ArrowKeyMovementMethod 
+deactivate TextView</pre>
+
+<pre class="mermaid">sequenceDiagram
+participant ViewRootImpl
+participant DecorView
+participant AppCompatDelegateImpl
+participant AppCompatActivity
+participant ViewGroup
+participant EditText
+participant Editor
+participant KeyEvent
+
+ViewRootImpl -> DecoreView: dispatchKeyEvent
+DecoreView -> AppCompatDelegateImpl: dispatchKeyEvent
+AppCompatDelegateImpl -> AppCompatActivity:  dispatchKeyEvent
+AppCompatActivity -> ViewGroup: dispatchKeyEvent
+ViewGroup -> EditText: dispatchKeyEvent
+EditText -> KeyEvent: dispatch
+KeyEvent -> EditText: onKeyDown
+KeyEvent -> EditText: doKeyDown
+EditText -> Editor: endBatchEdit
+Editor -> EditText: updateAfterEdit
+EditText -> TextView: bringPointIntoView</pre>
+</article>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 <div id="paginator">
-  <span class="page-number current">1</span>
+  
 </div>
 
       </div>

@@ -140,6 +140,17 @@
                 </ul>
 
               
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/EditText光标定位原理/">
+                            <i class="fa fa-file"></i>
+                            EditText光标定位原理
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -218,6 +229,49 @@
   
 <div id="recent-posts">
   <h1>Recent Posts</h1>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/06/02/Android/EditText%E5%85%89%E6%A0%87%E5%AE%9A%E4%BD%8D%E5%8E%9F%E7%90%86/">EditText光标定位原理</a>
+      <time class="recent-post-time" datetime="2024-06-02T09:24:11.000Z">
+        2024-06-02
+      </time>
+
+      <div class="article-digest">
+        
+classDiagram
+  direction TB
+  class EditText 
+  class TextView 
+  class View  
+  TextView <|-- EditText
+  View 
+
+
+sequenceDiagram
+
+participant TextView
+participant ArrowKeyMovementMethod
+participant Touch
+participant Parent
+
+TextView --> ArrowKeyMovementMethod: onTouchEvent
+activate TextView
+ Arrow
+        ...
+      </div>
+
+    </div>
+
+  </div>
   
   <div class="recent-post-item">
 
@@ -548,45 +602,11 @@ mermaidclassDiagram
 
   </div>
   
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2023/10/10/%E4%B8%BB%E9%A2%98%E6%BC%94%E7%A4%BA/demo_folder_level2/demo2/">demo_title_2</a>
-      <time class="recent-post-time" datetime="2023-10-09T16:00:00.000Z">
-        2023-10-10
-      </time>
-
-      <div class="article-digest">
-        math
-inline : A $\xrightarrow{test}$ B
-block:$$\xrightarrow{test2}$$
-
-mermaidclassDiagram
-      class ClientTransactionItem
-      class ActivityTransactionItem
-      class ActivityRelaunchItem
-      class BaseClientRequest {
-         >
-         + execute(ClientTransactionHandler client, IBinder toke
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
 </div>
 
 
   <div id="paginator">
-    <span class="page-number current">1</span>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next</a>
   </div>
 
 
