@@ -358,6 +358,8 @@
 </ul>
 </li>
 </ul>
+<img src="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/image4.png" class="" title="alt text">
+
 <h3 id="问题1-展开键盘EditText会不符合预期的滚动到可见区域上方-被键盘遮挡"><a href="#问题1-展开键盘EditText会不符合预期的滚动到可见区域上方-被键盘遮挡" class="headerlink" title="问题1: 展开键盘EditText会不符合预期的滚动到可见区域上方&#x2F;被键盘遮挡"></a>问题1: 展开键盘EditText会不符合预期的滚动到可见区域上方&#x2F;被键盘遮挡</h3><p>这个是因为键盘展开时会调整contentView的paddingBottom，导致NestedScrollView高度变化</p>
 <pre><code class="java">// NestedScrollView
     @Override
