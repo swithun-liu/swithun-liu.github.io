@@ -236,20 +236,7 @@
         
 <article id="post">
   <h1>一步步解决NestedScrollView嵌套EditText的冲突</h1>
-  <img src="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/image.png" class="" title="alt text">
-
-<ul>
-<li>NestedScrollView<ul>
-<li>LinearLayout<ul>
-<li>3: NestedScrollEditText(这个是这次的例子，最后说)</li>
-<li>1: 这个是直接放一个EditText的情况</li>
-<li>2: 这个是NestedScrollView嵌套一个EditText的情况</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><img src="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/20240610210256.gif" class="" title="alt text">
+  <h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><img src="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/20240610210256.gif" class="" title="alt text">
 
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><pre><code class="xml">        &lt;activity
             android:name=&quot;.MainActivity&quot;
@@ -277,6 +264,19 @@
     &#125;
 &#125;
 </code></pre>
+<img src="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/image.png" class="" title="alt text">
+
+<ul>
+<li>NestedScrollView<ul>
+<li>LinearLayout<ul>
+<li>3: NestedScrollEditText(这个是这次的例子，最后说)</li>
+<li>1: 这个是直接放一个EditText的情况</li>
+<li>2: 这个是NestedScrollView嵌套一个EditText的情况</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <ol>
 <li>windowSoftInputMode 设置为 adjustResize</li>
 <li>通过设置 contentView 的根view(R.id.main) 的底部padding 留出键盘高度，防止键盘遮挡</li>
