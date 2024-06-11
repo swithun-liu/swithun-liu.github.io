@@ -299,7 +299,7 @@
         &#125;
 </code></pre>
 <p>这里move事件会被NestedScrollView拦截，导致EditText内部无法滚动</p>
-<p>这里可以通过处理onInterceptTouchEvent等方式让EditText可以滚动，但是EditTextmfling效果，所以放弃这个方案。</p>
+<p>这里可以通过处理onInterceptTouchEvent等方式让EditText可以滚动，但是EditText没有fling效果，所以放弃这个方案。</p>
 <h2 id="方案二：NestedScrollView嵌套EditText"><a href="#方案二：NestedScrollView嵌套EditText" class="headerlink" title="方案二：NestedScrollView嵌套EditText"></a>方案二：NestedScrollView嵌套EditText</h2><img src="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/20240610191306.gif" class="" title="alt text">
 
 <p>存在问题</p>
@@ -548,7 +548,201 @@
 <img src="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/20240610210256.gif" class="" title="alt text">
 
 
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p><a target="_blank" rel="noopener" href="https://github.com/swithun-liu/practice-android/tree/main/NesteScrollEditText">github</a></p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p><a target="_blank" rel="noopener" href="https://github.com/swithun-liu/practice-android/tree/main/NesteScrollEditText">见github</a></p>
+<pre><code class="kotlin">class MainActivity : AppCompatActivity() &#123;
+    override fun onCreate(savedInstanceState: Bundle?) &#123;
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) &#123; v, insets -&gt;
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, ime.bottom - ime.top)
+            v.post &#123; // 等padding生效后，重新调用一次bringPointIntoView(editText自己其实也会调用一次，但是是在set padding之前)
+                findViewById&lt;NestedScrollEditText&gt;(R.id.editText).bringPointIntoView()
+            &#125;
+            insets
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="kotlin">import android.content.Context
+import android.util.AttributeSet
+import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.widget.NestedScrollView
+import android.graphics.Rect
+
+class NestedScrollEditText @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : NestedScrollView(context, attrs, defStyleAttr) &#123;
+
+    protected val editText: NestedScrollEditTextInner = NestedScrollEditTextInner(context).also &#123;
+        it.isFocusableInTouchMode = true
+    &#125;
+
+    protected var bottomGapPx = 200
+
+    init &#123;
+        editText.setText(
+            &quot;萨萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发到发是的发送到发送到发送到发送到发送到发送到发送到发送到发送萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发萨是的发送到发送到发送到发送到发送到发送到发送到发送到发送到发到发&quot;
+        )
+        this.addView(
+            editText,
+            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        )
+    &#125;
+
+
+    fun bringPointIntoView(): Boolean &#123;
+
+        val offset = editText.selectionStart
+        editText.bringPointIntoView(offset)
+
+        return true
+    &#125;
+
+    inner class NestedScrollEditTextInner @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
+    ) : AppCompatEditText(context, attrs, defStyleAttr) &#123;
+
+
+        /** 禁止内部EdiText的滚动 */
+        override fun scrollTo(x: Int, y: Int) &#123;
+        &#125;
+
+        override fun requestRectangleOnScreen(rectangle: Rect, immediate: Boolean): Boolean &#123;
+            val copyRect = Rect(rectangle)
+            val scrolled = super.requestRectangleOnScreen(rectangle, immediate)
+
+            val parentRect = Rect(copyRect)
+            val parent = parent as NestedScrollEditText
+            parent.post &#123; // 这里一定要post，上面 immediate是false，所以parent.scrollY没有立即生效
+                parentRect.bottom = parent.scrollY + parent.height + bottomGapPx
+                parent.requestRectangleOnScreen(parentRect)
+            &#125;
+            return scrolled
+        &#125;
+
+    &#125;
+
+
+&#125;
+</code></pre>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:id=&quot;@+id/main&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;.MainActivity&quot;&gt;
+
+    &lt;com.swithun.nestedscrolledittext.nestedscroledittext.AsParentNestedScrollView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;&gt;
+
+        &lt;LinearLayout
+            android:orientation=&quot;vertical&quot;
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;match_parent&quot;&gt;
+
+            &lt;View
+                android:background=&quot;#FFBFBF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;View
+                android:background=&quot;#FFD5BF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;View
+                android:background=&quot;#FFF1BF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;View
+                android:background=&quot;#BFE3FF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;TextView
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;
+                android:text=&quot;NestedScrollEditText ⬇️&quot;
+                /&gt;
+
+            &lt;com.swithun.nestedscrolledittext.nestedscroledittext.NestedScrollEditText
+                android:id=&quot;@+id/editText&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;300dp&quot; /&gt;
+
+            &lt;View
+                android:background=&quot;#BFC2FF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;TextView
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;
+                android:text=&quot;EditText ⬇️&quot;
+                /&gt;
+
+            &lt;androidx.appcompat.widget.AppCompatEditText
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;200dp&quot;
+                android:text=&quot;我我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分JKIk&quot;
+                /&gt;
+
+            &lt;View
+                android:background=&quot;#CDBFFF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;TextView
+                android:layout_width=&quot;wrap_content&quot;
+                android:layout_height=&quot;wrap_content&quot;
+                android:text=&quot;NestedScrollView + EditText ⬇️&quot;
+                /&gt;
+
+            &lt;androidx.core.widget.NestedScrollView
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;200dp&quot;&gt;
+
+                &lt;androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width=&quot;match_parent&quot;
+                    android:layout_height=&quot;wrap_content&quot;
+                    android:text=&quot;我我是第三个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分我是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分是第二个发大发到发送到发短发短发短发多少发多少发到发送到发多少发送到发多少发多少分JKIk&quot;
+                    /&gt;
+
+            &lt;/androidx.core.widget.NestedScrollView&gt;
+
+            &lt;View
+                android:background=&quot;#EEBFFF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;View
+                android:background=&quot;#E9FFBF&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+            &lt;View
+                android:background=&quot;#BFFFF0&quot;
+                android:layout_width=&quot;match_parent&quot;
+                android:layout_height=&quot;150dp&quot;/&gt;
+
+        &lt;/LinearLayout&gt;
+
+    &lt;/com.swithun.nestedscrolledittext.nestedscroledittext.AsParentNestedScrollView&gt;
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</code></pre>
 
 </article>
 
