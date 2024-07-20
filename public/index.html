@@ -162,6 +162,28 @@
                 </ul>
 
               
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/11/Android/Dialog原理/">
+                            <i class="fa fa-file"></i>
+                            Dialog原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/07/20/Android/从0实现一个BottomSheetDialog/">
+                            <i class="fa fa-file"></i>
+                            从0实现一个BottomSheetDialog
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -240,6 +262,80 @@
   
 <div id="recent-posts">
   <h1>Recent Posts</h1>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/07/20/Android/%E4%BB%8E0%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AABottomSheetDialog/">从0实现一个BottomSheetDialog</a>
+      <time class="recent-post-time" datetime="2024-07-20T14:20:41.000Z">
+        2024-07-20
+      </time>
+
+      <div class="article-digest">
+        特点
+可自定义展开段数(即自动吸附的高度)
+到达吸附位置有仿 iOS 的回弹效果（可以参考apple地图）
+可自定义背景半透明蒙层颜色
+实现了 NestedScrollingParent 接口——支持嵌套滚动
+
+演示
+常见的 关闭 -&gt; 半展开 -&gt; 全展开效果
+
+
+
+
+
+嵌套滚动 2. 背景蒙层颜色修改为更深的紫色
+
+
+
+
+
+
+自定义为4段吸附
+
+
+
+代码BottomSheetDialog – 继承该类实现自己的Dialogimport android.os.Bundle
+import android.view.LayoutInflater
+import android.view
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/06/11/Android/Dialog%E5%8E%9F%E7%90%86/">Dialog原理</a>
+      <time class="recent-post-time" datetime="2024-06-11T07:20:35.000Z">
+        2024-06-11
+      </time>
+
+      <div class="article-digest">
+        
+        ...
+      </div>
+
+    </div>
+
+  </div>
   
   <div class="recent-post-item">
 
@@ -530,79 +626,6 @@ activate FragmentActivity
 FragmentActivity->>FragmentActivity: onCreate begin
 FragmentActivity->>FragmentManager: dispatchCreate() 分发CREATE
 FragmentActivity->>FragmentActivity: setContentView b
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2023/10/18/Android/Fragment%E5%8E%9F%E7%90%86/">Fragment实现原理</a>
-      <time class="recent-post-time" datetime="2023-10-17T16:00:00.000Z">
-        2023-10-18
-      </time>
-
-      <div class="article-digest">
-        
-基于Android Api 33
-
-Activity的生命周期与Fragment生命周期的关联
-
-示例代码&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    xmlns:app=&quot;http://schemas.android.com/apk/res-aut
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2023/10/10/Android/viewmodel%E5%8E%9F%E7%90%86/">ViewModel配置变更后仍然存在原理</a>
-      <time class="recent-post-time" datetime="2023-10-09T16:00:00.000Z">
-        2023-10-10
-      </time>
-
-      <div class="article-digest">
-        目录
-Activity创建ViewModel
-Activity重建ViewModel保持存在的实现
-relaunch之后新的Activity获取之前的viewModel
-relaunch过程中保存旧Activity的viewModel
-
-
-reference
-
-
-2022&#x2F;08&#x2F;21
-
-Activity创建ViewModel
-创建ViewModel
-// MyActivity#onCreate()
-
-val mainViewModel = 
-            [V1]   ViewModelProvider(this)
-              [V2]      
         ...
       </div>
 
