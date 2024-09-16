@@ -164,11 +164,31 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
 sequenceDiagram
 Activity ->> Window: setContentView
 Window ->> PhoneWindow: (impl) setContentView
-PhoneWindow ->> PhoneWindow: installDecor
-Note right of PhoneWindow: 初始化 mDecor
-PhoneWindow ->> DecoreView: mDecor = generateDecor(-1)
-PhoneWindow ->> PhoneWindow: mContentParent = generateLayout(mDecor)
-Note right of PhoneWindow: 同时初始化 mContentParent
+rect rgba(191, 223, 255, .1) 
+    PhoneWindow ->> PhoneWindow: installDecor
+    Note right of PhoneWindow: 初始化 mDecor <br> new DecorView()
+    rect rgba(191, 223, 255, .1) 
+        PhoneWindow ->> DecoreView: mDecor = generateDecor(-1)
+    end
+    rect rgba(191, 223, 255, .1) 
+        PhoneWindow ->> PhoneWindow: mContentParent = generateLayout(mDecor)
+        Note right of PhoneWindow: generateDecor(-1)只是new了DecorView<br>平时我们看到的系统-定义布局中<br>DecorView下面一般还有一些默认的layout<br>这一步就是根据你设置的window theme<br>选取不同的layout resource并且inflate并且add到DecorView中<br>不同的layout resource一定都有一个id为content的layout<br>用来添加用户(开发者)定义的具体内容布局<br>contentParent最终返回的也就是id为content的layout
+    end
+end
+```
+
+```mermaid
+classDiagram
+class Activity {
+    setContentView()
+}
+class Window
+class PhoneWindow {
+    mDecor: DecoreView
+    mContentParent ViewGroup
+    setContentView()
+}
+PhoneWindow --|> Window
 ```
 
 ## ViewManager
