@@ -1308,6 +1308,66 @@ Activity --> Window
 Activity --> WindowManager
 ```
 
+## 总结
+
+```mermaid
+sequenceDiagram
+rect rgba(191, 223, 255, .1) 
+    rect rgba(191, 223, 255, .1) 
+        ActivityThread -> ActivityThread: handleLaunchActivity
+        rect rgba(191, 223, 255, .1) 
+            ActivityThread -> ActivityThread: performLaunchActivity
+            ActivityThread -> ActivityThread: [for attach]createBaseContextForActivity<br>(创建Activity的base Context)
+            ActivityThread -> Instrumentation: newActivity
+            rect rgba(191, 223, 255, .1) 
+                ActivityThread -> Activity: attach()
+                Activity -> Activity: attachBaseContext(mBase = base)
+                Activity -> Activity: 新建PhoneWindow赋值给Activity.mWindow
+                Activity -> ContextImpl: getSystemService
+                ContextImpl -> SystemServiceRegistry: getSystemService
+                note over SystemServiceRegistry: 单例
+                Activity -> Window: 创建WindowManager赋值给Activity.mWindowManager
+            end
+        end
+    end
+end
+ActivityThread -> Instrumentation: callActivityOnCreate
+Instrumentation -> Activity: performCreate
+Activity -> Activity: onCreate
+```
+
+```mermaid
+sequenceDiagram
+Activity ->> Window: setContentView
+Window ->> PhoneWindow: (impl) setContentView
+rect rgba(191, 223, 255, .1) 
+    PhoneWindow ->> PhoneWindow: installDecor
+    Note right of PhoneWindow: 初始化 mDecor <br> new DecorView()
+    rect rgba(191, 223, 255, .1) 
+        PhoneWindow ->> DecoreView: mDecor = generateDecor(-1)
+    end
+    rect rgba(191, 223, 255, .1) 
+        PhoneWindow ->> PhoneWindow: mContentParent = generateLayout(mDecor)
+        Note right of PhoneWindow: generateDecor(-1)只是new了DecorView<br>平时我们看到的系统-定义布局中<br>DecorView下面一般还有一些默认的layout<br>这一步就是根据你设置的window theme<br>选取不同的layout resource并且inflate并且add到DecorView中<br>不同的layout resource一定都有一个id为content的layout<br>用来添加用户(开发者)定义的具体内容布局<br>contentParent最终返回的也就是id为content的layout
+    end
+end
+```
+
+```mermaid
+classDiagram
+class Activity {
+    setContentView()
+}
+class Window
+class PhoneWindow {
+    mDecor: DecoreView
+    mContentParent ViewGroup
+    setContentView()
+}
+PhoneWindow --|> Window
+```
+
+
 ## 参考
 
 - [Android窗口机制（一）初识Android的窗口结构](https://www.jianshu.com/p/40a9c93b5a8d)
