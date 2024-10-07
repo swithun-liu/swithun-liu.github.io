@@ -1340,9 +1340,11 @@ rect rgba(191, 223, 255, .1)
         end
     end
 end
-ActivityThread ->> Instrumentation: callActivityOnCreate
+rect rgba(191, 223, 255, .1) 
+ActivityThread ->> Instrumentation: mInstrumentation.callActivityOnCreate
 Instrumentation ->> Activity: performCreate
 Activity ->> Activity: onCreate
+end
 ```
 
 ```mermaid
