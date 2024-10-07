@@ -1312,28 +1312,37 @@ Activity --> WindowManager
 
 ```mermaid
 sequenceDiagram
+autonumber
 rect rgba(191, 223, 255, .1) 
     rect rgba(191, 223, 255, .1) 
-        ActivityThread -> ActivityThread: handleLaunchActivity
+        ActivityThread ->> ActivityThread: handleLaunchActivity
         rect rgba(191, 223, 255, .1) 
-            ActivityThread -> ActivityThread: performLaunchActivity
-            ActivityThread -> ActivityThread: [for attach]createBaseContextForActivity<br>(创建Activity的base Context)
-            ActivityThread -> Instrumentation: newActivity
+            ActivityThread ->> ActivityThread: performLaunchActivity
+            ActivityThread ->> ActivityThread: [for Activity.attach()方法]<br>createBaseContextForActivity<br>(创建Activity的base Context)
+            ActivityThread ->> Instrumentation: newActivity
             rect rgba(191, 223, 255, .1) 
-                ActivityThread -> Activity: attach()
-                Activity -> Activity: attachBaseContext(mBase = base)
-                Activity -> Activity: 新建PhoneWindow赋值给Activity.mWindow
-                Activity -> ContextImpl: getSystemService
-                ContextImpl -> SystemServiceRegistry: getSystemService
-                note over SystemServiceRegistry: 单例
-                Activity -> Window: 创建WindowManager赋值给Activity.mWindowManager
+                ActivityThread ->> Activity: attach()
+                Activity ->> Activity: attachBaseContext(mBase = base)
+                Activity ->> +Activity: 新建PhoneWindow赋值给Activity.mWindow
+                rect rgba(191, 223, 255, .1) 
+                    Activity ->> Activity: 给Activity.mWindow设置WindowManager
+                    Activity ->> ContextImpl: getSystemService(Context.WINDOW_SERVICE)
+                    ContextImpl ->> SystemServiceRegistry: getSystemService<br>(Activity是Context)
+                    note over SystemServiceRegistry: SystemServiceRegistry是单例<br>SystemServiceRegistry的静态方法会执行registerService，<br>其中就包括Context.WINDOW_SERVICE对应的Fetcher<br>(Fetcher以Context为维度对实际的Service做了缓存<br>这里是工厂模式，可以将<br>Fetcher立即为Factory<br>通过Fetcher获取到真正的Service<br>而WINDOW_SERVICE对应的真正的Service<br>则是WindowManager)
+                    SystemServiceRegistry ->> Activity: return WindowManager
+                    Activity ->> Window: setWindowManger(return的WindowManger)<br>(这里的指Activity.mWindow)
+                    Window ->> WindowManagerImpl: createLocalWindowManager
+                    WindowManagerImpl ->> Window: return WindowManagerImpl
+                    Window ->> Window: mWindowManager = 前面return的WindowManagerImpl
+                    Activity ->> -Window: setWindowManager
+                end
             end
         end
     end
 end
-ActivityThread -> Instrumentation: callActivityOnCreate
-Instrumentation -> Activity: performCreate
-Activity -> Activity: onCreate
+ActivityThread ->> Instrumentation: callActivityOnCreate
+Instrumentation ->> Activity: performCreate
+Activity ->> Activity: onCreate
 ```
 
 ```mermaid
