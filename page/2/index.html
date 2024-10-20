@@ -184,6 +184,28 @@
                 </ul>
 
               
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/08/18/Android/kotlin协程原理/">
+                            <i class="fa fa-file"></i>
+                            kotlin协程原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/09/07/Android/textview measure流程/">
+                            <i class="fa fa-file"></i>
+                            textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -247,6 +269,56 @@
                 </ul>
 
                  
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            AOSP
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            lang
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/10/07/AOSP/java/lang/ThreadLocal/">
+                            <i class="fa fa-file"></i>
+                            ThreadLocal
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
 </div>
 
 <div id="toc" style="display: none;"></div>
@@ -262,6 +334,130 @@
   
 <div id="recent-posts">
   <h1>Recent Posts</h1>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/03/09/Android/%E8%87%AA%E5%AE%9A%E4%B9%89View%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%B1%95%E5%BC%80%E9%9D%A2%E6%9D%BF/">自定义View实现拖拽展开面板</a>
+      <time class="recent-post-time" datetime="2024-03-09T11:09:15.000Z">
+        2024-03-09
+      </time>
+
+      <div class="article-digest">
+        
+
+
+
+自定义View继承 FrameLayout
+
+class ExpandPanel @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) &#123;
+
+
+随便给面板加点东西
+
+// ExpandPanel
+    init &#123;
+        for (i in 0..4) &#123;
+            val tv 
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/03/03/Android/view%E7%BB%98%E5%88%B6%E5%8E%9F%E7%90%86/">view绘制原理</a>
+      <time class="recent-post-time" datetime="2024-03-03T10:37:18.000Z">
+        2024-03-03
+      </time>
+
+      <div class="article-digest">
+        
+基于android api-33
+
+
+
+
+
+flowchart TD
+DecoreView
+ViewGroup
+ViewGroup2["ViewGroup"]
+View1["View"]
+View2["View"]
+View3["View"]
+View4["View"]
+
+DecoreView --> |自上而下刷新|ViewGroup
+ViewGroup --> ViewGroup2
+ViewGroup --> View1
+ViewGroup --> View2
+ViewGroup2--> View3
+ViewGroup2 --> View4
+
+
+[1709475090] invalida
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2023/10/22/%E4%B8%BB%E9%A2%98%E6%BC%94%E7%A4%BA/temp/"></a>
+      <time class="recent-post-time" datetime="2023-10-22T05:40:31.879Z">
+        2023-10-22
+      </time>
+
+      <div class="article-digest">
+        sequenceDiagram
+autonumber
+
+participant FragmentActivity
+participant FragmentManager
+participant Fragment
+
+activate FragmentActivity
+FragmentActivity->>FragmentActivity: onCreate begin
+FragmentActivity->>FragmentManager: dispatchCreate() 分发CREATE
+FragmentActivity->>FragmentActivity: setContentView b
+        ...
+      </div>
+
+    </div>
+
+  </div>
   
   <div class="recent-post-item">
 

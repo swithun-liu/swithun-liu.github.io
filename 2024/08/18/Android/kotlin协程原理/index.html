@@ -1,0 +1,784 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>kotlin协程原理 [ Swithun Blog ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/18/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/03/Android/view绘制原理/">
+                            <i class="fa fa-file"></i>
+                            view绘制原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/09/Android/自定义View实现拖拽展开面板/">
+                            <i class="fa fa-file"></i>
+                            自定义View实现拖拽展开面板
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/10/Android/Android窗口机制/">
+                            <i class="fa fa-file"></i>
+                            Android窗口机制
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/12/Android/NestedScrolling原理/">
+                            <i class="fa fa-file"></i>
+                            NestedScrolling原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/25/Android/自己实现一个NestedScrollView/">
+                            <i class="fa fa-file"></i>
+                            自己实现一个NestedScrollView
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/EditText光标定位原理/">
+                            <i class="fa fa-file"></i>
+                            EditText光标定位原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/一步步解决NestedScrollView嵌套EditText的冲突/">
+                            <i class="fa fa-file"></i>
+                            一步步解决NestedScrollView嵌套EditText的冲突
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/11/Android/Dialog原理/">
+                            <i class="fa fa-file"></i>
+                            Dialog原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/07/20/Android/从0实现一个BottomSheetDialog/">
+                            <i class="fa fa-file"></i>
+                            从0实现一个BottomSheetDialog
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file active">
+                        <a href="/2024/08/18/Android/kotlin协程原理/">
+                            <i class="fa fa-file"></i>
+                            kotlin协程原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/09/07/Android/textview measure流程/">
+                            <i class="fa fa-file"></i>
+                            textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            主题演示
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            AOSP
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            lang
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/10/07/AOSP/java/lang/ThreadLocal/">
+                            <i class="fa fa-file"></i>
+                            ThreadLocal
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="post">
+  <h1>kotlin协程原理</h1>
+  <pre><code class="kotlin">import kotlinx.coroutines.delay
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+
+suspend fun testDelay(time: Long): Int &#123;
+    val a = testDelay1(time)
+    val b = testDelay2(time)
+    val c = testDelay3(time, &quot;haha&quot;)
+    return a + b + c
+&#125;
+suspend fun testDelay1(time: Long): Int &#123;
+    delay(time)
+    return 1
+&#125;
+
+suspend fun testDelay2(time: Long): Int &#123;
+    delay(time)
+    return 2
+&#125;
+suspend fun testDelay3(time: Long, msg: String): Int &#123;
+    delay(time)
+    println(msg)
+    delay(time)
+    return 3
+&#125;
+</code></pre>
+<pre><code class="java">import kotlin.Metadata;
+import kotlin.ResultKt;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.intrinsics.IntrinsicsKt;
+import kotlin.coroutines.jvm.internal.Boxing;
+import kotlin.coroutines.jvm.internal.ContinuationImpl;
+import kotlinx.coroutines.DelayKt;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+@Metadata(
+   mv = &#123;1, 9, 0&#125;,
+   k = 2,
+   d1 = &#123;&quot;\u0000\u0010\n\u0000\n\u0002\u0010\b\n\u0000\n\u0002\u0010\t\n\u0002\b\u0005\u001a\u0016\u0010\u0000\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u0003H\u0086@¢\u0006\u0002\u0010\u0004\u001a\u0016\u0010\u0005\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u0003H\u0086@¢\u0006\u0002\u0010\u0004\u001a\u0016\u0010\u0006\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u0003H\u0086@¢\u0006\u0002\u0010\u0004\u001a\u0016\u0010\u0007\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u0003H\u0086@¢\u0006\u0002\u0010\u0004¨\u0006\b&quot;&#125;,
+   d2 = &#123;&quot;testDelay&quot;, &quot;&quot;, &quot;time&quot;, &quot;&quot;, &quot;(JLkotlin/coroutines/Continuation;)Ljava/lang/Object;&quot;, &quot;testDelay1&quot;, &quot;testDelay2&quot;, &quot;testDelay3&quot;, &quot;app_debug&quot;&#125;
+)
+public final class Test1Kt &#123;
+   @Nullable
+   public static final Object testDelay(long time, @NotNull Continuation var2) &#123;
+      Object $continuation;
+      label37: &#123;
+         // 检查传入的 var2类型，第一次调用testDelay时，var2是父函数调用的，var2不符合要求
+         if (var2 instanceof &lt;undefinedtype&gt;) &#123;
+            $continuation = (&lt;undefinedtype&gt;)var2;
+            // Integer.MIN_VALUE -&gt; 10000000  00000000 00000000  00000000
+            // Integer.MIN_VALUE 用来表示&quot;挂起状态&quot;
+            // labal &amp; Integer.MIN_VALUE 不为0 表示
+            
+            /**
+             * ## &amp;操作 如何理解?
+             * 
+             * &gt; 从第二次开始才会走到这里
+             * 
+             * 1. 假设 lable之前没有 |= 过Integer.MIN_VALUE，那么lable就是1
+             * 00000000 00000000 00000000 00000001 (this.label) 1
+             * &amp;
+             * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)
+             * -------------------------------------
+             * 00000000 00000000 00000000 00000000 (result) (0)
+             *
+             * 2. 假设 lable之前有 |= 过Integer.MIN_VALUE，那么lable就是-1
+             * 10000000 00000000 00000000 00000001 (this.label) 1
+             * &amp;
+             * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)
+             * -------------------------------------
+             * 10000000 00000000 00000000 00000000 (result) -1 Integer.MIN_VALUE
+             * &gt; 以上可以得出结论，如果lable曾经 |= 过Integer.MIN_VALUE，然后再&amp;Integer.MIN_VALUE，那么值就是Integer.MIN_VALUE，否则就是0
+             * &gt; 即，如果continuation曾经标记为挂起，那么&amp;结果 != 0
+             * 
+             * ## &amp;操作示例
+             * 
+             * ### 2ed
+             * 10000000 00000000 00000000 00000001 (this.label) -1  
+             * &amp;  
+             * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)  
+             * -------------------------------------  
+             * 10000000 00000000 00000000 00000000 (result) -1 Integer.MIN_VALUE  
+             * 
+             * ### 3rd  
+             * 10000000 00000000 00000000 00000010 (this.label) -2  
+             * &amp;  
+             * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)  
+             * -------------------------------------  
+             * 10000000 00000000 00000000 00000000 (result) -1 Integer.MIN_VALUE  
+             * 
+             * ## 结论
+             * 如果“被挂起”则
+             */
+
+            if ((((&lt;undefinedtype&gt;)$continuation).label &amp; Integer.MIN_VALUE) != 0) &#123;
+               /**
+                * ## -=操作如何理解
+                * - Integer.MIN_VALUE(10000000 00000000 00000000 00000000)即加它的补码(取反+1)
+                *  10000000 00000000 00000000 00000000
+                *  11111111 11111111 11111111 11111111 // 取反（符号位外，各位取反）
+                *  10000000 00000000 00000000 00000000 // +1
+                *  即原码补码一样
+                * 10000000 00000000 00000000 00000001 (this.label) -1  
+                * +  
+                * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)  
+                * -------------------------------------  
+                *100000000 00000000 00000000 00000001 (result) 1 Integer.MIN_VALUE  
+                * -1 变成1，即去掉符号位的1，变成 |= 之前的数值
+                * 
+                * ## -=操作示例
+
+                * ### 2ed
+                * 10000000 00000000 00000000 00000001 (this.label) -1  
+                * +  
+                * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)  
+                * -------------------------------------  
+                *100000000 00000000 00000000 00000001 (result) 1 Integer.MIN_VALUE  
+                * 
+                * ## 结论
+                * 结束挂起
+                */
+               ((&lt;undefinedtype&gt;)$continuation).label -= Integer.MIN_VALUE;
+               break label37;
+            &#125;
+         &#125;
+
+         // 初始化$continuation，在var2上包了一层ContinuationImpl
+         $continuation = new ContinuationImpl(var2) &#123;
+            // $FF: synthetic field
+            Object result;
+            int label;
+            long J$0;
+            int I$0;
+            int I$1;
+
+            @Nullable
+            public final Object invokeSuspend(@NotNull Object $result) &#123;
+               this.result = $result;
+               /**
+                * ## |=操作示例
+                * ### 1st
+                * 00000000 00000000 00000000 00000000 (this.label)
+                * OR
+                * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)
+                * -------------------------------------
+                * 10000000 00000000 00000000 00000000 (result)
+
+                * ### 2ed
+                * 00000000 00000000 00000000 00000001 (this.label) 1
+                * OR
+                * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)
+                * -------------------------------------
+                * 10000000 00000000 00000000 00000001 (result) -1
+
+                * ### 3rd
+                * 00000000 00000000 00000000 00000010 (this.label) 2
+                * OR
+                * 10000000 00000000 00000000 00000000 (Integer.MIN_VALUE) (-2^31 即 -0)
+                * -------------------------------------
+                * 10000000 00000000 00000000 00000010 (result) -2
+                * 
+                * ## 结论
+                * 标志被挂起
+                */
+               this.label |= Integer.MIN_VALUE;
+               return Test1Kt.testDelay(0L, this);
+            &#125;
+         &#125;;
+      &#125;
+
+      Object var10000;
+      int a;
+      int b;
+      label31: &#123;
+         Object var8;
+         label30: &#123;
+            Object $result = ((&lt;undefinedtype&gt;)$continuation).result;
+            // 标志程序被挂起
+            var8 = IntrinsicsKt.getCOROUTINE_SUSPENDED();
+            switch (((&lt;undefinedtype&gt;)$continuation).label) &#123;
+               // 初次调用 label为0
+               case 0:
+                  ResultKt.throwOnFailure($result);
+                  ((&lt;undefinedtype&gt;)$continuation).J$0 = time;
+                  // 推进状态机，将label设置为1
+                  ((&lt;undefinedtype&gt;)$continuation).label = 1;
+                  var10000 = testDelay1(time, (Continuation)$continuation);
+                  // 如果testDelay1返回了var8
+                  // 说明程序在testDelay1的执行中被挂起
+                  if (var10000 == var8) &#123;
+                     return var8;
+                  &#125;
+                  break;
+               case 1:
+                  time = ((&lt;undefinedtype&gt;)$continuation).J$0;
+                  ResultKt.throwOnFailure($result);
+                  var10000 = $result;
+                  break;
+               case 2:
+                  a = ((&lt;undefinedtype&gt;)$continuation).I$0;
+                  time = ((&lt;undefinedtype&gt;)$continuation).J$0;
+                  ResultKt.throwOnFailure($result);
+                  var10000 = $result;
+                  break label30;
+               case 3:
+                  b = ((&lt;undefinedtype&gt;)$continuation).I$1;
+                  a = ((&lt;undefinedtype&gt;)$continuation).I$0;
+                  ResultKt.throwOnFailure($result);
+                  var10000 = $result;
+                  break label31;
+               default:
+                  throw new IllegalStateException(&quot;call to &#39;resume&#39; before &#39;invoke&#39; with coroutine&quot;);
+            &#125;
+
+            a = ((Number)var10000).intValue();
+            ((&lt;undefinedtype&gt;)$continuation).J$0 = time;
+            ((&lt;undefinedtype&gt;)$continuation).I$0 = a;
+            ((&lt;undefinedtype&gt;)$continuation).label = 2;
+            var10000 = testDelay2(time, (Continuation)$continuation);
+            if (var10000 == var8) &#123;
+               return var8;
+            &#125;
+         &#125;
+
+         b = ((Number)var10000).intValue();
+         ((&lt;undefinedtype&gt;)$continuation).I$0 = a;
+         ((&lt;undefinedtype&gt;)$continuation).I$1 = b;
+         ((&lt;undefinedtype&gt;)$continuation).label = 3;
+         var10000 = testDelay3(time, (Continuation)$continuation);
+         if (var10000 == var8) &#123;
+            return var8;
+         &#125;
+      &#125;
+
+      int c = ((Number)var10000).intValue();
+      return Boxing.boxInt(a + b + c);
+   &#125;
+
+   @Nullable
+   public static final Object testDelay1(long time, @NotNull Continuation var2) &#123;
+      Object $continuation;
+      label20: &#123;
+         if (var2 instanceof &lt;undefinedtype&gt;) &#123;
+            $continuation = (&lt;undefinedtype&gt;)var2;
+            if ((((&lt;undefinedtype&gt;)$continuation).label &amp; Integer.MIN_VALUE) != 0) &#123;
+               ((&lt;undefinedtype&gt;)$continuation).label -= Integer.MIN_VALUE;
+               break label20;
+            &#125;
+         &#125;
+
+         $continuation = new ContinuationImpl(var2) &#123;
+            // $FF: synthetic field
+            Object result;
+            int label;
+
+            @Nullable
+            public final Object invokeSuspend(@NotNull Object $result) &#123;
+               this.result = $result;
+               this.label |= Integer.MIN_VALUE;
+               return Test1Kt.testDelay1(0L, this);
+            &#125;
+         &#125;;
+      &#125;
+
+      Object $result = ((&lt;undefinedtype&gt;)$continuation).result;
+      Object var5 = IntrinsicsKt.getCOROUTINE_SUSPENDED();
+      switch (((&lt;undefinedtype&gt;)$continuation).label) &#123;
+         case 0:
+            ResultKt.throwOnFailure($result);
+            ((&lt;undefinedtype&gt;)$continuation).label = 1;
+            if (DelayKt.delay(time, (Continuation)$continuation) == var5) &#123;
+               return var5;
+            &#125;
+            break;
+         case 1:
+            ResultKt.throwOnFailure($result);
+            break;
+         default:
+            throw new IllegalStateException(&quot;call to &#39;resume&#39; before &#39;invoke&#39; with coroutine&quot;);
+      &#125;
+
+      return Boxing.boxInt(1);
+   &#125;
+
+   @Nullable
+   public static final Object testDelay2(long time, @NotNull Continuation var2) &#123;
+      Object $continuation;
+      label20: &#123;
+         if (var2 instanceof &lt;undefinedtype&gt;) &#123;
+            $continuation = (&lt;undefinedtype&gt;)var2;
+            if ((((&lt;undefinedtype&gt;)$continuation).label &amp; Integer.MIN_VALUE) != 0) &#123;
+               ((&lt;undefinedtype&gt;)$continuation).label -= Integer.MIN_VALUE;
+               break label20;
+            &#125;
+         &#125;
+
+         $continuation = new ContinuationImpl(var2) &#123;
+            // $FF: synthetic field
+            Object result;
+            int label;
+
+            @Nullable
+            public final Object invokeSuspend(@NotNull Object $result) &#123;
+               this.result = $result;
+               this.label |= Integer.MIN_VALUE;
+               return Test1Kt.testDelay2(0L, this);
+            &#125;
+         &#125;;
+      &#125;
+
+      Object $result = ((&lt;undefinedtype&gt;)$continuation).result;
+      Object var5 = IntrinsicsKt.getCOROUTINE_SUSPENDED();
+      switch (((&lt;undefinedtype&gt;)$continuation).label) &#123;
+         case 0:
+            ResultKt.throwOnFailure($result);
+            ((&lt;undefinedtype&gt;)$continuation).label = 1;
+            if (DelayKt.delay(time, (Continuation)$continuation) == var5) &#123;
+               return var5;
+            &#125;
+            break;
+         case 1:
+            ResultKt.throwOnFailure($result);
+            break;
+         default:
+            throw new IllegalStateException(&quot;call to &#39;resume&#39; before &#39;invoke&#39; with coroutine&quot;);
+      &#125;
+
+      return Boxing.boxInt(2);
+   &#125;
+
+   @Nullable
+   public static final Object testDelay3(long time, @NotNull Continuation var2) &#123;
+      Object $continuation;
+      label20: &#123;
+         if (var2 instanceof &lt;undefinedtype&gt;) &#123;
+            $continuation = (&lt;undefinedtype&gt;)var2;
+            if ((((&lt;undefinedtype&gt;)$continuation).label &amp; Integer.MIN_VALUE) != 0) &#123;
+               ((&lt;undefinedtype&gt;)$continuation).label -= Integer.MIN_VALUE;
+               break label20;
+            &#125;
+         &#125;
+
+         $continuation = new ContinuationImpl(var2) &#123;
+            // $FF: synthetic field
+            Object result;
+            int label;
+
+            @Nullable
+            public final Object invokeSuspend(@NotNull Object $result) &#123;
+               this.result = $result;
+               this.label |= Integer.MIN_VALUE;
+               return Test1Kt.testDelay3(0L, this);
+            &#125;
+         &#125;;
+      &#125;
+
+      Object $result = ((&lt;undefinedtype&gt;)$continuation).result;
+      Object var5 = IntrinsicsKt.getCOROUTINE_SUSPENDED();
+      switch (((&lt;undefinedtype&gt;)$continuation).label) &#123;
+         case 0:
+            ResultKt.throwOnFailure($result);
+            ((&lt;undefinedtype&gt;)$continuation).label = 1;
+            if (DelayKt.delay(time, (Continuation)$continuation) == var5) &#123;
+               return var5;
+            &#125;
+            break;
+         case 1:
+            ResultKt.throwOnFailure($result);
+            break;
+         default:
+            throw new IllegalStateException(&quot;call to &#39;resume&#39; before &#39;invoke&#39; with coroutine&quot;);
+      &#125;
+
+      return Boxing.boxInt(3);
+   &#125;
+&#125;
+</code></pre>
+
+</article>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Swithun Liu using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.0.0-alpha.4/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>
