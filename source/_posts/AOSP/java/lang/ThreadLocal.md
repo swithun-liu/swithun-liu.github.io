@@ -128,3 +128,6 @@ end
                     │                                                     │
                     └─────────────────────────────────────────────────────┘
 ```
+
+## Learn more
+- [ThreadLocal](https://juejin.cn/post/7336822616386846754?searchId=20241020142500F85F7DDF704A1D1DA8DA)
