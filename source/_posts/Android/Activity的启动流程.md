@@ -34,6 +34,7 @@ end
 
 note over Instrumentation: 负责Application<br>和Activity的<br>创建和生命周期控制
 note over IActivityTaskManager: AMS 在 App 进程的 <br> IBinder 接口 (IActivityManager)
+note over ActivityTaskManagerService: System service <br>for managing activities<br> and their containers <br>(task, stacks, displays,... ).
 note over ActivityStarter: 专门负责<br>一个 Activity 的启动操作。<br> 它的主要作用包括<br>解析 Intent、<br>创建 ActivityRecord、<br>如果有可能<br>还要创建 TaskRecord
 note over ActivityRecord: 描述Activity相关信息, <br>一个Activity对应<br>一个ActivityRecord
 note over ClientTransaction: 一种容器，<br>用于保存一系列<br>需要发送给 <br>App 进程的消息。<br>这些消息包括 <br>callbacks <br>和最终的<br>生命周期状态
@@ -43,6 +44,7 @@ activate Activity
 Activity ->> Activity: startActivityForResult
 activate Activity
 Activity ->> Instrumentation: execStartActivity
+note over Activity, Instrumentation: Context who: 正在启动该Activity的上下文<br>Ibinder contextThread: 启动该Activity的上下文线程(ApplicationThread)<br>IBinder token: 启动该Activity的标识<br>Activity target: 启动该Activity的 Activity
 activate Instrumentation
 Instrumentation ->> IActivityTaskManager: startActivity
 note over IActivityTaskManager,ActivityTaskManagerService: 跨进程调用
@@ -95,48 +97,6 @@ deactivate Activity
 deactivate Activity
 ```
 
-```mermaid
-classDiagram
-class Context
-class ContextWrapper {
-    mBase Context
-}
-class ContextThemeWrapper
-class Activity
-
-ContextWrapper --|> Context
-Context --o ContextWrapper
-ContextThemeWrapper --|> ContextWrapper
-Activity --|> ContextThemeWrapper
-```
-
-
-```mermaid
-classDiagram
-class ViewManager {
-    <<interface>>
-}
-class WindowManager {
-    <<interface>>
-}
-class Window {
-    <<abstract>>
-    WindowManager mWindowManager
-}
-class Activity {
-    Window mWindow
-    WindowManager mWindowManager
-}
-class ViewGroup
-class WindowManagerImpl
-
-WindowManager --|> ViewManager: extend
-ViewGroup --|> ViewManager: impl
-WindowManagerImpl --|> WindowManager: impl
-Window --> WindowManager
-Activity --> Window
-Activity --> WindowManager
-```
 
 ## handleLaunchActivity
 
@@ -197,21 +157,6 @@ rect rgba(191, 223, 255, .1)
 end
 ```
 
-```mermaid
-classDiagram
-class Activity {
-    setContentView()
-}
-class Window
-class PhoneWindow {
-    mDecor: DecoreView
-    mContentParent ViewGroup
-    setContentView()
-}
-PhoneWindow --|> Window
-```
-
-
 ## 参考
 
 - [Android窗口机制（一）初识Android的窗口结构](https://www.jianshu.com/p/40a9c93b5a8d)
@@ -219,3 +164,4 @@ PhoneWindow --|> Window
 - [Android 11源码分析： Activity的启动流程](https://juejin.cn/post/6994823348190445604#heading-1)
 - [【Android 14源码分析】Activity启动流程-1](https://juejin.cn/post/7340301649766727721)
 - [Activity 启动的整体流程](https://juejin.cn/post/6990297933790838798?searchId=20241027121056BD6132D4CC1C5176D170)
+- [Android activity 启动流程](https://juejin.cn/post/7429188498850037795?searchId=20241201200856B3BFAC4094BECA3B7711)
