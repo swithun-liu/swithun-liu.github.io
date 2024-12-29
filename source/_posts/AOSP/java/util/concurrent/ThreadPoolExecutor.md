@@ -1,79 +1,12 @@
 ---
-title: ThreadPool
-date: 2024-12-08 17:44:28
+title: ThreadPoolExecutor
+date: 2024-12-29 14:46:49
 tags:
+page: (slink@@@1735454859)
 ---
 
-## 简易线程池实现
 
-```kotlin
-class SimpleThreadPool(threadSize: Int) {
-    /** 1. 任务队列: 线程安全*/
-    val taskQueue: BlockingQueue<Runnable> = LinkedBlockingQueue(10)
-
-    /** 2. 所有线程: worker */
-    val threads = ArrayList<SimpleThread>(threadSize)
-
-    init {
-        // 3 启动所有线程
-        (1..threadSize).forEach { i: Int ->
-            SimpleThread("swithun-task-thread-$i").also {
-                it.start()
-                threads.add(it)
-            }
-        }
-    }
-
-    fun execute(task: Runnable) {
-        // 4 将任务放入“任务队列”
-        taskQueue.put(task)
-    }
-
-    inner class SimpleThread(name: String) : Thread(name) {
-        override fun run() {
-            while (true) {
-                // 5 每个线程都会不断的从“任务队列”中取任务 & 执行 & 哪个线程取到就在哪个线程执行
-                val task: Runnable? = try {
-                    taskQueue.take()
-                } catch (e: Exception) {
-                    println("swithun-xxxx taskQueue.take err : ${e.printStackTrace()}")
-                    null
-                }
-                task?.run()
-            }
-        }
-    }
-}
-
-fun main() {
-    val pool = SimpleThreadPool(3)
-
-    // 6 建立多个任务丢进线程池运行
-    (1..5).forEach { i: Int ->
-        try {
-            pool.execute {
-                println("swithun-xxxx pool.execute: [task: $i] in ${Thread.currentThread().name}")
-            }
-        } catch (e: Exception) {
-            println("swithun-xxxx pool.execute err : ${e.printStackTrace()}")
-        }
-    }
-}
-```
-
-```
-swithun-xxxx pool.execute: [task: 2] in yes-task-thread-2
-swithun-xxxx pool.execute: [task: 4] in yes-task-thread-2
-swithun-xxxx pool.execute: [task: 5] in yes-task-thread-2
-swithun-xxxx pool.execute: [task: 3] in yes-task-thread-3
-swithun-xxxx pool.execute: [task: 1] in yes-task-thread-1
-```
-
-## ThreadPoolExecutor
-
-see [page](slink@@@1735454859)
-
-### ctl: 状态&线程数
+## ctl: 状态&线程数
 
 - 前3位用来表示状态
 - 剩余位数用来表示线程数
@@ -109,7 +42,7 @@ see [page](slink@@@1735454859)
 |TIDYING    |0100 0000  0000 0000  0000 0000  0000 0000|1073741824|
 |TERMINATED |0110 0000  0000  0000 0000 0000  0000 0000|1610612736|
 
-#### 状态转换
+### 状态转换
 
 ```java
      * RUNNING -> SHUTDOWN
@@ -147,22 +80,71 @@ class STOP t3
 class TIDING t4
 ```
 
-### execute
+## execute
 
 核心线程：主力
 非核心线程：临时工
 
 ```kotlin
-if 线程数 < 核心线程池
-    优先补充主力(addWorker)
-else if 线程池运行中 && 提交任务到任务队列成功
-    主力满了，优先放入队列等主力空闲
-else if 新增非核心线程池失败
-    等主力的队列满了，增加临时工处理任务(addWorker)
-else 拒绝添加任务
+// 源码分析
+    public void execute(Runnable command) {
+        int c = ctl.get();
+        // 1. 线程数 < 核心线程池 (即主力hc还有)
+        if (workerCountOf(c) < corePoolSize) {
+            // 1.1 优先补充主力(addWorker)成功&&将任务作为其第一个任务成功
+            // addWorker会检查线程池是否在运行中
+            if (addWorker(command, true))
+                return;
+            c = ctl.get();
+        }
+        // 2. 线程池运行中 && 提交任务到任务队列成功(workQueue.offer)
+        if (isRunning(c) && workQueue.offer(command)) {
+            int recheck = ctl.get();
+            // 2.1 线程池停止运行 && 将任务从任务队列中移除成功 // 添加到任务队列期间可能线程池被停止了
+            if (! isRunning(recheck) && remove(command))
+                // 2.1.1 拒绝添加任务
+                reject(command);
+            // 2.2 workder为空 // 添加到任务队列期间worker可能被停止了
+            else if (workerCountOf(recheck) == 0)
+                // 2.2.1 添加临时工
+                addWorker(null, false);
+        }
+        // 3. 队列满了，直接创建临时工执行任务
+        else if (!addWorker(command, false))
+            reject(command);
+    }
+
 ```
 
-### addWorker 添加工人(主力 or 临时工)
+```kotlin
+// 伪代码
+if 线程数 < 核心线程池 (即主力hc还有) [M2]
+    if 优先补充主力(addWorker)成功&&将任务作为其第一个任务成功 [M2]// addWorker会检查线程池是否在运行中[M1]
+        return
+if 线程池运行中 [M1] && 提交任务到任务队列成功(workQueue.offer) [M3]
+    if 线程池停止运行 && 将任务从任务队列中移除成功 // 添加到任务队列期间可能线程池被停止了
+        拒绝添加任务
+    else if workder为空 // 添加到任务队列期间worker可能被停止了
+        addWorker(null, false);
+else if 队列满了，直接创建临时工执行任务 [M4] // 会检查线程池运行状态[M1]，最大线程数[M4]等等
+    拒绝添加任务
+```
+
+```kotlin
+// 伪代码 & 简化逻辑
+if !线程池正在运行 [M1]
+    拒绝
+else if 线程数 < 核心线程数 [M2]
+    添加主力&执行
+else if workQueue未满 [M3]
+    提交任务到workQueue
+else if 线程数 < 最大线程数 [M4]
+    添加临时工&执行
+else
+    拒绝
+```
+
+## addWorker 添加工人(主力 or 临时工)
 
 ```kotlin
 if 生命周期>SHUTDOWN
@@ -171,7 +153,7 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
   拒绝
 ```
 
-### workQueue
+## workQueue
 
 ```java
     /**
@@ -195,7 +177,7 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
     private final BlockingQueue<Runnable> workQueue;
 ```
 
-### workQueue.offer
+## workQueue.offer
 
 see [offer](slink@@@1735398709)
 
@@ -203,3 +185,4 @@ see [offer](slink@@@1735398709)
 
 - [如果你是 JDK 设计者，如何设计线程池？我跟面试官大战了三十个回合](https://juejin.cn/post/6968721240592744455)
 - [ThreadPoolExecutor 源码解析(含流程图)](https://juejin.cn/post/6926471351452565512)
+- [聊聊 Java 多线程（5）- 超详细的 ThreadPoolExecutor 源码解析](https://juejin.cn/post/6901317365561032712?searchId=202412291535082885556DD4BAC7D74B0D)

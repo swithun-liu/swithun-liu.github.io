@@ -5,7 +5,7 @@ tags:
 ---
     
 
-###  [offer](slink@@@1735398709)
+##  [offer](slink@@@1735398709)
 
 ```java
     final AtomicInteger count = this.count;
@@ -42,3 +42,8 @@ tags:
         return true;
     }
 ```
+
+
+## 参考
+
+- [深入理解Java线程池，剖析LinkedBlockingQueue源码实现](https://juejin.cn/post/7329280514627665961?searchId=202412282306309B05CE6FC1DEE9F99437)
