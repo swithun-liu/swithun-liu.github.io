@@ -229,12 +229,13 @@ else
                     // shut down before lock acquired.
                     int c = ctl.get();
 
-                    // 1. < SHUTDOWN
-                    // 2. = SHUTDOWN && 没有新增任务
+                    // 条件1. < SHUTDOWN
+                    // 条件2. = SHUTDOWN && 没有新增任务
                     if (isRunning(c) ||
                         (runStateLessThan(c, STOP) && firstTask == null)) {
                         if (t.getState() != Thread.State.NEW)
                             throw new IllegalThreadStateException();
+                        // 添加workder
                         workers.add(w);
                         workerAdded = true;
                         int s = workers.size();
@@ -255,13 +256,6 @@ else
         }
         return workerStarted;
     }
-```
-
-```kotlin
-if 生命周期>SHUTDOWN
-  拒绝
-else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是允许增加工人去执行未执行的任务，只是不让继续增加任务了)
-  拒绝
 ```
 
 ## workQueue @任务队列
@@ -291,6 +285,24 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
 ## workQueue.offer @@添加任务到任务队列
 
 [slink](@@@1735398709)
+
+## Worker.runWorker
+
+[slink](@@@1735975636)
+
+这里`this.thread = getThreadFactory().newThread(this)`，将Worker本身作为runnable传入Thread;
+之后Thread调用start之后，就会执行run()方法如下,
+
+[slink](@@@1735975874)
+
+target即Worker
+那么Worker.run方法为
+
+[slink](@@@1735975959)
+
+调用了runWorker方法
+
+[slink](@@@1735975307)
 
 # 参考
 

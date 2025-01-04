@@ -96,9 +96,13 @@ def process_file(file_path, shadow_file_path, file_contents):
 
                 print(f"Snippet for slink_id {slink_id}: {snippet}")
 
-                # 替换 [slink](@@@数字) 为提取的内容
+                # 添加 slink 标记
+                begin_marker = f"\n> slink begin @@@{slink_id} - {os.path.basename(start_file)}\n"
+                end_marker = f"\n> slink end @@@{slink_id} - {os.path.basename(end_file)}\n"
+
+                # 替换 [slink](@@@数字) 为提取的内容并添加标记
                 slink_tag = rf"[slink](@@@{slink_id})"
-                content = content.replace(slink_tag, snippet)
+                content = content.replace(slink_tag, begin_marker + snippet + end_marker)
 
                 # 从源文件内容中删除标记（可选，根据需求）
                 file_contents[start_file] = file_contents[start_file].replace(f"(begin@@@{slink_id})", "")
@@ -112,6 +116,7 @@ def process_file(file_path, shadow_file_path, file_contents):
     print(f"Writing to file: {shadow_file_path}")
     with open(shadow_file_path, "w", encoding="utf-8") as f:
         f.write(content)
+
 
 def copy_non_md_file(file_path, shadow_file_path):
     """
@@ -127,4 +132,14 @@ def copy_non_md_file(file_path, shadow_file_path):
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
     extract_and_replace_links(base_dir)
+
+# # 定义函数，获取当前时间戳并复制到剪切板
+# tms() {
+#     # 获取当前时间戳（秒）
+#     timestamp=$(date +%s)
+#     # 复制时间戳到剪切板
+#     echo -n $timestamp | pbcopy
+#     # 提示已复制到剪切板
+#     echo "时间戳 $timestamp 已复制到剪切板"
+# }
 
