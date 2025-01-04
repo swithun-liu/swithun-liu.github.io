@@ -5,7 +5,7 @@ tags:
 ---
     
 
-##  [offer](slink@@@1735398709)
+##  [offer](begin@@@1735398709)
 
 ```java
     final AtomicInteger count = this.count;
@@ -42,6 +42,7 @@ tags:
         return true;
     }
 ```
+(end@@@1735398709)
 
 
 ## 参考

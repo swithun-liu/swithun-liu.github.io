@@ -5,10 +5,11 @@ tags:
 page: (slink@@@1735454859)
 ---
 
+# ThreadPoolExecutor
 
-## ctl: 状态&线程数
+## ctl @@状态&线程数
 
-- 前3位用来表示状态
+- 前3位用来表示状态，一共可以用来表示2 * 2 * 8种状态
 - 剩余位数用来表示线程数
 
 ```java
@@ -34,13 +35,13 @@ page: (slink@@@1735454859)
 |state begin||state end|task count begin||task count end|
 
 
-|state|||
-|-|-|-|
-|RUNNING    |1110 0000  0000 0000  0000 0000  0000 0000|-536870912|
-|SHUTDOWN   |0000 0000  0000 0000  0000 0000  0000 0000|0|
-|STOP       |0010 0000  0000 0000  0000 0000  0000 0000|536870912|
-|TIDYING    |0100 0000  0000 0000  0000 0000  0000 0000|1073741824|
-|TERMINATED |0110 0000  0000  0000 0000 0000  0000 0000|1610612736|
+|state||||
+|-|-|-|-|
+|RUNNING    |1110 0000  0000 0000  0000 0000  0000 0000|-536870912||
+|SHUTDOWN   |0000 0000  0000 0000  0000 0000  0000 0000|0|不会接受新任务，但是可以继续处理现有任务队列中的任务|
+|STOP       |0010 0000  0000 0000  0000 0000  0000 0000|536870912|不接受新任务，正在执行的任务也停止|
+|TIDYING    |0100 0000  0000 0000  0000 0000  0000 0000|1073741824||
+|TERMINATED |0110 0000  0000  0000 0000 0000  0000 0000|1610612736||
 
 ### 状态转换
 
@@ -80,10 +81,7 @@ class STOP t3
 class TIDING t4
 ```
 
-## execute
-
-核心线程：主力
-非核心线程：临时工
+## execute @@提交任务-入口
 
 ```kotlin
 // 源码分析
@@ -116,6 +114,9 @@ class TIDING t4
 
 ```
 
+> - 核心线程：主力
+> - 非核心线程：临时工
+
 ```kotlin
 // 伪代码
 if 线程数 < 核心线程池 (即主力hc还有) [M2]
@@ -144,7 +145,117 @@ else
     拒绝
 ```
 
-## addWorker 添加工人(主力 or 临时工)
+## addWorker @@添加工人(主力 or 临时工)
+
+```java
+// 源码分析
+
+    /**
+     * 用于访问工作线程集合及相关统计信息的锁。
+     * 虽然并发集合能提供线程安全的操作，
+     * 但使用锁能够更好地控制和序列化 interruptIdleWorkers（中断空闲工作线程）操作。
+     * 尤其在关闭线程池时，可以避免线程并发中断导致的“中断风暴”
+     * （即多个线程同时被中断而相互干扰），这种情况会影响性能。
+     * 
+     * 如果没有使用锁，正在退出的线程可能会与其他还没有被中断的线程发生竞争，
+     * 导致一些线程在不适当的时机被中断。
+     * 
+     * 它简化了线程池中一些统计信息的更新，例如 largestPoolSize（最大线程池大小）。
+     * 另外，shutdown 和 shutdownNow 操作在执行过程中需要保证工作线程集合的稳定性，
+     * 因此也需要通过持有 mainLock 锁来避免并发修改，
+     * 确保在检查中断权限与执行实际中断操作时不发生数据不一致。
+     */
+    private final ReentrantLock mainLock = new ReentrantLock();
+    ...
+
+    private boolean addWorker(Runnable firstTask, boolean core) {
+        // 给一下行的for循环起一个名字，不是c的goto的效果
+        retry:
+        for (int c = ctl.get();;) {
+            if (
+                // >=shut_down，即shut_down / stop / tiding / terminated
+                runStateAtLeast(c, SHUTDOWN)
+                // 转换一下就是
+                // !(==shut_down && firstTask == null && !workQueue.isEmpty)
+                // 也就是需要排除上述情况
+                // !(shut_down状态 && 传入的新增task是空(即没有新增任务) && taskQueue还有没执行完的)
+                // 也就是说两种情况
+                // 1. < SHUTDOWN
+                // 2. = SHUTDOWN && 没有新增任务
+                // 也就说shut_down状态可以继续执行taskQueue中的任务，但是不接受新增的task
+                && (runStateAtLeast(c, STOP)
+                    || firstTask != null
+                    || workQueue.isEmpty()))
+                return false;
+
+            for (;;) {
+                // 当前线程数量已经达到最大
+                if (workerCountOf(c)
+                    >= ((core ? corePoolSize : maximumPoolSize) & COUNT_MASK))
+                    // 退出
+                    return false;
+                // 通过CAS机制增加工作线程数量记录
+                if (compareAndIncrementWorkerCount(c))
+                    // CAS机制可能失败，成功的话则退出外层for循环
+                    break retry;
+                c = ctl.get();  // Re-read ctl
+                // 走到这里说明CAS增加工作线程数量纪录失败，
+                // 再次检查线程池状态，以为上述过程期间可能状态已经变更
+                // 如果变成了shut_down状态，
+                if (runStateAtLeast(c, SHUTDOWN))
+                    // 则需要直接进入外层for循环的下一次循环
+                    // 完整检查一下线程池状态，可能需要直接return false了
+                    continue retry;
+                // else CAS failed due to workerCount change; retry inner loop
+                // 最后这里，CAS增加工作线程数量纪录失败 && 线程池状态 < shutdown
+                // 可以正常addWorkder，会继续循环尝试CAS增加工作线程数量纪录
+            }
+        }
+
+        // 上面只是增加了计数，下面才是真正创建新Worker
+
+        boolean workerStarted = false;
+        boolean workerAdded = false;
+        Worker w = null;
+        try {
+            w = new Worker(firstTask);
+            final Thread t = w.thread;
+            if (t != null) {
+                final ReentrantLock mainLock = this.mainLock;
+                mainLock.lock();
+                try {
+                    // Recheck while holding lock.
+                    // Back out on ThreadFactory failure or if
+                    // shut down before lock acquired.
+                    int c = ctl.get();
+
+                    // 1. < SHUTDOWN
+                    // 2. = SHUTDOWN && 没有新增任务
+                    if (isRunning(c) ||
+                        (runStateLessThan(c, STOP) && firstTask == null)) {
+                        if (t.getState() != Thread.State.NEW)
+                            throw new IllegalThreadStateException();
+                        workers.add(w);
+                        workerAdded = true;
+                        int s = workers.size();
+                        if (s > largestPoolSize)
+                            largestPoolSize = s;
+                    }
+                } finally {
+                    mainLock.unlock();
+                }
+                if (workerAdded) {
+                    t.start();
+                    workerStarted = true;
+                }
+            }
+        } finally {
+            if (! workerStarted)
+                addWorkerFailed(w);
+        }
+        return workerStarted;
+    }
+```
 
 ```kotlin
 if 生命周期>SHUTDOWN
@@ -153,7 +264,7 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
   拒绝
 ```
 
-## workQueue
+## workQueue @任务队列
 
 ```java
     /**
@@ -167,7 +278,7 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
      * return null even if it may later return non-null when delays
      * expire.
      * 
-     * 于存放任务并将其交给工作线程的队列。
+     * 存放任务并将其交给工作线程的队列。
      * 我们不要求 `workQueue.poll()` 返回 `null` 必然意味着 `workQueue.isEmpty()`，
      * 因此仅依赖 `isEmpty()` 来判断队列是否为空
      * （例如，在决定是否从 `SHUTDOWN` 状态过渡到 `TIDYING` 状态时，我们必须这样做）。
@@ -177,11 +288,11 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
     private final BlockingQueue<Runnable> workQueue;
 ```
 
-## workQueue.offer
+## workQueue.offer @@添加任务到任务队列
 
-see [offer](slink@@@1735398709)
+[slink](@@@1735398709)
 
-## 参考
+# 参考
 
 - [如果你是 JDK 设计者，如何设计线程池？我跟面试官大战了三十个回合](https://juejin.cn/post/6968721240592744455)
 - [ThreadPoolExecutor 源码解析(含流程图)](https://juejin.cn/post/6926471351452565512)
