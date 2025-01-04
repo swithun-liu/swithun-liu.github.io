@@ -1,0 +1,942 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ThreadPoolExecutor [ Swithun Blog ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/18/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/03/Android/view绘制原理/">
+                            <i class="fa fa-file"></i>
+                            view绘制原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/09/Android/自定义View实现拖拽展开面板/">
+                            <i class="fa fa-file"></i>
+                            自定义View实现拖拽展开面板
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/12/Android/NestedScrolling原理/">
+                            <i class="fa fa-file"></i>
+                            NestedScrolling原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/25/Android/自己实现一个NestedScrollView/">
+                            <i class="fa fa-file"></i>
+                            自己实现一个NestedScrollView
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/EditText光标定位原理/">
+                            <i class="fa fa-file"></i>
+                            EditText光标定位原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/一步步解决NestedScrollView嵌套EditText的冲突/">
+                            <i class="fa fa-file"></i>
+                            一步步解决NestedScrollView嵌套EditText的冲突
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/11/Android/Dialog原理/">
+                            <i class="fa fa-file"></i>
+                            Dialog原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/07/20/Android/从0实现一个BottomSheetDialog/">
+                            <i class="fa fa-file"></i>
+                            从0实现一个BottomSheetDialog
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/08/18/Android/kotlin协程原理/">
+                            <i class="fa fa-file"></i>
+                            kotlin协程原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/09/07/Android/textview measure流程/">
+                            <i class="fa fa-file"></i>
+                            textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/10/Android/Activity的启动流程/">
+                            <i class="fa fa-file"></i>
+                            Activity的启动流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            主题演示
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            AOSP
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            lang
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/10/07/AOSP/java/lang/ThreadLocal/">
+                            <i class="fa fa-file"></i>
+                            ThreadLocal
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/04/AOSP/java/lang/Thread/">
+                            <i class="fa fa-file"></i>
+                            Thread
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            util
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            concurrent
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            ThreadPoolExecutor
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
+                            <i class="fa fa-file"></i>
+                            Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">
+                            <i class="fa fa-file"></i>
+                            LinkedBlockingQueue
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            multi_thread
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/Test/">
+                            <i class="fa fa-file"></i>
+                            Test
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/ThreadPool/">
+                            <i class="fa fa-file"></i>
+                            ThreadPool
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="post">
+  <h1>ThreadPoolExecutor</h1>
+  <h1 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h1><h2 id="ctl-状态-线程数"><a href="#ctl-状态-线程数" class="headerlink" title="ctl @@状态&amp;线程数"></a>ctl @@状态&amp;线程数</h2><ul>
+<li>前3位用来表示状态，一共可以用来表示2 * 2 * 8种状态</li>
+<li>剩余位数用来表示线程数</li>
+</ul>
+<pre><code class="java">    private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+    private static final int COUNT_BITS = Integer.SIZE - 3; // 32 - 3 = 29
+    // (1 &lt;&lt; 29) - 1 
+    // = (1左移29位) - 1 
+    // = 2^29 - 1 = 536870912 - 1 = 536870911 
+    // = 0b11111111111111111111111111111
+    // = 0b 0001 1111 1111 1111  1111 1111 1111 1111
+    private static final int COUNT_MASK = (1 &lt;&lt; COUNT_BITS) - 1; 
+
+    // runState is stored in the high-order bits
+    private static final int RUNNING    = -1 &lt;&lt; COUNT_BITS;
+    private static final int SHUTDOWN   =  0 &lt;&lt; COUNT_BITS;
+    private static final int STOP       =  1 &lt;&lt; COUNT_BITS;
+    private static final int TIDYING    =  2 &lt;&lt; COUNT_BITS;
+    private static final int TERMINATED =  3 &lt;&lt; COUNT_BITS;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>31</th>
+<th>30</th>
+<th>29</th>
+<th>28</th>
+<th>…</th>
+<th>0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>state begin</td>
+<td></td>
+<td>state end</td>
+<td>task count begin</td>
+<td></td>
+<td>task count end</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>state</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RUNNING</td>
+<td>1110 0000  0000 0000  0000 0000  0000 0000</td>
+<td>-536870912</td>
+<td></td>
+</tr>
+<tr>
+<td>SHUTDOWN</td>
+<td>0000 0000  0000 0000  0000 0000  0000 0000</td>
+<td>0</td>
+<td>不会接受新任务，但是可以继续处理现有任务队列中的任务</td>
+</tr>
+<tr>
+<td>STOP</td>
+<td>0010 0000  0000 0000  0000 0000  0000 0000</td>
+<td>536870912</td>
+<td>不接受新任务，正在执行的任务也停止</td>
+</tr>
+<tr>
+<td>TIDYING</td>
+<td>0100 0000  0000 0000  0000 0000  0000 0000</td>
+<td>1073741824</td>
+<td></td>
+</tr>
+<tr>
+<td>TERMINATED</td>
+<td>0110 0000  0000  0000 0000 0000  0000 0000</td>
+<td>1610612736</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="状态转换"><a href="#状态转换" class="headerlink" title="状态转换"></a>状态转换</h3><pre><code class="java">     * RUNNING -&gt; SHUTDOWN
+     *    On invocation of shutdown()
+     * (RUNNING or SHUTDOWN) -&gt; STOP
+     *    On invocation of shutdownNow()
+     * SHUTDOWN -&gt; TIDYING
+     *    When both queue and pool are empty
+     * STOP -&gt; TIDYING
+     *    When pool is empty
+     * TIDYING -&gt; TERMINATED
+     *    When the terminated() hook method has completed
+</code></pre>
+<pre class="mermaid">stateDiagram
+classDef t1 fill:#FFB81C44
+classDef t2 fill:#FF671F44
+classDef t3 fill:#F04E9844
+classDef t4 fill:#307FE244
+
+
+[*] --> RUNNING
+RUNNING --> SHUTDOWN: shutdown
+SHUTDOWN --> STOP: shutdownNow
+RUNNING --> STOP: shutdownNow
+SHUTDOWN --> TIDING: 任务队列为空，线程数为0
+STOP --> TIDING: 线程数为0
+TIDING --> TERMINATED: terminated
+TERMINATED --> [*]
+
+class RUNNING t1
+class SHUTDOWN t2
+class STOP t3
+class TIDING t4</pre>
+
+<h2 id="execute-提交任务-入口"><a href="#execute-提交任务-入口" class="headerlink" title="execute @@提交任务-入口"></a>execute @@提交任务-入口</h2><pre><code class="kotlin">// 源码分析
+    public void execute(Runnable command) &#123;
+        int c = ctl.get();
+        // 1. 线程数 &lt; 核心线程池 (即主力hc还有)
+        if (workerCountOf(c) &lt; corePoolSize) &#123;
+            // 1.1 优先补充主力(addWorker)成功&amp;&amp;将任务作为其第一个任务成功
+            // addWorker会检查线程池是否在运行中
+            if (addWorker(command, true))
+                return;
+            c = ctl.get();
+        &#125;
+        // 2. 线程池运行中 &amp;&amp; 提交任务到任务队列成功(workQueue.offer)
+        if (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;
+            int recheck = ctl.get();
+            // 2.1 线程池停止运行 &amp;&amp; 将任务从任务队列中移除成功 // 添加到任务队列期间可能线程池被停止了
+            if (! isRunning(recheck) &amp;&amp; remove(command))
+                // 2.1.1 拒绝添加任务
+                reject(command);
+            // 2.2 workder为空 // 添加到任务队列期间worker可能被停止了
+            else if (workerCountOf(recheck) == 0)
+                // 2.2.1 添加临时工
+                addWorker(null, false);
+        &#125;
+        // 3. 队列满了，直接创建临时工执行任务
+        else if (!addWorker(command, false))
+            reject(command);
+    &#125;
+</code></pre>
+<blockquote>
+<ul>
+<li>核心线程：主力</li>
+<li>非核心线程：临时工</li>
+</ul>
+</blockquote>
+<pre><code class="kotlin">// 伪代码
+if 线程数 &lt; 核心线程池 (即主力hc还有) [M2]
+    if 优先补充主力(addWorker)成功&amp;&amp;将任务作为其第一个任务成功 [M2]// addWorker会检查线程池是否在运行中[M1]
+        return
+if 线程池运行中 [M1] &amp;&amp; 提交任务到任务队列成功(workQueue.offer) [M3]
+    if 线程池停止运行 &amp;&amp; 将任务从任务队列中移除成功 // 添加到任务队列期间可能线程池被停止了
+        拒绝添加任务
+    else if workder为空 // 添加到任务队列期间worker可能被停止了
+        addWorker(null, false);
+else if 队列满了，直接创建临时工执行任务 [M4] // 会检查线程池运行状态[M1]，最大线程数[M4]等等
+    拒绝添加任务
+</code></pre>
+<pre><code class="kotlin">// 伪代码 &amp; 简化逻辑
+if !线程池正在运行 [M1]
+    拒绝
+else if 线程数 &lt; 核心线程数 [M2]
+    添加主力&amp;执行
+else if workQueue未满 [M3]
+    提交任务到workQueue
+else if 线程数 &lt; 最大线程数 [M4]
+    添加临时工&amp;执行
+else
+    拒绝
+</code></pre>
+<h2 id="addWorker-添加工人-主力-or-临时工"><a href="#addWorker-添加工人-主力-or-临时工" class="headerlink" title="addWorker @@添加工人(主力 or 临时工)"></a>addWorker @@添加工人(主力 or 临时工)</h2><pre><code class="java">// 源码分析
+
+    /**
+     * 用于访问工作线程集合及相关统计信息的锁。
+     * 虽然并发集合能提供线程安全的操作，
+     * 但使用锁能够更好地控制和序列化 interruptIdleWorkers（中断空闲工作线程）操作。
+     * 尤其在关闭线程池时，可以避免线程并发中断导致的“中断风暴”
+     * （即多个线程同时被中断而相互干扰），这种情况会影响性能。
+     * 
+     * 如果没有使用锁，正在退出的线程可能会与其他还没有被中断的线程发生竞争，
+     * 导致一些线程在不适当的时机被中断。
+     * 
+     * 它简化了线程池中一些统计信息的更新，例如 largestPoolSize（最大线程池大小）。
+     * 另外，shutdown 和 shutdownNow 操作在执行过程中需要保证工作线程集合的稳定性，
+     * 因此也需要通过持有 mainLock 锁来避免并发修改，
+     * 确保在检查中断权限与执行实际中断操作时不发生数据不一致。
+     */
+    private final ReentrantLock mainLock = new ReentrantLock();
+    ...
+
+    private boolean addWorker(Runnable firstTask, boolean core) &#123;
+        // 给一下行的for循环起一个名字，不是c的goto的效果
+        retry:
+        for (int c = ctl.get();;) &#123;
+            if (
+                // &gt;=shut_down，即shut_down / stop / tiding / terminated
+                runStateAtLeast(c, SHUTDOWN)
+                // 转换一下就是
+                // !(==shut_down &amp;&amp; firstTask == null &amp;&amp; !workQueue.isEmpty)
+                // 也就是需要排除上述情况
+                // !(shut_down状态 &amp;&amp; 传入的新增task是空(即没有新增任务) &amp;&amp; taskQueue还有没执行完的)
+                // 也就是说两种情况
+                // 1. &lt; SHUTDOWN
+                // 2. = SHUTDOWN &amp;&amp; 没有新增任务
+                // 也就说shut_down状态可以继续执行taskQueue中的任务，但是不接受新增的task
+                &amp;&amp; (runStateAtLeast(c, STOP)
+                    || firstTask != null
+                    || workQueue.isEmpty()))
+                return false;
+
+            for (;;) &#123;
+                // 当前线程数量已经达到最大
+                if (workerCountOf(c)
+                    &gt;= ((core ? corePoolSize : maximumPoolSize) &amp; COUNT_MASK))
+                    // 退出
+                    return false;
+                // 通过CAS机制增加工作线程数量记录
+                if (compareAndIncrementWorkerCount(c))
+                    // CAS机制可能失败，成功的话则退出外层for循环
+                    break retry;
+                c = ctl.get();  // Re-read ctl
+                // 走到这里说明CAS增加工作线程数量纪录失败，
+                // 再次检查线程池状态，以为上述过程期间可能状态已经变更
+                // 如果变成了shut_down状态，
+                if (runStateAtLeast(c, SHUTDOWN))
+                    // 则需要直接进入外层for循环的下一次循环
+                    // 完整检查一下线程池状态，可能需要直接return false了
+                    continue retry;
+                // else CAS failed due to workerCount change; retry inner loop
+                // 最后这里，CAS增加工作线程数量纪录失败 &amp;&amp; 线程池状态 &lt; shutdown
+                // 可以正常addWorkder，会继续循环尝试CAS增加工作线程数量纪录
+            &#125;
+        &#125;
+
+        // 上面只是增加了计数，下面才是真正创建新Worker
+
+        boolean workerStarted = false;
+        boolean workerAdded = false;
+        Worker w = null;
+        try &#123;
+            w = new Worker(firstTask);
+            final Thread t = w.thread;
+            if (t != null) &#123;
+                final ReentrantLock mainLock = this.mainLock;
+                mainLock.lock();
+                try &#123;
+                    // Recheck while holding lock.
+                    // Back out on ThreadFactory failure or if
+                    // shut down before lock acquired.
+                    int c = ctl.get();
+
+                    // 条件1. &lt; SHUTDOWN
+                    // 条件2. = SHUTDOWN &amp;&amp; 没有新增任务
+                    if (isRunning(c) ||
+                        (runStateLessThan(c, STOP) &amp;&amp; firstTask == null)) &#123;
+                        if (t.getState() != Thread.State.NEW)
+                            throw new IllegalThreadStateException();
+                        // 添加workder
+                        workers.add(w);
+                        workerAdded = true;
+                        int s = workers.size();
+                        if (s &gt; largestPoolSize)
+                            largestPoolSize = s;
+                    &#125;
+                &#125; finally &#123;
+                    mainLock.unlock();
+                &#125;
+                if (workerAdded) &#123;
+                    t.start();
+                    workerStarted = true;
+                &#125;
+            &#125;
+        &#125; finally &#123;
+            if (! workerStarted)
+                addWorkerFailed(w);
+        &#125;
+        return workerStarted;
+    &#125;
+</code></pre>
+<h2 id="workQueue-任务队列"><a href="#workQueue-任务队列" class="headerlink" title="workQueue @任务队列"></a>workQueue @任务队列</h2><pre><code class="java">    /**
+     * The queue used for holding tasks and handing off to worker
+     * threads.  We do not require that workQueue.poll() returning
+     * null necessarily means that workQueue.isEmpty(), so rely
+     * solely on isEmpty to see if the queue is empty (which we must
+     * do for example when deciding whether to transition from
+     * SHUTDOWN to TIDYING).  This accommodates special-purpose
+     * queues such as DelayQueues for which poll() is allowed to
+     * return null even if it may later return non-null when delays
+     * expire.
+     * 
+     * 存放任务并将其交给工作线程的队列。
+     * 我们不要求 `workQueue.poll()` 返回 `null` 必然意味着 `workQueue.isEmpty()`，
+     * 因此仅依赖 `isEmpty()` 来判断队列是否为空
+     * （例如，在决定是否从 `SHUTDOWN` 状态过渡到 `TIDYING` 状态时，我们必须这样做）。
+     * 这种做法适用于特殊用途的队列，例如 `DelayQueue`，在这些队列中，`poll()` 允许返回 `null`，
+     * 即使稍后延迟过期时可能会返回非 `null` 的任务。
+     */
+    private final BlockingQueue&lt;Runnable&gt; workQueue;
+</code></pre>
+<h2 id="workQueue-offer-添加任务到任务队列"><a href="#workQueue-offer-添加任务到任务队列" class="headerlink" title="workQueue.offer @@添加任务到任务队列"></a>workQueue.offer @@添加任务到任务队列</h2><blockquote>
+<p>slink begin @@@1735398709 - LinkedBlockingQueue.md</p>
+</blockquote>
+<pre><code class="java">    final AtomicInteger count = this.count;
+
+    private final ReentrantLock putLock = new ReentrantLock();
+
+    public boolean offer(E e) &#123;
+        ...
+        // 1. 已经满了，返回false
+        if (count.get() == capacity)
+            return false;
+        // 2. 还没满
+        final int c;
+        // 3. 创建&quot;队员&quot;
+        final Node&lt;E&gt; node = new Node&lt;E&gt;(e);
+        // 4. 即将操作入队，先加个put锁(不用管take锁，巧妙设计从而添加和删除可以并发)
+        putLock.lock();
+        try &#123;
+        // 5. 加锁后再次检查，防止加锁期间被别的线程截胡
+            if (count.get() == capacity)
+                return false;
+            // 6. 执行入队
+            enqueue(node);
+            c = count.getAndIncrement();
+            if (c + 1 &lt; capacity)
+                notFull.signal();
+            &#125;
+        &#125; finally &#123;
+            // 8. 释放锁
+            putLock.unlock();
+        &#125;
+        if (c == 0)
+            signalNotEmpty();
+        return true;
+    &#125;
+</code></pre>
+<blockquote>
+<p>slink end @@@1735398709 - LinkedBlockingQueue.md</p>
+</blockquote>
+<h2 id="Worker-runWorker"><a href="#Worker-runWorker" class="headerlink" title="Worker.runWorker"></a>Worker.runWorker</h2><blockquote>
+<p>slink begin @@@1735975636 - Worker.md</p>
+</blockquote>
+<pre><code class="java">        Worker(Runnable firstTask) &#123;
+            setState(-1); // inhibit interrupts until runWorker
+            this.firstTask = firstTask;
+            this.thread = getThreadFactory().newThread(this);
+        &#125;
+</code></pre>
+<blockquote>
+<p>slink end @@@1735975636 - Worker.md</p>
+</blockquote>
+<p>这里<code>this.thread = getThreadFactory().newThread(this)</code>，将Worker本身作为runnable传入Thread;<br>之后Thread调用start之后，就会执行run()方法如下,</p>
+<blockquote>
+<p>slink begin @@@1735975874 - Thread.md</p>
+</blockquote>
+<pre><code class="java">    @Override
+    public void run() &#123;
+        if (target != null) &#123;
+            target.run();
+        &#125;
+    &#125;
+</code></pre>
+<blockquote>
+<p>slink end @@@1735975874 - Thread.md</p>
+</blockquote>
+<p>target即Worker<br>那么Worker.run方法为</p>
+<blockquote>
+<p>slink begin @@@1735975959 - Worker.md</p>
+</blockquote>
+<pre><code class="java">        /** Delegates main run loop to outer runWorker. */
+        public void run() &#123;
+            runWorker(this);
+        &#125;
+</code></pre>
+<blockquote>
+<p>slink end @@@1735975959 - Worker.md</p>
+</blockquote>
+<p>调用了runWorker方法</p>
+<blockquote>
+<p>slink begin @@@1735975307 - Worker.md</p>
+</blockquote>
+<pre><code class="java">    final void runWorker(Worker w) &#123;
+        Thread wt = Thread.currentThread();
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        w.unlock(); // allow interrupts
+        boolean completedAbruptly = true;
+        try &#123;
+            while (task != null || (task = getTask()) != null) &#123;
+                w.lock();
+                // If pool is stopping, ensure thread is interrupted;
+                // if not, ensure thread is not interrupted.  This
+                // requires a recheck in second case to deal with
+                // shutdownNow race while clearing interrupt
+                if ((runStateAtLeast(ctl.get(), STOP) ||
+                     (Thread.interrupted() &amp;&amp;
+                      runStateAtLeast(ctl.get(), STOP))) &amp;&amp;
+                    !wt.isInterrupted())
+                    wt.interrupt();
+                try &#123;
+                    beforeExecute(wt, task);
+                    try &#123;
+                        // 执行任务
+                        task.run();
+                        afterExecute(task, null);
+                    &#125; catch (Throwable ex) &#123;
+                        afterExecute(task, ex);
+                        throw ex;
+                    &#125;
+                &#125; finally &#123;
+                    task = null;
+                    w.completedTasks++;
+                    w.unlock();
+                &#125;
+            &#125;
+            completedAbruptly = false;
+        &#125; finally &#123;
+            processWorkerExit(w, completedAbruptly);
+        &#125;
+    &#125;
+</code></pre>
+<blockquote>
+<p>slink end @@@1735975307 - Worker.md</p>
+</blockquote>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6968721240592744455">如果你是 JDK 设计者，如何设计线程池？我跟面试官大战了三十个回合</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6926471351452565512">ThreadPoolExecutor 源码解析(含流程图)</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6901317365561032712?searchId=202412291535082885556DD4BAC7D74B0D">聊聊 Java 多线程（5）- 超详细的 ThreadPoolExecutor 源码解析</a></li>
+</ul>
+
+</article>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Swithun Liu using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.3.0/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>

@@ -110,17 +110,6 @@
                 <!--如果是文章-->
                 <ul>
                     <li class="file">
-                        <a href="/2024/03/10/Android/Android窗口机制/">
-                            <i class="fa fa-file"></i>
-                            Android窗口机制
-                        </a>
-                    </li>
-                </ul>
-
-              
-                <!--如果是文章-->
-                <ul>
-                    <li class="file">
                         <a href="/2024/05/12/Android/NestedScrolling原理/">
                             <i class="fa fa-file"></i>
                             NestedScrolling原理
@@ -201,6 +190,17 @@
                         <a href="/2024/09/07/Android/textview measure流程/">
                             <i class="fa fa-file"></i>
                             textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/10/Android/Activity的启动流程/">
+                            <i class="fa fa-file"></i>
+                            Activity的启动流程
                         </a>
                     </li>
                 </ul>
@@ -307,6 +307,74 @@
                 </ul>
 
               
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/04/AOSP/java/lang/Thread/">
+                            <i class="fa fa-file"></i>
+                            Thread
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            util
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            concurrent
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            ThreadPoolExecutor
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
+                            <i class="fa fa-file"></i>
+                            Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">
+                            <i class="fa fa-file"></i>
+                            LinkedBlockingQueue
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -315,6 +383,45 @@
                 </ul>
 
                  
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            multi_thread
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/Test/">
+                            <i class="fa fa-file"></i>
+                            Test
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/ThreadPool/">
+                            <i class="fa fa-file"></i>
+                            ThreadPool
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -334,6 +441,163 @@
   
 <div id="recent-posts">
   <h1>Recent Posts</h1>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2025/01/04/AOSP/java/lang/Thread/">Thread</a>
+      <time class="recent-post-time" datetime="2025-01-04T07:30:05.000Z">
+        2025-01-04
+      </time>
+
+      <div class="article-digest">
+        run()(begin@@@1735975874)
+    @Override
+    public void run() &#123;
+        if (target != null) &#123;
+            target.run();
+        &#125;
+    &#125;
+
+(end@@@1735975874)
+
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/12/29/AOSP/java/util/concurrent/ThreadPoolExecutor/">ThreadPoolExecutor</a>
+      <time class="recent-post-time" datetime="2024-12-29T06:46:49.000Z">
+        2024-12-29
+      </time>
+
+      <div class="article-digest">
+        ThreadPoolExecutorctl @@状态&amp;线程数
+前3位用来表示状态，一共可以用来表示2 * 2 * 8种状态
+剩余位数用来表示线程数
+
+    private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+    private static final int COUNT_BITS = Integer.SIZE - 3; // 32 - 3 = 29
+    // (1 &lt;&lt; 29) - 1 
+    // = (1左移29位) - 1 
+    // = 2^29 - 1 =
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">LinkedBlockingQueue</a>
+      <time class="recent-post-time" datetime="2024-12-28T15:10:18.000Z">
+        2024-12-28
+      </time>
+
+      <div class="article-digest">
+        offer    final AtomicInteger count = this.count;
+
+    private final ReentrantLock putLock = new ReentrantLock();
+
+    public boolean offer(E e) &#123;
+        ...
+        // 1. 已经满了，返回false
+        if (count.get() == capacity)
+            return false;
+        // 2. 还没满
+        final int c;
+        
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/12/08/multi_thread/Test/"></a>
+      <time class="recent-post-time" datetime="2024-12-08T09:53:04.811Z">
+        2024-12-08
+      </time>
+
+      <div class="article-digest">
+        
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+      <img class="recent-post-img"
+        src="https://www.dmoe.cc/random.php" />
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2024/12/08/multi_thread/ThreadPool/">ThreadPool</a>
+      <time class="recent-post-time" datetime="2024-12-08T09:44:28.000Z">
+        2024-12-08
+      </time>
+
+      <div class="article-digest">
+        简易线程池实现class SimpleThreadPool(threadSize: Int) &#123;
+    /** 1. 任务队列: 线程安全*/
+    val taskQueue: BlockingQueue&lt;Runnable&gt; = LinkedBlockingQueue(10)
+
+    /** 2. 所有线程: worker */
+    val threads = ArrayList&lt;SimpleThread&gt;(threadSize)
+
+    init &#123;
+        // 3 启动所有线程
+        (1..threadSize
+        ...
+      </div>
+
+    </div>
+
+  </div>
   
   <div class="recent-post-item">
 
@@ -503,183 +767,11 @@ import android.view
 
   </div>
   
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/06/02/Android/%E4%B8%80%E6%AD%A5%E6%AD%A5%E8%A7%A3%E5%86%B3NestedScrollView%E5%B5%8C%E5%A5%97EditText%E7%9A%84%E5%86%B2%E7%AA%81/">一步步解决NestedScrollView嵌套EditText的冲突</a>
-      <time class="recent-post-time" datetime="2024-06-02T10:28:11.000Z">
-        2024-06-02
-      </time>
-
-      <div class="article-digest">
-        最终效果
-
-背景        &lt;activity
-            android:name=&quot;.MainActivity&quot;
-            android:windowSoftInputMode=&quot;adjustResize|stateAlwaysHidden&quot;
-            android:exported=&quot;true&quot;&gt;
-            &lt;intent-filter&gt;
-                &lt;action android:name=&quot;android
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/06/02/Android/EditText%E5%85%89%E6%A0%87%E5%AE%9A%E4%BD%8D%E5%8E%9F%E7%90%86/">EditText光标定位原理</a>
-      <time class="recent-post-time" datetime="2024-06-02T09:24:11.000Z">
-        2024-06-02
-      </time>
-
-      <div class="article-digest">
-        
-classDiagram
-  direction TB
-  class EditText 
-  class TextView 
-  class View  
-  TextView <|-- EditText
-  View 
-
-
-sequenceDiagram
-
-participant TextView
-participant ArrowKeyMovementMethod
-participant Touch
-participant Parent
-
-TextView --> ArrowKeyMovementMethod: onTouchEvent
-activate TextView
- Arrow
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/05/25/Android/%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AANestedScrollView/">自己实现一个NestedScrollView</a>
-      <time class="recent-post-time" datetime="2024-05-25T04:38:05.000Z">
-        2024-05-25
-      </time>
-
-      <div class="article-digest">
-        
-
-完整代码见github
-子viewimport android.content.Context
-import android.util.AttributeSet
-import android.util.Log
-import android.view.MotionEvent
-import android.view.VelocityTracker
-import android.view.ViewConfiguration
-import android.widget.FrameLayout
-import android.widget.OverScroller
-import androidx.co
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/05/12/Android/NestedScrolling%E5%8E%9F%E7%90%86/">NestedScrolling原理</a>
-      <time class="recent-post-time" datetime="2024-05-12T08:44:23.000Z">
-        2024-05-12
-      </time>
-
-      <div class="article-digest">
-        android MD进阶[四] NestedScrollView 从源码到实战..
-
-基础精读：NestedScrolling机制详解
-parent I  PARENT-2: onStartNestedScroll true
-parent I  PARENT-2: onNestedScrollAccepted kotlin.Unit
-child  D  CHILD-1: stopNestedScroll
-parent I  PARENT-2: onStartNestedScroll true
-parent I  PARENT-2: onNestedScrollAccepted kotlin.U
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-      <img class="recent-post-img"
-        src="https://www.dmoe.cc/random.php" />
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/03/10/Android/Android%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6/">Android窗口机制</a>
-      <time class="recent-post-time" datetime="2024-03-10T09:59:40.000Z">
-        2024-03-10
-      </time>
-
-      <div class="article-digest">
-        
-
-window// frameworks/base/core/java/android/view/Window.java
-
-/**
- * Abstract base class for a top-level window look and behavior policy.  An
- * instance of this class should be used as the top-level view added to the
- * window manager. It provides standard UI policies such as a background, title
- 
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
 </div>
 
 
   <div id="paginator">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next</a>
   </div>
 
 
@@ -721,7 +813,7 @@ window// frameworks/base/core/java/android/view/Window.java
     
     <!-- 引入mermaid脚本 -->
     <div class=".pjax-reload">
-      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.0.0-alpha.4/mermaid.min.js'></script>
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.3.0/mermaid.min.js'></script>
     </div>
     <!-- mermaid启动 -->
     <script>

@@ -1,0 +1,662 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Activity的启动流程 [ Swithun Blog ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/18/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/03/Android/view绘制原理/">
+                            <i class="fa fa-file"></i>
+                            view绘制原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/09/Android/自定义View实现拖拽展开面板/">
+                            <i class="fa fa-file"></i>
+                            自定义View实现拖拽展开面板
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/12/Android/NestedScrolling原理/">
+                            <i class="fa fa-file"></i>
+                            NestedScrolling原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/25/Android/自己实现一个NestedScrollView/">
+                            <i class="fa fa-file"></i>
+                            自己实现一个NestedScrollView
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/EditText光标定位原理/">
+                            <i class="fa fa-file"></i>
+                            EditText光标定位原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/一步步解决NestedScrollView嵌套EditText的冲突/">
+                            <i class="fa fa-file"></i>
+                            一步步解决NestedScrollView嵌套EditText的冲突
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/11/Android/Dialog原理/">
+                            <i class="fa fa-file"></i>
+                            Dialog原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/07/20/Android/从0实现一个BottomSheetDialog/">
+                            <i class="fa fa-file"></i>
+                            从0实现一个BottomSheetDialog
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/08/18/Android/kotlin协程原理/">
+                            <i class="fa fa-file"></i>
+                            kotlin协程原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/09/07/Android/textview measure流程/">
+                            <i class="fa fa-file"></i>
+                            textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file active">
+                        <a href="/2024/03/10/Android/Activity的启动流程/">
+                            <i class="fa fa-file"></i>
+                            Activity的启动流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            主题演示
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            AOSP
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            lang
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/10/07/AOSP/java/lang/ThreadLocal/">
+                            <i class="fa fa-file"></i>
+                            ThreadLocal
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/04/AOSP/java/lang/Thread/">
+                            <i class="fa fa-file"></i>
+                            Thread
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            util
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            concurrent
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            ThreadPoolExecutor
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
+                            <i class="fa fa-file"></i>
+                            Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">
+                            <i class="fa fa-file"></i>
+                            LinkedBlockingQueue
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            multi_thread
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/Test/">
+                            <i class="fa fa-file"></i>
+                            Test
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/ThreadPool/">
+                            <i class="fa fa-file"></i>
+                            ThreadPool
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="post">
+  <h1>Activity的启动流程</h1>
+  <h2 id="startActivity"><a href="#startActivity" class="headerlink" title="startActivity"></a>startActivity</h2><pre class="mermaid">sequenceDiagram
+autonumber
+
+box green App进程
+participant Activity
+participant Instrumentation
+participant IActivityTaskManager
+participant ApplicationThread
+participant ActivityThread
+participant ActivityThread.H
+participant TransactionExecutor
+end
+
+box rgba(33,66,99,0.5) AMS
+participant ActivityTaskManagerService
+participant ActivityStarter
+participant ActivityRecord
+participant RootWindowContainer
+participant Task
+participant TaskFragment
+participant ActivityTaskSupervisor
+participant ClientTransaction
+participant ClientLifecycleManager
+end
+
+note over Instrumentation: 负责Application<br>和Activity的<br>创建和生命周期控制
+note over IActivityTaskManager: AMS 在 App 进程的 <br> IBinder 接口 (IActivityManager)
+note over ActivityTaskManagerService: System service <br>for managing activities<br> and their containers <br>(task, stacks, displays,... ).
+note over ActivityStarter: 专门负责<br>一个 Activity 的启动操作。<br> 它的主要作用包括<br>解析 Intent、<br>创建 ActivityRecord、<br>如果有可能<br>还要创建 TaskRecord
+note over ActivityRecord: 描述Activity相关信息, <br>一个Activity对应<br>一个ActivityRecord
+note over ClientTransaction: 一种容器，<br>用于保存一系列<br>需要发送给 <br>App 进程的消息。<br>这些消息包括 <br>callbacks <br>和最终的<br>生命周期状态
+
+Activity ->> Activity: startActivity
+activate Activity
+Activity ->> Activity: startActivityForResult
+activate Activity
+Activity ->> Instrumentation: execStartActivity
+note over Activity, Instrumentation: Context who: 正在启动该Activity的上下文<br>Ibinder contextThread: 启动该Activity的上下文线程(ApplicationThread)<br>IBinder token: 启动该Activity的标识<br>Activity target: 启动该Activity的 Activity
+activate Instrumentation
+Instrumentation ->> IActivityTaskManager: startActivity
+note over IActivityTaskManager,ActivityTaskManagerService: 跨进程调用
+IActivityTaskManager ->> ActivityTaskManagerService: startActivity
+activate ActivityTaskManagerService
+ActivityTaskManagerService ->> ActivityTaskManagerService: startActivityAsUser
+note right of ActivityTaskManagerService: 构造ActivityStarter
+ActivityTaskManagerService ->> ActivityStarter: execute
+activate ActivityStarter
+ActivityStarter ->> ActivityStarter: executeRequest
+ActivityStarter ->> ActivityRecord: new
+ActivityStarter ->> ActivityStarter: startActivityUnchecked
+ActivityStarter ->> ActivityStarter: startActivityInner
+ActivityStarter ->> RootWindowContainer: resumeFocusedTasksTopActivities
+activate RootWindowContainer
+RootWindowContainer ->> Task: resumeTopActivityUncheckedLocked
+activate Task
+Task ->> Task: resumeTopActivityInnerLocked
+Task ->> TaskFragment: resumeTopActivity
+activate TaskFragment
+TaskFragment ->> ActivityTaskSupervisor: startSpecificActivity
+activate ActivityTaskSupervisor
+ActivityTaskSupervisor ->> ClientTransaction: new
+ActivityTaskSupervisor ->> ClientLifecycleManager: scheduleTransaction
+activate ClientLifecycleManager
+note over ClientLifecycleManager,ApplicationThread: 跨进程调用
+ClientLifecycleManager ->> ApplicationThread: scheduleTransaction
+activate ApplicationThread
+ApplicationThread ->> ActivityThread: scheduleTransaction
+ActivityThread->> ActivityThread.H: handleMessage
+activate ActivityThread.H
+ActivityThread.H ->> TransactionExecutor: execute
+activate TransactionExecutor
+TransactionExecutor ->> TransactionExecutor: executeCallbacks
+TransactionExecutor ->> TransactionExecutor: cycleToPath
+TransactionExecutor ->> TransactionExecutor: performLifecycleSequence
+TransactionExecutor ->> TransactionExecutor: handleLaunchActivity
+deactivate TransactionExecutor
+deactivate ActivityThread.H
+deactivate ApplicationThread
+deactivate ClientLifecycleManager
+deactivate ActivityTaskSupervisor
+deactivate TaskFragment
+deactivate Task
+deactivate RootWindowContainer
+deactivate ActivityStarter
+deactivate ActivityTaskManagerService
+deactivate Instrumentation
+deactivate Activity
+deactivate Activity</pre>
+
+
+<h2 id="handleLaunchActivity"><a href="#handleLaunchActivity" class="headerlink" title="handleLaunchActivity"></a>handleLaunchActivity</h2><pre class="mermaid">sequenceDiagram
+autonumber
+rect rgba(191, 223, 255, .1) 
+    rect rgba(191, 223, 255, .1) 
+        ActivityThread ->> ActivityThread: handleLaunchActivity
+        rect rgba(191, 223, 255, .1) 
+            ActivityThread ->> ActivityThread: performLaunchActivity
+            ActivityThread ->> ActivityThread: [for Activity.attach()方法]<br>createBaseContextForActivity<br>(创建Activity的base Context)
+            ActivityThread ->> Instrumentation: newActivity
+            rect rgba(191, 223, 255, .1) 
+                ActivityThread ->> Activity: attach()
+                Activity ->> Activity: attachBaseContext(mBase = base)
+                Activity ->> +Activity: 新建PhoneWindow赋值给Activity.mWindow
+                rect rgba(191, 223, 255, .1) 
+                    Activity ->> Activity: 给Activity.mWindow设置WindowManager
+                    Activity ->> ContextImpl: getSystemService(Context.WINDOW_SERVICE)
+                    ContextImpl ->> SystemServiceRegistry: getSystemService<br>(Activity是Context)
+                    note over SystemServiceRegistry: SystemServiceRegistry是单例<br>SystemServiceRegistry的静态方法会执行registerService，<br>其中就包括Context.WINDOW_SERVICE对应的Fetcher<br>(Fetcher以Context为维度对实际的Service做了缓存<br>这里是工厂模式，可以将<br>Fetcher理解为Factory<br>通过Fetcher获取到真正的Service<br>而WINDOW_SERVICE对应的真正的Service<br>则是WindowManager)
+                    SystemServiceRegistry ->> Activity: return WindowManager
+                    Activity ->> Window: setWindowManger(return的WindowManger)<br>(这里的指Activity.mWindow)
+                    Window ->> WindowManagerImpl: createLocalWindowManager
+                    WindowManagerImpl ->> Window: return WindowManagerImpl
+                    Window ->> Window: mWindowManager = 前面return的WindowManagerImpl
+                    Activity ->> -Window: setWindowManager
+                end
+            end
+        end
+    end
+end
+rect rgba(191, 223, 255, .1) 
+ActivityThread ->> Instrumentation: mInstrumentation.callActivityOnCreate
+Instrumentation ->> Activity: performCreate
+Activity ->> Activity: onCreate
+end</pre>
+
+<h2 id="setContentView"><a href="#setContentView" class="headerlink" title="setContentView"></a>setContentView</h2><pre class="mermaid">sequenceDiagram
+Activity ->> Window: setContentView
+Window ->> PhoneWindow: (impl) setContentView
+rect rgba(191, 223, 255, .1) 
+    PhoneWindow ->> PhoneWindow: installDecor
+    Note right of PhoneWindow: 初始化 mDecor <br> new DecorView()
+    rect rgba(191, 223, 255, .1) 
+        PhoneWindow ->> DecoreView: mDecor = generateDecor(-1)
+    end
+    rect rgba(191, 223, 255, .1) 
+        PhoneWindow ->> PhoneWindow: mContentParent = generateLayout(mDecor)
+        Note right of PhoneWindow: generateDecor(-1)只是new了DecorView<br>平时我们看到的系统-定义布局中<br>DecorView下面一般还有一些默认的layout<br>这一步就是根据你设置的window theme<br>选取不同的layout resource并且inflate并且add到DecorView中<br>不同的layout resource一定都有一个id为content的layout<br>用来添加用户(开发者)定义的具体内容布局<br>contentParent最终返回的也就是id为content的layout
+        PhoneWindow ->> ViewGroup: mContentParent.addView(传入的view)
+    end
+end</pre>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/40a9c93b5a8d">Android窗口机制（一）初识Android的窗口结构</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/csdn_of_coder/article/details/78147399">Android – Activity启动过程中的上下文环境初始化分析</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6994823348190445604#heading-1">Android 11源码分析： Activity的启动流程</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7340301649766727721">【Android 14源码分析】Activity启动流程-1</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6990297933790838798?searchId=20241027121056BD6132D4CC1C5176D170">Activity 启动的整体流程</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7429188498850037795?searchId=20241201200856B3BFAC4094BECA3B7711">Android activity 启动流程</a></li>
+</ul>
+
+</article>
+
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Swithun Liu using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.3.0/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>
