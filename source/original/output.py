@@ -1,9 +1,10 @@
 import os
 import re
+import shutil
 
 def extract_and_replace_links(base_dir):
     """
-    遍历 base_dir 下所有 md 文件，处理 [slink](@@@数字) 替换，并将输出文件存入 shadow 目录。
+    遍历 base_dir 下所有 md 文件，处理 [slink](@@@数字) 替换，并将输出文件存入 shadow 目录，同时复制其他文件。
     """
     # 预加载所有文件内容供后续查找 begin 和 end 标记
     file_contents = load_all_files(base_dir)
@@ -14,16 +15,20 @@ def extract_and_replace_links(base_dir):
 
     for root, _, files in os.walk(base_dir):
         for file in files:
-            if file.endswith(".md"):
-                file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, base_dir)
-                shadow_file_path = os.path.join(shadow_dir, relative_path.replace(".md", ".md"))
+            file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(file_path, base_dir)
+            shadow_file_path = os.path.join(shadow_dir, relative_path)
 
+            if file.endswith(".md"):
+                # 处理 Markdown 文件
                 shadow_file_dir = os.path.dirname(shadow_file_path)
                 if not os.path.exists(shadow_file_dir):
                     os.makedirs(shadow_file_dir)
 
                 process_file(file_path, shadow_file_path, file_contents)
+            else:
+                # 复制非Markdown文件
+                copy_non_md_file(file_path, shadow_file_path)
 
 def load_all_files(base_dir):
     """
@@ -107,6 +112,17 @@ def process_file(file_path, shadow_file_path, file_contents):
     print(f"Writing to file: {shadow_file_path}")
     with open(shadow_file_path, "w", encoding="utf-8") as f:
         f.write(content)
+
+def copy_non_md_file(file_path, shadow_file_path):
+    """
+    复制非Markdown文件到 shadow 目录，保持原目录结构。
+    """
+    shadow_file_dir = os.path.dirname(shadow_file_path)
+    if not os.path.exists(shadow_file_dir):
+        os.makedirs(shadow_file_dir)
+
+    print(f"Copying non-md file: {file_path} to {shadow_file_path}")
+    shutil.copy2(file_path, shadow_file_path)
 
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
