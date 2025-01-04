@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ThreadPool [ Swithun Blog ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/18/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/03/Android/view绘制原理/">
+                            <i class="fa fa-file"></i>
+                            view绘制原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/09/Android/自定义View实现拖拽展开面板/">
+                            <i class="fa fa-file"></i>
+                            自定义View实现拖拽展开面板
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/12/Android/NestedScrolling原理/">
+                            <i class="fa fa-file"></i>
+                            NestedScrolling原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/25/Android/自己实现一个NestedScrollView/">
+                            <i class="fa fa-file"></i>
+                            自己实现一个NestedScrollView
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/EditText光标定位原理/">
+                            <i class="fa fa-file"></i>
+                            EditText光标定位原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/一步步解决NestedScrollView嵌套EditText的冲突/">
+                            <i class="fa fa-file"></i>
+                            一步步解决NestedScrollView嵌套EditText的冲突
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/11/Android/Dialog原理/">
+                            <i class="fa fa-file"></i>
+                            Dialog原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/07/20/Android/从0实现一个BottomSheetDialog/">
+                            <i class="fa fa-file"></i>
+                            从0实现一个BottomSheetDialog
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/08/18/Android/kotlin协程原理/">
+                            <i class="fa fa-file"></i>
+                            kotlin协程原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/09/07/Android/textview measure流程/">
+                            <i class="fa fa-file"></i>
+                            textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/10/Android/Activity的启动流程/">
+                            <i class="fa fa-file"></i>
+                            Activity的启动流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            主题演示
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            AOSP
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            lang
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/10/07/AOSP/java/lang/ThreadLocal/">
+                            <i class="fa fa-file"></i>
+                            ThreadLocal
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/04/AOSP/java/lang/Thread/">
+                            <i class="fa fa-file"></i>
+                            Thread
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            util
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            concurrent
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            ThreadPoolExecutor
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
+                            <i class="fa fa-file"></i>
+                            Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">
+                            <i class="fa fa-file"></i>
+                            LinkedBlockingQueue
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            multi_thread
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/Test/">
+                            <i class="fa fa-file"></i>
+                            Test
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/ThreadPool/">
+                            <i class="fa fa-file"></i>
+                            ThreadPool
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="page">
+  <h1>ThreadPool</h1>
+  <h2 id="简易线程池实现"><a href="#简易线程池实现" class="headerlink" title="简易线程池实现"></a>简易线程池实现</h2><pre><code class="kotlin">class SimpleThreadPool(threadSize: Int) &#123;
+    /** 1. 任务队列: 线程安全*/
+    val taskQueue: BlockingQueue&lt;Runnable&gt; = LinkedBlockingQueue(10)
+
+    /** 2. 所有线程: worker */
+    val threads = ArrayList&lt;SimpleThread&gt;(threadSize)
+
+    init &#123;
+        // 3 启动所有线程
+        (1..threadSize).forEach &#123; i: Int -&gt;
+            SimpleThread(&quot;swithun-task-thread-$i&quot;).also &#123;
+                it.start()
+                threads.add(it)
+            &#125;
+        &#125;
+    &#125;
+
+    fun execute(task: Runnable) &#123;
+        // 4 将任务放入“任务队列”
+        taskQueue.put(task)
+    &#125;
+
+    inner class SimpleThread(name: String) : Thread(name) &#123;
+        override fun run() &#123;
+            while (true) &#123;
+                // 5 每个线程都会不断的从“任务队列”中取任务 &amp; 执行 &amp; 哪个线程取到就在哪个线程执行
+                val task: Runnable? = try &#123;
+                    taskQueue.take()
+                &#125; catch (e: Exception) &#123;
+                    println(&quot;swithun-xxxx taskQueue.take err : $&#123;e.printStackTrace()&#125;&quot;)
+                    null
+                &#125;
+                task?.run()
+            &#125;
+        &#125;
+    &#125;
+&#125;
+
+fun main() &#123;
+    val pool = SimpleThreadPool(3)
+
+    // 6 建立多个任务丢进线程池运行
+    (1..5).forEach &#123; i: Int -&gt;
+        try &#123;
+            pool.execute &#123;
+                println(&quot;swithun-xxxx pool.execute: [task: $i] in $&#123;Thread.currentThread().name&#125;&quot;)
+            &#125;
+        &#125; catch (e: Exception) &#123;
+            println(&quot;swithun-xxxx pool.execute err : $&#123;e.printStackTrace()&#125;&quot;)
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<pre><code>swithun-xxxx pool.execute: [task: 2] in yes-task-thread-2
+swithun-xxxx pool.execute: [task: 4] in yes-task-thread-2
+swithun-xxxx pool.execute: [task: 5] in yes-task-thread-2
+swithun-xxxx pool.execute: [task: 3] in yes-task-thread-3
+swithun-xxxx pool.execute: [task: 1] in yes-task-thread-1
+</code></pre>
+<h2 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h2><p>see <a href="slink@@@1735454859">page</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6968721240592744455">如果你是 JDK 设计者，如何设计线程池？我跟面试官大战了三十个回合</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6926471351452565512">ThreadPoolExecutor 源码解析(含流程图)</a></li>
+</ul>
+
+</article>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Swithun Liu using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.3.0/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>

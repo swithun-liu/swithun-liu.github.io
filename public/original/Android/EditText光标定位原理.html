@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>EditText光标定位原理 [ Swithun Blog ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/18/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/03/Android/view绘制原理/">
+                            <i class="fa fa-file"></i>
+                            view绘制原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/09/Android/自定义View实现拖拽展开面板/">
+                            <i class="fa fa-file"></i>
+                            自定义View实现拖拽展开面板
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/12/Android/NestedScrolling原理/">
+                            <i class="fa fa-file"></i>
+                            NestedScrolling原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/25/Android/自己实现一个NestedScrollView/">
+                            <i class="fa fa-file"></i>
+                            自己实现一个NestedScrollView
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/EditText光标定位原理/">
+                            <i class="fa fa-file"></i>
+                            EditText光标定位原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/一步步解决NestedScrollView嵌套EditText的冲突/">
+                            <i class="fa fa-file"></i>
+                            一步步解决NestedScrollView嵌套EditText的冲突
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/11/Android/Dialog原理/">
+                            <i class="fa fa-file"></i>
+                            Dialog原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/07/20/Android/从0实现一个BottomSheetDialog/">
+                            <i class="fa fa-file"></i>
+                            从0实现一个BottomSheetDialog
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/08/18/Android/kotlin协程原理/">
+                            <i class="fa fa-file"></i>
+                            kotlin协程原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/09/07/Android/textview measure流程/">
+                            <i class="fa fa-file"></i>
+                            textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/10/Android/Activity的启动流程/">
+                            <i class="fa fa-file"></i>
+                            Activity的启动流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            主题演示
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            AOSP
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            lang
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/10/07/AOSP/java/lang/ThreadLocal/">
+                            <i class="fa fa-file"></i>
+                            ThreadLocal
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/04/AOSP/java/lang/Thread/">
+                            <i class="fa fa-file"></i>
+                            Thread
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            util
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            concurrent
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            ThreadPoolExecutor
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
+                            <i class="fa fa-file"></i>
+                            Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">
+                            <i class="fa fa-file"></i>
+                            LinkedBlockingQueue
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            multi_thread
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/Test/">
+                            <i class="fa fa-file"></i>
+                            Test
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/ThreadPool/">
+                            <i class="fa fa-file"></i>
+                            ThreadPool
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="page">
+  <h1>EditText光标定位原理</h1>
+  <pre class="mermaid">
+classDiagram
+  direction TB
+  class EditText 
+  class TextView 
+  class View  
+  TextView <|-- EditText
+  View <|-- TextView</pre>
+
+
+<pre class="mermaid">sequenceDiagram
+
+participant TextView
+participant ArrowKeyMovementMethod
+participant Touch
+participant Parent
+
+TextView --> ArrowKeyMovementMethod: onTouchEvent
+activate TextView
+ ArrowKeyMovementMethod -> Touch: onTouchEvent
+ activate ArrowKeyMovementMethod 
+ 
+  par ACTION_DOWN
+   Touch -> TextView: 设置DragState Span
+  and ACTION_MOVE
+    Touch -> TextView: scrollTo
+ 
+  end
+
+  par ACTION_DOWN
+   ArrowKeyMovementMethod -> TextView: 选中文本时做一些记录(通过Span)
+ 
+  end
+ deactivate ArrowKeyMovementMethod 
+deactivate TextView</pre>
+
+<pre class="mermaid">sequenceDiagram
+participant ViewRootImpl
+participant DecorView
+participant AppCompatDelegateImpl
+participant AppCompatActivity
+participant ViewGroup
+participant EditText
+participant Editor
+participant KeyEvent
+
+ViewRootImpl -> DecoreView: dispatchKeyEvent
+DecoreView -> AppCompatDelegateImpl: dispatchKeyEvent
+AppCompatDelegateImpl -> AppCompatActivity:  dispatchKeyEvent
+AppCompatActivity -> ViewGroup: dispatchKeyEvent
+ViewGroup -> EditText: dispatchKeyEvent
+EditText -> KeyEvent: dispatch
+KeyEvent -> EditText: onKeyDown
+KeyEvent -> EditText: doKeyDown
+EditText -> Editor: endBatchEdit
+Editor -> EditText: updateAfterEdit
+EditText -> TextView: bringPointIntoView</pre>
+</article>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Swithun Liu using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.3.0/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>

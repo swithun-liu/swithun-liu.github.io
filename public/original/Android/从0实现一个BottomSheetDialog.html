@@ -1,0 +1,1090 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>从0实现一个BottomSheetDialog [ Swithun Blog ]</title>
+
+  
+  <!-- stylesheets list from _config.yml -->
+  
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+  
+  <link rel="stylesheet" href="/lib/highlight-11-9-0/src/styles/atom-one-dark.css">
+  
+  <link rel="stylesheet" href="/css/again.css">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- menu -->
+  <div id="menu-outer">
+    <div id="menu-inner">
+      
+      <a class="menu-button" href="/">Home</a>
+      
+      <a class="menu-button" href="/about">About</a>
+      
+      <a class="menu-button" href="/contact">Contact</a>
+      
+      <a class="menu-button" href="/archives">Archives</a>
+      
+      <a class="menu-button" href="/categories">Category</a>
+      
+    </div>
+  </div>
+
+  <!-- 中间主体 -->
+  <div id="main">
+    <!-- 侧边栏 -->
+    <div id="aside-outer">
+      <aside>
+        <!-- 搜索栏 -->
+<div id="search">
+    <input class="search-input" type="text" placeholder="search">
+    <i id="search-icon" class="fa fa-bars" title="切换目录与索引"></i>
+</div>
+
+<!-- 侧边目录栏 -->
+<div id="tree">
+    
+
+    
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Android
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/18/Android/Fragment原理/">
+                            <i class="fa fa-file"></i>
+                            Fragment原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/Android/viewmodel原理/">
+                            <i class="fa fa-file"></i>
+                            viewmodel原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/03/Android/view绘制原理/">
+                            <i class="fa fa-file"></i>
+                            view绘制原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/09/Android/自定义View实现拖拽展开面板/">
+                            <i class="fa fa-file"></i>
+                            自定义View实现拖拽展开面板
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/12/Android/NestedScrolling原理/">
+                            <i class="fa fa-file"></i>
+                            NestedScrolling原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/05/25/Android/自己实现一个NestedScrollView/">
+                            <i class="fa fa-file"></i>
+                            自己实现一个NestedScrollView
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/EditText光标定位原理/">
+                            <i class="fa fa-file"></i>
+                            EditText光标定位原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/02/Android/一步步解决NestedScrollView嵌套EditText的冲突/">
+                            <i class="fa fa-file"></i>
+                            一步步解决NestedScrollView嵌套EditText的冲突
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/06/11/Android/Dialog原理/">
+                            <i class="fa fa-file"></i>
+                            Dialog原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/07/20/Android/从0实现一个BottomSheetDialog/">
+                            <i class="fa fa-file"></i>
+                            从0实现一个BottomSheetDialog
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/08/18/Android/kotlin协程原理/">
+                            <i class="fa fa-file"></i>
+                            kotlin协程原理
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/09/07/Android/textview measure流程/">
+                            <i class="fa fa-file"></i>
+                            textview measure流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/03/10/Android/Activity的启动流程/">
+                            <i class="fa fa-file"></i>
+                            Activity的启动流程
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            主题演示
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo1/">
+                            <i class="fa fa-file"></i>
+                            demo1
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/22/主题演示/temp/">
+                            <i class="fa fa-file"></i>
+                            temp
+                        </a>
+                    </li>
+                </ul>
+
+              
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            demo_folder_level2
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2023/10/10/主题演示/demo_folder_level2/demo2/">
+                            <i class="fa fa-file"></i>
+                            demo2
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            AOSP
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            lang
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/10/07/AOSP/java/lang/ThreadLocal/">
+                            <i class="fa fa-file"></i>
+                            ThreadLocal
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/04/AOSP/java/lang/Thread/">
+                            <i class="fa fa-file"></i>
+                            Thread
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            util
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            concurrent
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            ThreadPoolExecutor
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
+                            <i class="fa fa-file"></i>
+                            Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">
+                            <i class="fa fa-file"></i>
+                            LinkedBlockingQueue
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            multi_thread
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/Test/">
+                            <i class="fa fa-file"></i>
+                            Test
+                        </a>
+                    </li>
+                </ul>
+
+              
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/12/08/multi_thread/ThreadPool/">
+                            <i class="fa fa-file"></i>
+                            ThreadPool
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+</div>
+
+<div id="toc" style="display: none;"></div>
+      </aside>
+    </div>
+    <!-- 文章内容 -->
+    <div id="content-outer">
+      <div id="content-inner">
+        
+<article id="page">
+  <h1>从0实现一个BottomSheetDialog</h1>
+  <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li>可自定义展开段数(即自动吸附的高度)</li>
+<li>到达吸附位置有仿 iOS 的回弹效果（可以参考apple地图）</li>
+<li>可自定义背景半透明蒙层颜色</li>
+<li>实现了 <code>NestedScrollingParent</code> 接口——支持嵌套滚动</li>
+</ul>
+<h2 id="演示"><a href="#演示" class="headerlink" title="演示"></a>演示</h2><ul>
+<li>常见的 关闭 -&gt; 半展开 -&gt; 全展开效果</li>
+</ul>
+
+
+<ul>
+<li><ol>
+<li>嵌套滚动 2. 背景蒙层颜色修改为更深的紫色</li>
+</ol>
+</li>
+</ul>
+
+
+<ul>
+<li>自定义为4段吸附</li>
+</ul>
+
+
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="BottomSheetDialog-–-继承该类实现自己的Dialog"><a href="#BottomSheetDialog-–-继承该类实现自己的Dialog" class="headerlink" title="BottomSheetDialog – 继承该类实现自己的Dialog"></a>BottomSheetDialog – 继承该类实现自己的Dialog</h3><pre><code class="kotlin">import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
+
+abstract class BottomSheetDialog: DialogFragment() &#123;
+
+    private var contentView: View? = null
+
+    override fun getTheme(): Int &#123;
+        return R.style.com_SwithunBottomSheetDialog
+    &#125;
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? &#123;
+        val contentViewWrapper = inflater.inflate(R.layout.bottom_sheet_dialog_layout, container, false)
+        contentView = contentViewWrapper
+        onCreateContentView(inflater, contentViewWrapper as BottomSheetDialogLayout, savedInstanceState)
+        contentViewWrapper.asIBottomSheetDialogLayoutSetting().init()
+        return contentView
+    &#125;
+
+    abstract fun onCreateContentView(
+        inflater: LayoutInflater,
+        contentViewWrapper: BottomSheetDialogLayout,
+        savedInstanceState: Bundle?
+    )
+
+&#125;
+</code></pre>
+<h3 id="bottom-sheet-dialog-layout-–-Dialog基本布局"><a href="#bottom-sheet-dialog-layout-–-Dialog基本布局" class="headerlink" title="bottom_sheet_dialog_layout – Dialog基本布局"></a>bottom_sheet_dialog_layout – Dialog基本布局</h3><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;com.swithun.swithunbottomsheetdialog.BottomSheetDialogLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:id=&quot;@+id/root&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:background=&quot;#6BD001FF&quot;&gt;
+
+&lt;/com.swithun.swithunbottomsheetdialog.BottomSheetDialogLayout&gt;
+</code></pre>
+<h3 id="BottomSheetDialogLayout-–-实现Dialog的关键layout"><a href="#BottomSheetDialogLayout-–-实现Dialog的关键layout" class="headerlink" title="BottomSheetDialogLayout – 实现Dialog的关键layout"></a>BottomSheetDialogLayout – 实现Dialog的关键layout</h3><pre><code class="kotlin">import android.animation.ValueAnimator
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
+import android.view.VelocityTracker
+import android.view.View
+import android.view.ViewConfiguration
+import android.view.animation.OvershootInterpolator
+import android.widget.FrameLayout
+import androidx.core.view.NestedScrollingParent3
+import androidx.core.view.NestedScrollingParentHelper
+import androidx.core.view.ViewCompat
+import androidx.core.view.ViewCompat.NestedScrollType
+import androidx.core.view.children
+import androidx.customview.widget.ViewDragHelper.INVALID_POINTER
+import kotlin.math.abs
+
+class BottomSheetDialogLayout @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr), NestedScrollingParent3, IBottomSheetDialogLayoutSetting &#123;
+
+    /** 第一个View */
+    private val firstView: View?
+        get() = children.firstOrNull()
+
+    //// Event 记录
+    /** [onTouchEvent]记录上一个EventY */
+    private var lastMotionYForOnTouchEvent = 0
+
+    /** [onTouchEvent]记录上一个DownEventY */
+    private var lastDownYForOnTouchEvent = 0
+
+    /** [onInterceptTouchEvent]记录上一个EventY */
+    private var lastMotionYForInterceptTouchEvent = 0
+
+    /** [onInterceptTouchEvent]记录上一个DownEventY */
+    private var lastDownYForInterceptEvent: Int = 0
+
+    /** 造成滚动的原因 */
+    private var scrollCauser: ScrollCauser = ScrollCauser.NONE
+
+    //// 吸附位置
+    /** 默认的最低吸附位置 */
+    private val stateLowest get() = -height
+
+    /** 默认的最高吸附位置 */
+    private val stateHighest get() = 0
+
+    /** 自定义的吸附位置列表 */
+    override var customStateList: List&lt;CustomHeight&gt;? = null
+
+    /** 初始化时到哪个state */
+    override var initState: Int = 0
+    override var stateListener: ((Int) -&gt; Unit)? = null
+
+    /** 想要的吸附位置列表 */
+    private val wantStateList: List&lt;Int&gt;
+        get() &#123;
+            val custom: List&lt;CustomHeight&gt;? = customStateList
+            return custom?.map &#123;
+                when (it) &#123;
+                    is CustomHeight.Bottom -&gt; stateLowest + it.add
+                    is CustomHeight.Highest -&gt; stateHighest - it.reduce
+                    is CustomHeight.Number -&gt; -it.value
+                    is CustomHeight.Percent -&gt; (stateLowest * it.f).toInt()
+                &#125;
+            &#125; ?: listOf(
+                stateLowest + 200, // -2691
+                (stateLowest * 0.4).toInt(), // -1000
+                stateHighest // 0
+            )
+        &#125;
+
+    /** 当contentView太矮可能无法满足[wantStateList]，需要check一下 */
+    private val safeStateList: List&lt;Int&gt;
+        get() &#123;
+            val firstView = firstView ?: return wantStateList
+            val firstViewHeight = firstView.height
+            val list = mutableListOf&lt;Int&gt;()
+            val sortedStateList = wantStateList.sorted()
+            for (i in sortedStateList.indices) &#123;
+                if (-(height - firstViewHeight) &gt; sortedStateList[i]) &#123;
+                    list.add(sortedStateList[i])
+                &#125;
+            &#125;
+            if (list.size &lt; sortedStateList.size) &#123;
+                list.add(-(height - firstViewHeight))
+            &#125;
+            return list
+        &#125;
+
+    /** &lt;当前State，更高的State&gt; */
+    private val openState: Pair&lt;Int, Int&gt;
+        get() &#123;
+            var oldState = safeStateList.size - 1
+            for (i in safeStateList.indices.reversed()) &#123;
+                if (scrollY &gt;= safeStateList[i]) &#123;
+                    return i to oldState
+                &#125;
+                oldState = i
+            &#125;
+            return 0 to oldState
+        &#125;
+
+    private val parentHelper by lazy &#123;
+        NestedScrollingParentHelper(this)
+    &#125;
+    private val interceptTouchEventHelper = BottomSheetDialogInterceptTouchEventHelper()
+
+    /// fling 检测
+    private val velocityTracker = VelocityTracker.obtain()
+    private var activePointerId = INVALID_POINTER
+
+    // autoSettle动画相关
+    private var animateStartY2EndY = AnimateValue(0, 0)
+    private val autoSettleAnimator = ValueAnimator().also &#123;
+        it.interpolator = OvershootInterpolator(1f)
+    &#125;
+
+    private var disableTouch = false
+
+    override var bgMask: Drawable
+        get() = this.background
+        set(value) &#123;
+            this.background = value
+        &#125;
+
+    override fun init() &#123;
+        this.post &#123;
+            val initState = initState
+
+            val list = safeStateList
+            scrollTo(scrollX, safeStateList[0] + 1)
+            val initScrollY = when &#123;
+                initState &gt;= list.size -&gt; list.size - 1
+                initState &lt; 0 -&gt; 0
+                else -&gt; initState
+            &#125;
+            innerDoSettle(list[initScrollY])
+        &#125;
+
+        autoSettleAnimator.addUpdateListener &#123;
+            val process = (it.animatedValue as Float)
+            val passed = (animateStartY2EndY.endY - animateStartY2EndY.startY) * process
+            val newScrollY = animateStartY2EndY.startY + passed
+            Log.d(TAG, &quot;[AUTO_SETTLE_ANIM] listener $process | $newScrollY&quot;)
+            Log.d(
+                TAG,
+                &quot;[Fling Animate] $process $process | $&#123;animateStartY2EndY.endY&#125;, $&#123;animateStartY2EndY.startY&#125; | $passed $newScrollY&quot;
+            )
+            this.scrollTo(scrollX, newScrollY.toInt())
+        &#125;
+    &#125;
+
+    override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) &#123;
+        super.onScrollChanged(l, t, oldl, oldt)
+        for ((i, v) in safeStateList.withIndex()) &#123;
+            if (v == t) &#123;
+                stateListener?.invoke(i)
+            &#125;
+        &#125;
+    &#125;
+
+    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean &#123;
+        return true
+    &#125;
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) &#123;
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        measureChildren(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
+    &#125;
+
+    override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) &#123;
+        Log.i(TAG, &quot;[onNestedScrollAccepted] $type&quot;)
+        parentHelper.onNestedScrollAccepted(child, target, axes, type)
+    &#125;
+
+    override fun onTouchEvent(event: MotionEvent): Boolean &#123;
+        Log.d(TAG, &quot;「onTouchEvent」 [t: $&#123;event.actionMasked&#125;] [y: $&#123;event.y&#125;]&quot;)
+        val touchY = event.y.toInt()
+        when (event.actionMasked) &#123;
+            MotionEvent.ACTION_DOWN -&gt; &#123;
+                resetForDown()
+                recordDownForOnTouchEvent(touchY)
+                recordMotionForOnTouchEvent(touchY)
+            &#125;
+
+            MotionEvent.ACTION_MOVE -&gt; &#123;
+                // 要滚多少
+                val moveY = lastMotionYForOnTouchEvent - touchY
+                scrollCauser = ScrollCauser.USER_TOUCH
+                scrollBy(0, moveY)
+                recordMotionForOnTouchEvent(touchY)
+            &#125;
+        &#125;
+        return true
+    &#125;
+
+    override fun onStopNestedScroll(target: View, type: Int) &#123;
+        Log.i(TAG, &quot;[onStopNestedScroll] $type&quot;)
+        parentHelper.onStopNestedScroll(target, type)
+    &#125;
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean &#123;
+        Log.d(TAG, &quot;「dispatchTouchEvent」 $&#123;ev?.y&#125; $&#123;ev?.actionMasked&#125;&quot;)
+        when(ev.actionMasked) &#123;
+            MotionEvent.ACTION_DOWN -&gt; &#123;
+                resetForDown()
+            &#125;
+        &#125;
+
+        when &#123;
+            ev.actionMasked == MotionEvent.ACTION_DOWN &amp;&amp; ev.y + scrollY &lt; verticalScrollRange().last -&gt; &#123;
+                disableTouch = true
+                Log.d(TAG, &quot;[dispatchTouchEvent] [return] $&#123;ev?.y&#125; $&#123;ev?.actionMasked&#125;&quot;)
+                return true
+            &#125;
+
+            ev.actionMasked == MotionEvent.ACTION_UP || ev.actionMasked == MotionEvent.ACTION_CANCEL -&gt; &#123;
+                disableTouch = false
+            &#125;
+
+            else -&gt; &#123;&#125;
+        &#125;
+
+        if (disableTouch) return true
+
+        when (ev.actionMasked) &#123;
+            MotionEvent.ACTION_DOWN -&gt; &#123;
+                scrollCauser = ScrollCauser.NONE
+                autoSettleAnimator.cancel()
+                activePointerId = ev.getPointerId(0)
+            &#125;
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -&gt; &#123;
+                if (openState.first != openState.second &amp;&amp; scrollY != safeStateList[openState.first]) &#123;
+                    // 下正
+                    velocityTracker.computeCurrentVelocity(
+                        1000, ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat()
+                    )
+                    val initialVelocity: Float = velocityTracker.getYVelocity(activePointerId)
+                    settle(initialVelocity)
+                &#125;
+                activePointerId = INVALID_POINTER
+            &#125;
+        &#125;
+        velocityTracker.addMovement(ev)
+        return super.dispatchTouchEvent(ev)
+    &#125;
+
+    private val touchSlop: Int = run &#123;
+        val configuration = ViewConfiguration.get(context)
+        configuration.scaledTouchSlop
+    &#125;
+
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean &#123;
+        Log.d(TAG, &quot;「onInterceptTouchEvent」 [t: $&#123;ev.actionMasked&#125;] [y: $&#123;ev.y&#125;]&quot;)
+
+        fun recordEvent(ev: MotionEvent) &#123;
+            recordMotionYForOnInterceptTouchEvent(ev.y.toInt())
+            // 在拦截事件之前，走不到onTouch，所以需要在这里记录一下，
+            // 拦截事件之后，就不会走[onInterceptEvent]了，只走[onTouchEvent]，所以对之后的&quot;onTouchEvent对lastMotionForOnTouch&quot;的记录不回有影响
+            recordMotionForOnTouchEvent(ev.y.toInt())
+        &#125;
+
+        when (ev.actionMasked) &#123;
+            MotionEvent.ACTION_DOWN -&gt; &#123;
+                // 记录Down
+                recordDownYForOnInterceptTouchEvent(ev.y.toInt())
+                // 帮[onTouchEvent]记录一下
+                recordDownForOnTouchEvent(ev.y.toInt())
+            &#125;
+
+            MotionEvent.ACTION_MOVE -&gt; &#123;
+                val y = ev.y.toInt()
+                // 认为算是滚动
+                val yDiffDown = abs(y - lastDownYForInterceptEvent)
+                if (yDiffDown &gt; touchSlop) &#123;
+                    val yDiffMotion = lastMotionYForInterceptTouchEvent - ev.y.toInt()
+                    if (yDiffMotion &gt; 0) &#123; // 向上
+                        // 当我还可以滚动的时候，优先滚动我自己
+                        if ((yDiffMotion + scrollY) in verticalScrollRange()) &#123;
+                            Log.d(
+                                TAG,
+                                &quot;[onInterceptTouchEvent] [return] $yDiffMotion $scrollY | $&#123;verticalScrollRange()&#125;&quot;
+                            )
+                            recordEvent(ev)
+                            return true
+                        &#125;
+                    &#125; else if (yDiffMotion &lt; 0) &#123; // 向下
+                        // 如果没有点到支持嵌套滚动的子view，优先滚动我自己
+                        children.forEach &#123; child -&gt;
+                            if (!interceptTouchEventHelper.isTouchNestedScrollChild(
+                                    this, child, ev.x.toInt(), ev.y.toInt()
+                                )
+                            ) &#123;
+                                Log.d(
+                                    TAG,
+                                    &quot;[onInterceptTouchEvent] [return2] $yDiffMotion $scrollY | $&#123;verticalScrollRange()&#125;&quot;
+                                )
+                                recordEvent(ev)
+                                return true
+                            &#125;
+                        &#125;
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+
+        recordEvent(ev)
+        return super.onInterceptTouchEvent(ev) // 不拦截触摸事件，传递给子视图
+    &#125;
+
+    private fun doSettle(isDown: Boolean, reason: String) &#123;
+        val up = openState.second
+        val down = openState.first
+
+        val animateY = if (isDown) &#123;
+            safeStateList[down]
+        &#125; else &#123;
+            safeStateList[up]
+        &#125;
+        Log.d(
+            TAG, &quot;[autoSettle] for $reason [up: $up] [down: $down] [isD: $isDown] [toY: $animateY]&quot;
+        )
+
+        innerDoSettle(animateY)
+    &#125;
+
+    private fun innerDoSettle(animateY: Int) &#123;
+        scrollCauser = ScrollCauser.AUTO_SETTLE
+
+        setAnimatedValue &#123; AnimateValue(scrollY, animateY) &#125;
+        autoSettleAnimator.cancel()
+        autoSettleAnimator.duration = 400
+        autoSettleAnimator.setFloatValues(0f, 1f)
+        autoSettleAnimator.start()
+    &#125;
+
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        @NestedScrollType type: Int,
+        consumed: IntArray
+    ) &#123;
+        // dy 负 向下
+        Log.i(TAG, &quot;「onNestedScroll」 $dyUnconsumed&quot;)
+        if (dyUnconsumed &lt; 0) &#123; // 向下
+            when (type) &#123;
+
+                // fling造成的不滚动
+                ViewCompat.TYPE_NON_TOUCH -&gt; &#123;&#125;
+
+                ViewCompat.TYPE_TOUCH -&gt; &#123;
+                    doNestedScroll(dyUnconsumed, consumed, type)
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int
+    ) &#123;
+        Log.i(TAG, &quot;[onNestedScroll]2&quot;)
+    &#125;
+
+    private fun verticalScrollRange(): IntRange &#123;
+        return safeStateList[0]..safeStateList.last()
+    &#125;
+
+    override fun onNestedPreScroll(
+        target: View, dx: Int, dy: Int, consumed: IntArray, @NestedScrollType type: Int
+    ) &#123;
+        Log.i(TAG, &quot;「onNestedPreScroll」 [dy: $dy] [s: $scrollY]&quot;)
+        // dy 下 负数 上 正数
+        // scrollY 上 正 下 负
+
+        when (type) &#123;
+            ViewCompat.TYPE_NON_TOUCH -&gt; &#123;
+                // fling造成的不处理，内部自己滚
+            &#125;
+
+            ViewCompat.TYPE_TOUCH -&gt; &#123;
+                if (scrollY &gt;= safeStateList.last()) &#123;
+                    // 外壳到顶了，先滚内部
+                &#125; else &#123;
+                    if (dy &gt; 0) &#123;
+                        // 手指下滑，优先滚内部，才会走到这里
+                        // 外壳没到顶，向上滚动，先滚外壳
+                        doNestedScroll(dy, consumed, type)
+                    &#125; else &#123;
+                        // 手指上滑，优先滚外壳，在onTouchEvent那里处理了，所有不会走到这里
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    private fun doNestedScroll(
+        parentWantToConsume: Int, consumed: IntArray, @NestedScrollType type: Int
+    ) &#123;
+        val nextY = scrollY + parentWantToConsume
+        val maxNextY = verticalScrollRange().last
+        val minNextY = verticalScrollRange().first
+
+        val safeNextY = if (minNextY &gt; maxNextY) &#123;
+            0
+        &#125; else &#123;
+            nextY.coerceIn(minNextY..maxNextY)
+        &#125;
+
+        when (val safePrentWantToConsume = safeNextY - scrollY) &#123;
+            0 -&gt; Log.i(TAG, &quot;[doNestedPreScroll]#false ($type)&quot;)
+            else -&gt; &#123;
+                Log.i(TAG, &quot;[doNestedPreScroll]#true ($type) $&#123;scrollY&#125; $&#123;firstView?.height&#125;&quot;)
+                consumed[1] = safePrentWantToConsume
+                scrollBy(0, safePrentWantToConsume)
+            &#125;
+        &#125;
+    &#125;
+
+    override fun scrollTo(x: Int, y: Int) &#123;
+        Log.d(TAG, &quot;[scrollTo] $y $scrollCauser&quot;)
+        when &#123;
+            scrollCauser == ScrollCauser.AUTO_SETTLE -&gt; &#123;
+                super.scrollTo(x, y)
+                return
+            &#125;
+
+            else -&gt; &#123;
+                if (y &gt; verticalScrollRange().last) &#123;
+                    // 即将到达顶部，执行settle
+                    doSettle(false, &quot;scrollTo Top&quot;)
+                    return
+                &#125; else &#123;
+                    // 限制滚动范围
+                    if (y in verticalScrollRange()) &#123;
+                        Log.d(TAG, &quot;[scrollTo]#[true] $y $&#123;firstView?.height&#125;&quot;)
+                        super.scrollTo(x, y)
+                    &#125; else &#123;
+                        Log.d(TAG, &quot;[scrollTo]#[false] $y $&#123;firstView?.height&#125;&quot;)
+                    &#125;
+                &#125;
+
+            &#125;
+        &#125;
+    &#125;
+
+    private fun resetForDown() &#123;
+        scrollCauser = ScrollCauser.NONE
+        autoSettleAnimator.cancel()
+        stopNestedScroll()
+    &#125;
+
+    private fun recordDownYForOnInterceptTouchEvent(y: Int) &#123;
+        lastDownYForInterceptEvent = y
+    &#125;
+
+    private fun recordMotionYForOnInterceptTouchEvent(y: Int) &#123;
+        lastMotionYForInterceptTouchEvent = y
+    &#125;
+
+    private fun recordMotionForOnTouchEvent(touchY: Int) &#123;
+        lastMotionYForOnTouchEvent = touchY
+    &#125;
+
+    private fun recordDownForOnTouchEvent(touchY: Int) &#123;
+        lastDownYForOnTouchEvent = touchY
+    &#125;
+
+    private fun settle(fl: Float) &#123;
+        // 下正
+        if (fl &gt; 0) &#123; // 速度向下
+            doSettle(true, &quot;settle 速度向下&quot;)
+        &#125; else if (fl &lt; 0) &#123; // 速度向上
+            doSettle(false, &quot;settle 速度向上&quot;)
+        &#125; else &#123; // 速度为0
+            if (Math.abs(scrollY - openState.first) &gt; Math.abs(scrollY - openState.second)) &#123;
+                doSettle(true, &quot;settle 速度为0 down&quot;)
+            &#125; else &#123;
+                doSettle(false, &quot;settle 速度为0 up&quot;)
+            &#125;
+        &#125;
+    &#125;
+
+    private fun setAnimatedValue(reducer: AnimateValue.() -&gt; AnimateValue) &#123;
+        this.animateStartY2EndY = reducer(this.animateStartY2EndY)
+    &#125;
+
+    data class AnimateValue(
+        var startY: Int,
+        var endY: Int,
+    )
+
+    interface ScrollCauser &#123;
+        object NONE : ScrollCauser
+
+        object USER_TOUCH : ScrollCauser
+
+        object AUTO_SETTLE : ScrollCauser
+    &#125;
+
+    sealed interface CustomHeight &#123;
+        class Number(val value: Int) : CustomHeight
+        class Percent(val f: Float) : CustomHeight
+        class Bottom(val add: Int) : CustomHeight
+        class Highest(val reduce: Int) : CustomHeight
+    &#125;
+
+
+    companion object &#123;
+        private const val TAG = &quot;ParentNestedScrollView&quot;
+    &#125;
+
+&#125;
+</code></pre>
+<h2 id="代码仓库"><a href="#代码仓库" class="headerlink" title="代码仓库"></a>代码仓库</h2><p><a target="_blank" rel="noopener" href="https://github.com/swithun-liu/practice-android/tree/main/SwithunBottomSheetDialog">github</a></p>
+
+</article>
+
+<div id="paginator">
+  
+</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 底部信息 -->
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Swithun Liu using
+      <a target="_blank" rel="noopener" href="http://hexo.io">hexo blog framework</a>.
+      <br>
+      <a href="/">Home</a>
+    </div>
+  </div>
+
+
+  
+  <!-- scripts list from theme config.yml -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.0-alpha1/highlight.min.js"></script>
+  
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  
+  <script src="/lib/jquery.pjax.js"></script>
+  
+  <script src="/js/again.js"></script>
+  
+  
+
+
+  <!-- 高亮脚本启动 -->
+  <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- 如果设置中mermaid选项打开 -->
+    
+    <!-- 引入mermaid脚本 -->
+    <div class=".pjax-reload">
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.3.0/mermaid.min.js'></script>
+    </div>
+    <!-- mermaid启动 -->
+    <script>
+      if (window.mermaid) {
+        mermaid.initialize({ theme: 'dark' });
+      }
+    </script>
+    
+
+</body>
+
+</html>

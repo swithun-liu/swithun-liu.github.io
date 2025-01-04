@@ -229,12 +229,13 @@ else
                     // shut down before lock acquired.
                     int c = ctl.get();
 
-                    // 1. < SHUTDOWN
-                    // 2. = SHUTDOWN && 没有新增任务
+                    // 条件1. < SHUTDOWN
+                    // 条件2. = SHUTDOWN && 没有新增任务
                     if (isRunning(c) ||
                         (runStateLessThan(c, STOP) && firstTask == null)) {
                         if (t.getState() != Thread.State.NEW)
                             throw new IllegalThreadStateException();
+                        // 添加workder
                         workers.add(w);
                         workerAdded = true;
                         int s = workers.size();
@@ -255,13 +256,6 @@ else
         }
         return workerStarted;
     }
-```
-
-```kotlin
-if 生命周期>SHUTDOWN
-  拒绝
-else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是允许增加工人去执行未执行的任务，只是不让继续增加任务了)
-  拒绝
 ```
 
 ## workQueue @任务队列
@@ -290,6 +284,8 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
 
 ## workQueue.offer @@添加任务到任务队列
 
+
+> slink begin @@@1735398709 - LinkedBlockingQueue.md
 ```java
     final AtomicInteger count = this.count;
 
@@ -325,6 +321,100 @@ else if 生命周期=SHUTDOWN && 等待队列空了 (队列不空的时候还是
         return true;
     }
 ```
+> slink end @@@1735398709 - LinkedBlockingQueue.md
+
+
+## Worker.runWorker
+
+
+> slink begin @@@1735975636 - Worker.md
+```java
+        Worker(Runnable firstTask) {
+            setState(-1); // inhibit interrupts until runWorker
+            this.firstTask = firstTask;
+            this.thread = getThreadFactory().newThread(this);
+        }
+```
+> slink end @@@1735975636 - Worker.md
+
+
+这里`this.thread = getThreadFactory().newThread(this)`，将Worker本身作为runnable传入Thread;
+之后Thread调用start之后，就会执行run()方法如下,
+
+
+> slink begin @@@1735975874 - Thread.md
+```java
+    @Override
+    public void run() {
+        if (target != null) {
+            target.run();
+        }
+    }
+```
+> slink end @@@1735975874 - Thread.md
+
+
+target即Worker
+那么Worker.run方法为
+
+
+> slink begin @@@1735975959 - Worker.md
+```java
+        /** Delegates main run loop to outer runWorker. */
+        public void run() {
+            runWorker(this);
+        }
+```
+> slink end @@@1735975959 - Worker.md
+
+
+调用了runWorker方法
+
+
+> slink begin @@@1735975307 - Worker.md
+```java
+    final void runWorker(Worker w) {
+        Thread wt = Thread.currentThread();
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        w.unlock(); // allow interrupts
+        boolean completedAbruptly = true;
+        try {
+            while (task != null || (task = getTask()) != null) {
+                w.lock();
+                // If pool is stopping, ensure thread is interrupted;
+                // if not, ensure thread is not interrupted.  This
+                // requires a recheck in second case to deal with
+                // shutdownNow race while clearing interrupt
+                if ((runStateAtLeast(ctl.get(), STOP) ||
+                     (Thread.interrupted() &&
+                      runStateAtLeast(ctl.get(), STOP))) &&
+                    !wt.isInterrupted())
+                    wt.interrupt();
+                try {
+                    beforeExecute(wt, task);
+                    try {
+                        // 执行任务
+                        task.run();
+                        afterExecute(task, null);
+                    } catch (Throwable ex) {
+                        afterExecute(task, ex);
+                        throw ex;
+                    }
+                } finally {
+                    task = null;
+                    w.completedTasks++;
+                    w.unlock();
+                }
+            }
+            completedAbruptly = false;
+        } finally {
+            processWorkerExit(w, completedAbruptly);
+        }
+    }
+```
+> slink end @@@1735975307 - Worker.md
+
 
 # 参考
 
