@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>ThreadPoolExecutor.Worker [ Swithun Blog ]</title>
+  <title>Java锁 [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -340,30 +340,17 @@
                             concurrent
                         </a>
                         
-
-                <!--如果是文件夹-->
-                <ul>
-                    <li class="directory">
-                        <a href="#" class="directory">
-                            <i class="fa fa-folder"></i>
-                            ThreadPoolExecutor
-                        </a>
-                        
                 <!--如果是文章-->
                 <ul>
-                    <li class="file active">
-                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
+                    <li class="file">
+                        <a href="/2024/12/29/AOSP/java/util/concurrent/ThreadPoolExecutor/">
                             <i class="fa fa-file"></i>
-                            Worker
+                            ThreadPoolExecutor
                         </a>
                     </li>
                 </ul>
 
               
-                    </li>
-                </ul>
-
-                 
                 <!--如果是文章-->
                 <ul>
                     <li class="file">
@@ -375,6 +362,30 @@
                 </ul>
 
               
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            sub-ThreadPoolExecutor
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/sub-ThreadPoolExecutor/Worker/">
+                            <i class="fa fa-file"></i>
+                            Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
                     </li>
                 </ul>
 
@@ -435,82 +446,26 @@
     <div id="content-outer">
       <div id="content-inner">
         
-<article id="post">
-  <h1>ThreadPoolExecutor.Worker</h1>
-  <h2 id="Worker-Runnable-firstTask-begin-1735975636"><a href="#Worker-Runnable-firstTask-begin-1735975636" class="headerlink" title="Worker(Runnable firstTask) (begin@@@1735975636)"></a>Worker(Runnable firstTask) (begin@@@1735975636)</h2><pre><code class="java">        Worker(Runnable firstTask) &#123;
-            setState(-1); // inhibit interrupts until runWorker
-            this.firstTask = firstTask;
-            this.thread = getThreadFactory().newThread(this);
-        &#125;
-</code></pre>
-<p>(end@@@1735975636)</p>
-<h2 id="run"><a href="#run" class="headerlink" title="run()"></a>run()</h2><p>(begin@@@1735975959)</p>
-<pre><code class="java">        /** Delegates main run loop to outer runWorker. */
-        public void run() &#123;
-            runWorker(this);
-        &#125;
-</code></pre>
-<p>(end@@@1735975959)</p>
-<h2 id="runWorker-begin-1735975307"><a href="#runWorker-begin-1735975307" class="headerlink" title="runWorker (begin@@@1735975307)"></a>runWorker (begin@@@1735975307)</h2><pre><code class="java">    final void runWorker(Worker w) &#123;
-        Thread wt = Thread.currentThread();
-        Runnable task = w.firstTask;
-        w.firstTask = null;
-        w.unlock(); // allow interrupts
-        boolean completedAbruptly = true;
-        try &#123;
-            while (task != null || (task = getTask()) != null) &#123;
-                w.lock();
-                // If pool is stopping, ensure thread is interrupted;
-                // if not, ensure thread is not interrupted.  This
-                // requires a recheck in second case to deal with
-                // shutdownNow race while clearing interrupt
-                if ((runStateAtLeast(ctl.get(), STOP) ||
-                     (Thread.interrupted() &amp;&amp;
-                      runStateAtLeast(ctl.get(), STOP))) &amp;&amp;
-                    !wt.isInterrupted())
-                    wt.interrupt();
-                try &#123;
-                    beforeExecute(wt, task);
-                    try &#123;
-                        // 执行任务
-                        task.run();
-                        afterExecute(task, null);
-                    &#125; catch (Throwable ex) &#123;
-                        afterExecute(task, ex);
-                        throw ex;
-                    &#125;
-                &#125; finally &#123;
-                    task = null;
-                    w.completedTasks++;
-                    w.unlock();
-                &#125;
-            &#125;
-            completedAbruptly = false;
-        &#125; finally &#123;
-            processWorkerExit(w, completedAbruptly);
-        &#125;
-    &#125;
-</code></pre>
-<p>(end@@@1735975307)</p>
+<article id="page">
+  <h1>Java锁</h1>
+  <ul>
+<li><p>内部锁</p>
+<ul>
+<li><code>synchronize</code></li>
+</ul>
+</li>
+<li><p>显式锁</p>
+<ul>
+<li><code>java.until.concurrent.locks.Lock</code></li>
+</ul>
+</li>
+<li><p>公平调度策略</p>
+</li>
+<li><p>非公平调度策略</p>
+</li>
+</ul>
 
 </article>
-
-<script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-</script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.8/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 <div id="paginator">
   
@@ -542,6 +497,8 @@
   <script src="/lib/jquery.pjax.js"></script>
   
   <script src="/js/again.js"></script>
+  
+  <script src="/js/img.js"></script>
   
   
 

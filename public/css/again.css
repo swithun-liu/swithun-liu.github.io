@@ -2,7 +2,7 @@
   --main-bg-color: #000;
   --main-fg-color: #68c900;
   --main-text-color: #b9b9b9;
-  --link-color: #68c900;
+  --link-color: #f7d8ff;
   --green-100: #beff82;
   --green-300: #8fff26;
   --green-500: #68c900;
@@ -16,6 +16,13 @@
   --black-900: #161616;
   --black-950: #090909;
   --black-800: #292929;
+  --main-bg-color-1: #0a0a0a;
+  --main-bg-color-2: #312433;
+  --box-shadow-1: rgba(95,72,106,0.112);
+  --box-shadow-2: rgba(28,0,33,0.328);
+  --scroll-color-1: rgba(0,140,234,0.285);
+  --scroll-color-2: rgba(171,55,254,0.408);
+  --scroll-bg: #000;
 }
 @font-face {
   font-family: 'JetBrains Mono';
@@ -25,7 +32,7 @@ body {
   margin: 0;
   color: #be0000;
   display: flex;
-  background-color: var(--main-bg-color);
+  background: linear-gradient(-45deg, var(--main-bg-color-1), var(--main-bg-color-2));
   justify-content: space-between;
   flex-direction: column;
   font-family: 'JetBrains Mono';
@@ -78,7 +85,7 @@ aside {
   overflow-y: scroll;
   top: 40px;
   height: 95%;
-  background: var(--main-bg-color);
+  background: rgba(0,0,0,0);
   box-shadow: 9px 9px 18px #121518, -9px -9px 18px #48535e;
 }
 aside ul {
@@ -152,8 +159,7 @@ aside #toc a:hover {
   margin-right: 20px;
   margin-top: 20px;
   border-radius: 20px;
-  background: linear-gradient(90deg, var(--black-950), var(--black-1000));
-  box-shadow: 7px 7px 14px #16191c, -7px -7px 14px #444f5a;
+  background: rgba(0,0,0,0);
 }
 #bottom-outer {
   width: 70%;
@@ -178,13 +184,13 @@ img {
 /* 这是针对缺省样式 (必须的) */
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background: var(--green-900);
-  box-shadow: inset 3px 3px 5px var(--green-700), inset -3px -3px 5px var(--blue-black-900);
+  background: var(--scroll-bg);
+  box-shadow: inset 3px 3px 5px var(--scroll-bg), inset -3px -3px 5px var(--scroll-bg);
 }
 /* 滚动条的滑轨背景颜色 */
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: linear-gradient(145deg, var(--green-300), var(--blue-black-500));
+  background: linear-gradient(0deg, var(--scroll-color-1), var(--scroll-color-2));
   box-shadow: 3px 3px 5px #12272c;
 }
 /* 滑块颜色 */
@@ -201,8 +207,8 @@ img {
   margin-bottom: 30px;
   height: 200px;
   border-radius: 18px;
-  background: linear-gradient(145deg, #292f35, #30383f);
-  box-shadow: 7px 7px 20px #181c1f, -7px -7px 20px #424c57;
+  background: rgba(0,0,0,0.277);
+  box-shadow: 5px 5px 10px var(--box-shadow-1), -5px -5px 10px var(--box-shadow-2);
   display: flex;
   justify-content: flex-start;
 }
@@ -230,6 +236,10 @@ img {
 }
 .recent-post-time {
   font-size: 13px;
+}
+.article-digest {
+  height: 94px;
+  overflow: hidden;
 }
 #menu-outer {
   display: flex;
@@ -266,3 +276,75 @@ img {
   }
 }
 /* #################### 自适应 #################### */
+* {
+  box-sizing: border-box;
+}
+.card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-areas: "card";
+  place-items: center;
+  aspect-ratio: 4/5;
+  border: 1px solid var(--surface-2);
+  isolation: isolate;
+  transition: border-color 200ms var(--ease-out);
+  user-select: none;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at bottom left, transparent 55%, var(--surface-1));
+  pointer-events: none;
+  box-shadow: var(--bg) -0.5cqi 0.5cqi 2.5cqi inset;
+  transition: opacity 900ms var(--ease-out);
+}
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, var(--bg), transparent 65%);
+  opacity: 0;
+  transition: opacity 800ms var(--ease-out);
+}
+.card > * {
+  grid-area: card;
+}
+.card svg {
+  position: relative;
+  z-index: 1;
+  width: 30%;
+  height: auto;
+  color: var(--surface-3);
+  transition: 300ms var(--ease-out);
+  transition-property: color, scale;
+}
+.card button {
+  opacity: 0;
+}
+.card:focus-within {
+  outline: 5px auto Highlight;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+.card:where(:hover,
+.card :focus-within) {
+  border-color: var(--active-color, var(--fg));
+  transition: border-color 800ms var(--ease-in-out);
+}
+.card:where(:hover,
+.card :focus-within) svg {
+  color: var(--active-color, var(--fg));
+  scale: 1.1;
+  transition: 300ms var(--ease-in-out);
+}
+.card:where(:hover,
+.card :focus-within)::before {
+  opacity: 0;
+}
+.card:where(:hover,
+.card :focus-within)::after {
+  opacity: 1;
+}
