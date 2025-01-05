@@ -5,7 +5,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>LinkedBlockingQueue [ Swithun Blog ]</title>
+  <title>ThreadPoolExecutor.Worker [ Swithun Blog ]</title>
 
   
   <!-- stylesheets list from _config.yml -->
@@ -353,7 +353,7 @@
               
                 <!--如果是文章-->
                 <ul>
-                    <li class="file active">
+                    <li class="file">
                         <a href="/2024/12/28/AOSP/java/util/concurrent/LinkedBlockingQueue/">
                             <i class="fa fa-file"></i>
                             LinkedBlockingQueue
@@ -373,7 +373,7 @@
                         
                 <!--如果是文章-->
                 <ul>
-                    <li class="file">
+                    <li class="file active">
                         <a href="/2024/01/04/AOSP/java/util/concurrent/sub-ThreadPoolExecutor/Worker/">
                             <i class="fa fa-file"></i>
                             Worker
@@ -447,45 +447,62 @@
       <div id="content-inner">
         
 <article id="post">
-  <h1>LinkedBlockingQueue</h1>
-  <h2 id="offer"><a href="#offer" class="headerlink" title="offer"></a><a href="begin@@@1735398709">offer</a></h2><pre><code class="java">    final AtomicInteger count = this.count;
-
-    private final ReentrantLock putLock = new ReentrantLock();
-
-    public boolean offer(E e) &#123;
-        ...
-        // 1. 已经满了，返回false
-        if (count.get() == capacity)
-            return false;
-        // 2. 还没满
-        final int c;
-        // 3. 创建&quot;队员&quot;
-        final Node&lt;E&gt; node = new Node&lt;E&gt;(e);
-        // 4. 即将操作入队，先加个put锁(不用管take锁，巧妙设计从而添加和删除可以并发)
-        putLock.lock();
-        try &#123;
-        // 5. 加锁后再次检查，防止加锁期间被别的线程截胡
-            if (count.get() == capacity)
-                return false;
-            // 6. 执行入队
-            enqueue(node);
-            c = count.getAndIncrement();
-            if (c + 1 &lt; capacity)
-                notFull.signal();
-            &#125;
-        &#125; finally &#123;
-            // 8. 释放锁
-            putLock.unlock();
+  <h1>ThreadPoolExecutor.Worker</h1>
+  <h2 id="Worker-Runnable-firstTask-begin-1735975636"><a href="#Worker-Runnable-firstTask-begin-1735975636" class="headerlink" title="Worker(Runnable firstTask) (begin@@@1735975636)"></a>Worker(Runnable firstTask) (begin@@@1735975636)</h2><pre><code class="java">        Worker(Runnable firstTask) &#123;
+            setState(-1); // inhibit interrupts until runWorker
+            this.firstTask = firstTask;
+            this.thread = getThreadFactory().newThread(this);
         &#125;
-        if (c == 0)
-            signalNotEmpty();
-        return true;
+</code></pre>
+<p>(end@@@1735975636)</p>
+<h2 id="run"><a href="#run" class="headerlink" title="run()"></a>run()</h2><p>(begin@@@1735975959)</p>
+<pre><code class="java">        /** Delegates main run loop to outer runWorker. */
+        public void run() &#123;
+            runWorker(this);
+        &#125;
+</code></pre>
+<p>(end@@@1735975959)</p>
+<h2 id="runWorker-begin-1735975307"><a href="#runWorker-begin-1735975307" class="headerlink" title="runWorker (begin@@@1735975307)"></a>runWorker (begin@@@1735975307)</h2><pre><code class="java">    final void runWorker(Worker w) &#123;
+        Thread wt = Thread.currentThread();
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        w.unlock(); // allow interrupts
+        boolean completedAbruptly = true;
+        try &#123;
+            while (task != null || (task = getTask()) != null) &#123;
+                w.lock();
+                // If pool is stopping, ensure thread is interrupted;
+                // if not, ensure thread is not interrupted.  This
+                // requires a recheck in second case to deal with
+                // shutdownNow race while clearing interrupt
+                if ((runStateAtLeast(ctl.get(), STOP) ||
+                     (Thread.interrupted() &amp;&amp;
+                      runStateAtLeast(ctl.get(), STOP))) &amp;&amp;
+                    !wt.isInterrupted())
+                    wt.interrupt();
+                try &#123;
+                    beforeExecute(wt, task);
+                    try &#123;
+                        // 执行任务
+                        task.run();
+                        afterExecute(task, null);
+                    &#125; catch (Throwable ex) &#123;
+                        afterExecute(task, ex);
+                        throw ex;
+                    &#125;
+                &#125; finally &#123;
+                    task = null;
+                    w.completedTasks++;
+                    w.unlock();
+                &#125;
+            &#125;
+            completedAbruptly = false;
+        &#125; finally &#123;
+            processWorkerExit(w, completedAbruptly);
+        &#125;
     &#125;
 </code></pre>
-<p>(end@@@1735398709)</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7329280514627665961?searchId=202412282306309B05CE6FC1DEE9F99437">深入理解Java线程池，剖析LinkedBlockingQueue源码实现</a></li>
-</ul>
+<p>(end@@@1735975307)</p>
 
 </article>
 
