@@ -48,12 +48,3 @@ class B {
     }
 }
 ```
-
-
-```kotlin
-class B {
-    fun test() {
-
-    }
-}
-```
