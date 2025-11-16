@@ -340,17 +340,30 @@
                             concurrent
                         </a>
                         
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            ThreadPoolExecutor
+                        </a>
+                        
                 <!--如果是文章-->
                 <ul>
                     <li class="file">
-                        <a href="/2024/12/29/AOSP/java/util/concurrent/ThreadPoolExecutor/">
+                        <a href="/2024/01/04/AOSP/java/util/concurrent/ThreadPoolExecutor/Worker/">
                             <i class="fa fa-file"></i>
-                            ThreadPoolExecutor
+                            Worker
                         </a>
                     </li>
                 </ul>
 
               
+                    </li>
+                </ul>
+
+                 
                 <!--如果是文章-->
                 <ul>
                     <li class="file">
@@ -377,6 +390,30 @@
                         <a href="/2024/01/04/AOSP/java/util/concurrent/sub-ThreadPoolExecutor/Worker/">
                             <i class="fa fa-file"></i>
                             Worker
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            locks
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/11/AOSP/java/util/concurrent/locks/Condition/">
+                            <i class="fa fa-file"></i>
+                            Condition
                         </a>
                     </li>
                 </ul>
@@ -433,6 +470,126 @@
                 </ul>
 
               
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/01/04/multi_thread/Java锁/">
+                            <i class="fa fa-file"></i>
+                            Java锁
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            面试
+                        </a>
+                        
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            Handler
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/10/18/面试/Handler/handler/">
+                            <i class="fa fa-file"></i>
+                            handler
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            GC
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/11/16/面试/GC/GC/">
+                            <i class="fa fa-file"></i>
+                            GC
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            HashMap
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/10/26/面试/HashMap/HashMap面试/">
+                            <i class="fa fa-file"></i>
+                            HashMap面试
+                        </a>
+                    </li>
+                </ul>
+
+              
+                    </li>
+                </ul>
+
+                 
+                    </li>
+                </ul>
+
+                 
+
+                <!--如果是文件夹-->
+                <ul>
+                    <li class="directory">
+                        <a href="#" class="directory">
+                            <i class="fa fa-folder"></i>
+                            java基础
+                        </a>
+                        
+                <!--如果是文章-->
+                <ul>
+                    <li class="file">
+                        <a href="/2025/03/02/java基础/java-basic/">
+                            <i class="fa fa-file"></i>
+                            java-basic
+                        </a>
+                    </li>
+                </ul>
+
+              
                     </li>
                 </ul>
 
@@ -452,6 +609,232 @@
   
 <div id="recent-posts">
   <h1>Recent Posts</h1>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
+          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
+        </div>
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2025/11/16/%E9%9D%A2%E8%AF%95/GC/GC/"></a>
+      <time class="recent-post-time" datetime="2025-11-16T12:43:53.852Z">
+        2025-11-16
+      </time>
+
+      <div class="article-digest">
+        G1之前
+根据内存地址划分 E,S,S,O
+根据内存地址判断是老年代还是新生代，当老年代引用新生的时候，在cardtable中记录该老年代为脏
+minor gc阶段：当Eden满了，将Stack、Static、JNI、被标记为脏的老年代作为GCRoots，递归遍历（Eden和上次使用的S）哪些新生代是存活的，当递归到老年代的时候则停止，最后将存活的新生代移动到另一个S中，循环往复交换使用S，每次新生代移动年龄加一，当15岁则变成老年代
+full gc阶段：当老年代满了，需要将Stack、Static、JNI作为GCRoots、全量递归到底，确认所有存活的对象，确认后有两种清理方式可选（1. 保
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
+          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
+        </div>
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2025/10/26/%E9%9D%A2%E8%AF%95/HashMap/HashMap%E9%9D%A2%E8%AF%95/"></a>
+      <time class="recent-post-time" datetime="2025-10-26T15:55:26.677Z">
+        2025-10-26
+      </time>
+
+      <div class="article-digest">
+        你说的对，你抓到我的错误了。我真的非常抱歉，Mermaid 语法的报错太影响体验了。这完全是我的问题，它对 ... 和 _ 这种字符的处理非常严格。
+我把所有图表都修改成了最精简、最不可能出错的版本，去掉了所有可能产生歧义的字符。我们再试一次，这回一定是一个完整、正确的笔记。
+
+1. HashMap 的底层结构 (Q1, Q4, Q5)
+
+
+JDK 版本
+数据结构
+冲突解决方案 (Q5)
+
+
+
+JDK 1.7
+数组 + 链表
+始终是链表。 (采用“头插法”)
+
+
+JDK 1.8
+数组 + 链表 + 红黑树
+1. 默认用链表。 (采用“尾插法”)  2. 链表长度 $\ge$ 8 时，转为红黑树
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
+          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
+        </div>
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2025/10/18/%E9%9D%A2%E8%AF%95/Handler/handler/">handler</a>
+      <time class="recent-post-time" datetime="2025-10-18T10:40:35.000Z">
+        2025-10-18
+      </time>
+
+      <div class="article-digest">
+        目录
+Handler Looper Message 关系是什么？1. 让我理解的回答Handler、Looper、Message 是 Android 消息机制的核心组件，它们的关系可以用一个消息队列模型来理解：
+核心比喻：消息队列系统
+
+Looper：消息循环器，相当于一个消息泵，不断从消息队列中取出消息并分发
+MessageQueue：消息队列，存储所有待处理的消息
+Handler：消息处理器，负责发送和处理消息
+Message：消息实体，包含要执行的任务和数据
+
+工作流程：
+
+Looper 准备：在主线程中，系统已经创建了 Looper 并调用了 loop() 方法开始循环
+Handler
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
+          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
+        </div>
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2025/03/02/java%E5%9F%BA%E7%A1%80/java-basic/">java基础</a>
+      <time class="recent-post-time" datetime="2025-03-02T09:44:17.000Z">
+        2025-03-02
+      </time>
+
+      <div class="article-digest">
+        JVM &amp; JRE &amp; JDK&lt;Java9flowchart TD
+    subgraph JDK["[**JDK**]Java Development Kit"]
+        direction TB
+        subgraph Tools["开发工具"]
+            F[javac 编译器]
+            G[jdb 调试器]
+            H[Javadoc 文档生成器]
+            I[JConsole 监控工具]
+            J[Javap 反编译工具]
+        end
+        
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
+          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
+        </div>
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2025/01/11/AOSP/java/util/concurrent/locks/Condition/">Condition</a>
+      <time class="recent-post-time" datetime="2025-01-11T06:20:00.000Z">
+        2025-01-11
+      </time>
+
+      <div class="article-digest">
+        await
+描述：使当前线程等待，直到它被唤醒或被中断。当调用 await 方法时，当前线程将自动释放与此 Condition 关联的锁，并在以下四种情况下之一发生前，线程会被禁用线程调度功能并处于休眠状态：
+
+其他线程调用此 Condition 的 signal 方法，并且当前线程被选中为唤醒线程；
+其他线程调用此 Condition 的 signalAll 方法；
+其他线程中断了当前线程（并且支持线程挂起的中断）；
+出现“伪唤醒（spurious wakeup）”。
+
+注意事项：无论上述哪种情况，在此方法返回之前，当前线程必须重新获取与该条件关联的锁。当线程返回时，保证它持有该锁。
+
+中断
+        ...
+      </div>
+
+    </div>
+
+  </div>
+  
+  <div class="recent-post-item">
+
+
+    <div class="recent-post-left">
+        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
+          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
+        </div>
+    </div>
+
+    <div class="recent-post-right">
+
+      <a class="recent-post-title" href="/2025/01/04/multi_thread/Java%E9%94%81/">Java锁</a>
+      <time class="recent-post-time" datetime="2025-01-04T11:14:35.000Z">
+        2025-01-04
+      </time>
+
+      <div class="article-digest">
+        
+内部锁
+
+synchronize
+
+
+显式锁
+
+java.until.concurrent.locks.Lock
+
+
+公平调度策略
+
+非公平调度策略
+
+
+
+
+参考
+聊聊 Java 多线程（2）- 怎么实现多线程同步
+
+
+        ...
+      </div>
+
+    </div>
+
+  </div>
   
   <div class="recent-post-item">
 
@@ -570,213 +953,6 @@
       <a class="recent-post-title" href="/2024/12/08/multi_thread/Test/"></a>
       <time class="recent-post-time" datetime="2024-12-08T09:53:04.811Z">
         2024-12-08
-      </time>
-
-      <div class="article-digest">
-        
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
-          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
-        </div>
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/12/08/multi_thread/ThreadPool/">ThreadPool</a>
-      <time class="recent-post-time" datetime="2024-12-08T09:44:28.000Z">
-        2024-12-08
-      </time>
-
-      <div class="article-digest">
-        简易线程池实现class SimpleThreadPool(threadSize: Int) &#123;
-    /** 1. 任务队列: 线程安全*/
-    val taskQueue: BlockingQueue&lt;Runnable&gt; = LinkedBlockingQueue(10)
-
-    /** 2. 所有线程: worker */
-    val threads = ArrayList&lt;SimpleThread&gt;(threadSize)
-
-    init &#123;
-        // 3 启动所有线程
-        (1..threadSize
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
-          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
-        </div>
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/10/07/AOSP/java/lang/ThreadLocal/">ThreadLocal</a>
-      <time class="recent-post-time" datetime="2024-10-07T11:28:29.000Z">
-        2024-10-07
-      </time>
-
-      <div class="article-digest">
-        setsequenceDiagram
-participant Other
-participant T as ThreadLocal
-participant ThreadS as Thread(类)
-participant Thread
-participant TT as ThreadLocal.ThreadLocalMap
-
-Other ->> T: new
-T -->> Other: threadLocal
-Other ->> T: set(T value)
-T ->> ThreadS: currentThead()
-ThreadS ->> T: Thread(当前线程)
-T ->> Thr
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
-          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
-        </div>
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/09/07/Android/textview%20measure%E6%B5%81%E7%A8%8B/">measure流程</a>
-      <time class="recent-post-time" datetime="2024-09-07T10:29:47.000Z">
-        2024-09-07
-      </time>
-
-      <div class="article-digest">
-        
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
-          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
-        </div>
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/08/18/Android/kotlin%E5%8D%8F%E7%A8%8B%E5%8E%9F%E7%90%86/">kotlin协程原理</a>
-      <time class="recent-post-time" datetime="2024-08-18T11:41:40.000Z">
-        2024-08-18
-      </time>
-
-      <div class="article-digest">
-        import kotlinx.coroutines.delay
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-
-suspend fun testDelay(time: Long): Int &#123;
-    val a = testDelay1(time)
-    val b = testDelay2(time)
-    val c = testDelay3(time, &quot;haha&quot;)
-    return a + b + c
-&#125;
-su
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
-          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
-        </div>
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/07/20/Android/%E4%BB%8E0%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AABottomSheetDialog/">从0实现一个BottomSheetDialog</a>
-      <time class="recent-post-time" datetime="2024-07-20T14:20:41.000Z">
-        2024-07-20
-      </time>
-
-      <div class="article-digest">
-        特点
-可自定义展开段数(即自动吸附的高度)
-到达吸附位置有仿 iOS 的回弹效果（可以参考apple地图）
-可自定义背景半透明蒙层颜色
-实现了 NestedScrollingParent 接口——支持嵌套滚动
-
-演示
-常见的 关闭 -&gt; 半展开 -&gt; 全展开效果
-
-
-
-
-
-嵌套滚动 2. 背景蒙层颜色修改为更深的紫色
-
-
-
-
-
-
-自定义为4段吸附
-
-
-
-代码BottomSheetDialog – 继承该类实现自己的Dialogimport android.os.Bundle
-import android.view.LayoutInflater
-import android.view
-        ...
-      </div>
-
-    </div>
-
-  </div>
-  
-  <div class="recent-post-item">
-
-
-    <div class="recent-post-left">
-        <div class="card" style="--active-color: #e0f2fe;height: 160px;width: 230px;border-radius: 10px;border: none;"">
-          <pixel-canvas data-gap="10" data-speed="25" data-colors="#e0f2fe, #7dd3fc, #0ea5e9" style="height: 160px;width: 230px;"></pixel-canvas>
-        </div>
-    </div>
-
-    <div class="recent-post-right">
-
-      <a class="recent-post-title" href="/2024/06/11/Android/Dialog%E5%8E%9F%E7%90%86/">Dialog原理</a>
-      <time class="recent-post-time" datetime="2024-06-11T07:20:35.000Z">
-        2024-06-11
       </time>
 
       <div class="article-digest">

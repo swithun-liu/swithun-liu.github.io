@@ -1,0 +1,56 @@
+<hr>
+<h2 id="title-ThreadPoolExecutor-Workerdate-2024-1-4-14-49-18tags"><a href="#title-ThreadPoolExecutor-Workerdate-2024-1-4-14-49-18tags" class="headerlink" title="title: ThreadPoolExecutor.Workerdate: 2024-1-4 14:49:18tags:"></a>title: ThreadPoolExecutor.Worker<br>date: 2024-1-4 14:49:18<br>tags:</h2><h2 id="Worker-Runnable-firstTask-begin-1735975636"><a href="#Worker-Runnable-firstTask-begin-1735975636" class="headerlink" title="Worker(Runnable firstTask) (begin@@@1735975636)"></a>Worker(Runnable firstTask) (begin@@@1735975636)</h2><pre><code class="java">        Worker(Runnable firstTask) {
+            setState(-1); // inhibit interrupts until runWorker
+            this.firstTask = firstTask;
+            this.thread = getThreadFactory().newThread(this);
+        }
+</code></pre>
+<p>(end@@@1735975636)</p>
+<h2 id="run"><a href="#run" class="headerlink" title="run()"></a>run()</h2><p>(begin@@@1735975959)</p>
+<pre><code class="java">        /** Delegates main run loop to outer runWorker. */
+        public void run() {
+            runWorker(this);
+        }
+</code></pre>
+<p>(end@@@1735975959)</p>
+<h2 id="runWorker-begin-1735975307"><a href="#runWorker-begin-1735975307" class="headerlink" title="runWorker (begin@@@1735975307)"></a>runWorker (begin@@@1735975307)</h2><pre><code class="java">    final void runWorker(Worker w) {
+        Thread wt = Thread.currentThread();
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        w.unlock(); // allow interrupts
+        boolean completedAbruptly = true;
+        try {
+            while (task != null || (task = getTask()) != null) {
+                w.lock();
+                // If pool is stopping, ensure thread is interrupted;
+                // if not, ensure thread is not interrupted.  This
+                // requires a recheck in second case to deal with
+                // shutdownNow race while clearing interrupt
+                if ((runStateAtLeast(ctl.get(), STOP) ||
+                     (Thread.interrupted() &amp;&amp;
+                      runStateAtLeast(ctl.get(), STOP))) &amp;&amp;
+                    !wt.isInterrupted())
+                    wt.interrupt();
+                try {
+                    beforeExecute(wt, task);
+                    try {
+                        // 执行任务
+                        task.run();
+                        afterExecute(task, null);
+                    } catch (Throwable ex) {
+                        afterExecute(task, ex);
+                        throw ex;
+                    }
+                } finally {
+                    task = null;
+                    w.completedTasks++;
+                    w.unlock();
+                }
+            }
+            completedAbruptly = false;
+        } finally {
+            processWorkerExit(w, completedAbruptly);
+        }
+    }
+</code></pre>
+<p>(end@@@1735975307)</p>
